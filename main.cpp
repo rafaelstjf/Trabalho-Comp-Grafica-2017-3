@@ -7,8 +7,8 @@ int height = 480;
 //funcoes
 void idle();
 void display();
-void ini();
-
+void init();
+void desenhaPlano();
 
 int main(int argc, char** argv){
     glutInit(&argc, argv);
@@ -22,4 +22,28 @@ int main(int argc, char** argv){
     glutIdleFunc(idle);
     glutMainLoop();
     return 0;    
+}
+
+void desenhaPlano(){
+    glColor3f(1.0, 0.0, 0.0); //vermelho para teste
+    glBegin(GL_LINES);
+        glVertex2f(-100.0, 100.0);
+        glVertex2f(100.0, 100.0);
+    glEnd();
+}
+void display(){
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    desenhaPlano();
+    glutSwapBuffers();
+}
+void init(){
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-100.0, 100.0, -100.0, 100.0, 0.0, 0.0);
+    /*
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+   */
 }
