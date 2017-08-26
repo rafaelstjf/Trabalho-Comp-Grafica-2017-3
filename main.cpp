@@ -9,8 +9,13 @@ void idle();
 void display();
 void init();
 void keyboard(unsigned char key, int x, int y);
+void mouse(int button, int state, int x, int y);
 void desenhaPlano();
 
+typedef struct esfera {
+int x,y;
+double raio;
+} esfera;
 
 int main(int argc, char** argv){
     glutInit(&argc, argv);
@@ -18,9 +23,10 @@ int main(int argc, char** argv){
     glutInitWindowSize (width, height);
     glutInitWindowPosition (100, 100);
     glutCreateWindow("Desenvolvimento 1");
+    glutMouseFunc(mouse);  
+    glutKeyboardFunc(keyboard);    
     init();
     glutDisplayFunc(display);        
-    glutKeyboardFunc(keyboard);
     //glutIdleFunc(idle);
     glutMainLoop();
     return 0;    
@@ -29,8 +35,9 @@ int main(int argc, char** argv){
 void desenhaPlano(){
     glColor3f(1.0, 0.0, 0.0); //vermelho para teste
     glBegin(GL_LINES);
-        glVertex3f(-100.0, 100.0, 0.0);
-        glVertex3f(100.0, 100.0, 0.0);
+        glVertex2f(-100.0, 100.0);
+        glVertex2f(100.0, 100.0);
+        
     glEnd();
 }
 void display(){
@@ -40,15 +47,18 @@ void display(){
     glutSwapBuffers();
 }
 void init(){
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.7, 0.7, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-100.0, 100.0, -100.0, 100.0, 0.0, 0.0);
+    glLoadIdentity();    
+    glOrtho(-100.0, 100.0, -100.0, 100.0, -1.0, 1.0);    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 void keyboard(unsigned char key, int x, int y){
 
+}
+void mouse(int button, int state, int x, int y){
+    
 }
 void idle(){
 
