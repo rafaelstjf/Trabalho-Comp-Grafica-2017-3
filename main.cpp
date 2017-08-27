@@ -3,6 +3,7 @@
 #include <GL/glut.h>
 #include <time.h>
 #include <random> // Vai em build options e marca onde ta escrito Have g++ follow the C++11 ISO C++ language standard [-std=c++11]
+#include <math.h>
 #define NUM 10
 //Variaveis globais
 int width = 640;
@@ -79,7 +80,7 @@ void display(){
     {
         ball[i].draw_esfera();
     }
-    glColor3f (1.0, 1.0, 0.0);
+    glColor3f (0.0, 1.0, 0.0);
     glTranslatef(jogadorx,jogadory, 0.0);
     glutSolidSphere(10, 100, 100); // Jogador
     glutSwapBuffers();
@@ -107,5 +108,13 @@ void idle(){
         {
             init_esfera(i);
         }
+        if(sqrt((ball[i].x-jogadorx)*(ball[i].x-jogadorx) + (ball[i].y-jogadorx)*(ball[i].y-jogadorx))<(10+ball[i].raio)) //colisao jogador esfera
+        {
+            init_esfera(i);
+        }
     }
 }
+/************
+formula da colisao veio daqui:
+https://www.opengl.org/discussion_boards/showthread.php/159530-Circle-Circle-Collision
+************/
