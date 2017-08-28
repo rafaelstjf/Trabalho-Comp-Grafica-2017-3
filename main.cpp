@@ -20,6 +20,8 @@ void keyboard(unsigned char key, int x, int y);
 void mouse(int button, int state, int x, int y);
 void desenhaPlano();
 void init_esfera(int i);
+void motion(int x, int y );
+
 typedef struct esfera
 {
     int x, y;
@@ -49,6 +51,8 @@ int main(int argc, char **argv)
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Desenvolvimento 1");
     glutMouseFunc(mouse);
+
+    glutMotionFunc( motion );
     glutKeyboardFunc(keyboard);
     init();
     glutDisplayFunc(display);
@@ -103,6 +107,15 @@ void init()
 }
 void keyboard(unsigned char key, int x, int y)
 {
+    switch (key)
+	{
+		case 27:
+			exit(0);
+		break;
+		case ' ':
+            mouseDown = true;
+        break;
+	}
 }
 void mouse(int button, int state, int x, int y)
 {
@@ -112,35 +125,41 @@ void mouse(int button, int state, int x, int y)
         {
 
             // Conversao de escala dos eixos do mouse para valores do ortho
-            mousex = (float)(x * 0.3125 - 100); 
-            mousey = (float)(-1 * y * 0.417 + 100);
             mouseDown = true;
-            
+
         }
         else //botao esquerdo do mouse solto
         {
-            mouseDown = false; 
+            mouseDown = false;
         }
     }
 }
-void idle()
+void motion(int x, int y )
 {
-    glutPostRedisplay();        
-    if(mouseDown){ 
-        /*se o mouse estiver pressionado atualizar os valores da esfera do jogador 
+	// Inverte mouse para que origem fique no canto inferior esquerdo da janela
+	// (por default, a origem é no canto superior esquerdo)
+	// = height - y;
+
+    if(mouseDown){
+        /*se o mouse estiver pressionado atualizar os valores da esfera do jogador
           problemas: Precisamos encontrar um jeito de fazer ele atualizar a esfera toda hora
         */
-        jogadorx = mousex;
-        jogadory = mousey;        
+        jogadorx = (float)(x * 0.3125 - 100);
+        jogadory = (float)(-1 * y * 0.417 + 100);
     }
+}
+
+void idle()
+{
+    glutPostRedisplay();
     for (int i = 0; i < NUM; i++)
     {
-        ball[i].y--;                          // queda simple para teste
+
         if ((ball[i].y - ball[i].raio) < -90) //Colisao simples com o plano;
         {
             init_esfera(i);
         }
-        if (sqrt((ball[i].x - jogadorx) * (ball[i].x - jogadorx) + (ball[i].y - jogadorx) * (ball[i].y - jogadorx)) < (10 + ball[i].raio)) //colisao jogador esfera
+        if (sqrt((ball[i].x - jogadorx) * (ball[i].x - jogadorx) + (ball[i].y - jogadory) * (ball[i].y - jogadory)) < (10 + ball[i].raio)) //colisao jogador esfera
         {
             init_esfera(i);
             pontos+= ball[i].raio;
@@ -149,6 +168,7 @@ void idle()
             else
             cout << "+" <<  ball[i].raio << " ponto(s)!" << endl;
         }
+        ball[i].y--;                          // queda simple para teste
     }
 }
 /************
