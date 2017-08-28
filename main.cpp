@@ -4,13 +4,26 @@
 #include <time.h>
 #include <random> // Vai em build options e marca onde ta escrito Have g++ follow the C++11 ISO C++ language standard [-std=c++11]
 #include <math.h>
+#include <string>
+#include <sstream>
 using namespace std;
 #define NUM 10
+namespace patch //Correcao da funcao to_string
+{
+    template < typename T > std::string to_string( const T& n )
+    {
+        std::ostringstream stm ;
+        stm << n ;
+        return stm.str() ;
+    }
+}
 //Variaveis globais
 int width = 640;
 int height = 480;
 float jogadorx = 0, jogadory = 0, mousex, mousey; //posicao do jogador e do mouse
 int pontos = 0; //variavel para contar os pontos
+int vidas = 10; //variavel para controle de vidas
+int dificuldade = 1; //variavel para controle de dificuldade
 bool mouseDown = false;
 //funcoes
 void idle();
@@ -21,15 +34,17 @@ void mouse(int button, int state, int x, int y);
 void desenhaPlano();
 void init_esfera(int i);
 void motion(int x, int y );
+void output(char *string);
 
 typedef struct esfera
 {
-    int x, y;
+    float x, y;
     double raio;
+    float velocidade;
     void draw_esfera()
     { //funcao para desenhas as esferas
         glPushMatrix();
-        glColor3f(0.0, 0.0, 1.0);
+        glColor3f((velocidade-10)/10, 0.0, 10/(velocidade-10)); //cor muda com a velocidade
         glTranslatef(x, y, 0.0);
 
         glutSolidSphere(raio, 100, 100);
@@ -61,6 +76,17 @@ int main(int argc, char **argv)
     return 0;
 }
 
+void output (const char *string) //funcao para printar na tela
+{
+  glColor3f( 0, 0, 0 ); //cor do texto
+  glRasterPos2f(-99, 95); //local
+  int len, i;
+  len = (int)strlen(string);
+  for (i = 0; i < len; i++) {
+    glutBitmapCharacter(GLUT_BITMAP_8_BY_13, string[i]); //printa com a fonte GLUT_BITMAP_8_BY_13
+  }
+}
+
 void init_esfera(int i)
 {                                                      //Inicia as esferas ou reinicia depois de colidir
     std::mt19937 rng(rand());                          // seed do gerador vinda do tempo
@@ -71,6 +97,9 @@ void init_esfera(int i)
     std::uniform_int_distribution<int> duni(5, 15); //raio maximo e minimo
     auto random_raio = duni(rng);                   //gerando valor aleatorio
     ball[i].raio = random_raio;
+    std::uniform_int_distribution<int> tuni(10, 20); //velocidade maxima e minima
+    auto random_velo = tuni(rng);                   //gerando valor aleatorio
+    ball[i].velocidade = random_velo;
 }
 
 void desenhaPlano()
@@ -87,10 +116,16 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     desenhaPlano();
-    for (int i = 0; i < NUM; i++)
+    for (int i = 0; i < dificuldade; i++)
     {
         ball[i].draw_esfera();
     }
+    string print ="Pontos: "+patch::to_string(pontos)+"     Vidas: "+patch::to_string(vidas); //texto de pontuacao
+    if(vidas == 0)
+    {
+        print ="Parabens voce fez: "+patch::to_string(pontos)+"  Aperte r para tentar novamente!"; //texto de fim de jogo
+    }
+    output(print.c_str());//converte para char* e envia para a funcao
     glColor3f(0.0, 1.0, 0.0);
     glTranslatef(jogadorx, jogadory, 0.0);
     glutSolidSphere(10, 100, 100); // Jogador
@@ -112,8 +147,14 @@ void keyboard(unsigned char key, int x, int y)
 		case 27:
 			exit(0);
 		break;
-		case ' ':
-            mouseDown = true;
+		case 'r': //resetando o game
+            dificuldade=1;
+            pontos = 0;
+            vidas = 10;
+            for (int i = 0; i < NUM; i++)
+            {
+                init_esfera(i); // iniciando esferas
+            }
         break;
 	}
 }
@@ -122,9 +163,12 @@ void mouse(int button, int state, int x, int y)
     if (button == GLUT_LEFT_BUTTON)
     {
         if (state == GLUT_DOWN) //botao esquerdo do mouse pressionado
-        {
+        {// Conversao de escala dos eixos do mouse para valores do ortho
+                    x = (float)(x * 0.3125 - 100);
+                    y = (float)(-1 * y * 0.417 + 100);
 
-            // Conversao de escala dos eixos do mouse para valores do ortho
+            //so seleciona o jogador clicando dentro do seu raio
+            if(sqrt((x - jogadorx) * (x - jogadorx) + (y - jogadory) * (y - jogadory)) < (10))
             mouseDown = true;
 
         }
@@ -134,42 +178,55 @@ void mouse(int button, int state, int x, int y)
         }
     }
 }
-void motion(int x, int y )
+void motion(int x, int y )//funcao que pega os valores do mouse em tempo real
 {
-	// Inverte mouse para que origem fique no canto inferior esquerdo da janela
-	// (por default, a origem é no canto superior esquerdo)
-	// = height - y;
 
     if(mouseDown){
-        /*se o mouse estiver pressionado atualizar os valores da esfera do jogador
-          problemas: Precisamos encontrar um jeito de fazer ele atualizar a esfera toda hora
-        */
+        //se o mouse estiver pressionado atualizar os valores da esfera do jogador
+        // Conversao de escala dos eixos do mouse para valores do ortho
         jogadorx = (float)(x * 0.3125 - 100);
         jogadory = (float)(-1 * y * 0.417 + 100);
+        if(jogadorx>100)jogadorx=100; //limitando a movimentacao com as bordas da tela
+        if(jogadorx<-100)jogadorx=-100;
+        if(jogadory>100)jogadory=100;
+        if(jogadory<-100)jogadory=-100;
     }
 }
 
 void idle()
 {
     glutPostRedisplay();
-    for (int i = 0; i < NUM; i++)
-    {
 
+    float t, dt;
+    static float tLast = 0.0;
+    /* Get elapsed time and convert to s */
+    t = glutGet(GLUT_ELAPSED_TIME);
+    t /= 100.0;
+    /* Calculate delta t */
+	dt = t - tLast;
+    //funcoes do professor para variacao de tempo a cima
+    for (int i = 0; i < dificuldade; i++)
+    {
+        ball[i].y-=dt*ball[i].velocidade;                          // queda simple para teste
         if ((ball[i].y - ball[i].raio) < -90) //Colisao simples com o plano;
         {
             init_esfera(i);
+            vidas--;
         }
         if (sqrt((ball[i].x - jogadorx) * (ball[i].x - jogadorx) + (ball[i].y - jogadory) * (ball[i].y - jogadory)) < (10 + ball[i].raio)) //colisao jogador esfera
         {
             init_esfera(i);
             pontos+= ball[i].raio;
-            if(ball[i].raio <=9)
-            cout << "+0" <<  ball[i].raio << " ponto(s)!" << endl;
-            else
-            cout << "+" <<  ball[i].raio << " ponto(s)!" << endl;
         }
-        ball[i].y--;                          // queda simple para teste
     }
+    tLast = t;
+    if(pontos>dificuldade*100) // a cada 100 pontos +1 de dificuldade
+    {
+        dificuldade++; //quantidade de bolinhas na tela e igual a dificuldade agora
+    }
+    if(vidas<=0) //terminando o jogo
+        dificuldade=0;
+
 }
 /************
 formula da colisao veio daqui:
