@@ -127,7 +127,7 @@ void idle()
 {
     glutPostRedisplay();        
     if(mouseDown){ 
-        /*se o mouse estiver pressionado atualizar os valores da esfera do jogado 
+        /*se o mouse estiver pressionado atualizar os valores da esfera do jogador 
           problemas: Precisamos encontrar um jeito de fazer ele atualizar a esfera toda hora
         */
         jogadorx = mousex;
