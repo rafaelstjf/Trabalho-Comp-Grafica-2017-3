@@ -6,6 +6,7 @@
 *.exe
 *.o
 *.so
+makefile
 # OS generated files #
 ######################
 .DS_Store
