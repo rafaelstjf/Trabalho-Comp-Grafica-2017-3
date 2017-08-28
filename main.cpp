@@ -44,7 +44,7 @@ typedef struct esfera
     void draw_esfera()
     { //funcao para desenhas as esferas
         glPushMatrix();
-        glColor3f((velocidade-10)/10, 0.0, 10/(velocidade-10)); //cor muda com a velocidade
+        glColor3f((velocidade-10)/10, 0.0, 1-((velocidade-10)/10)); //cor muda com a velocidade
         glTranslatef(x, y, 0.0);
 
         glutSolidSphere(raio, 100, 100);
