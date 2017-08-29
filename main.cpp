@@ -29,7 +29,7 @@ std::string to_string(const T &n)
 }
 //Variaveis globais
 int width = 640;
-int height = 480;
+int height = 640;
 float jogadorx = 0, jogadory = 0, mousex, mousey; //posicao do jogador e do mouse
 int pontos = 0;                                   //variavel para contar os pontos
 int vidas = 10;                                   //variavel para controle de vidas
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(width, height);
-    glutInitWindowPosition(100, 100);
+    glutInitWindowPosition(50, 50);
     glutCreateWindow("Desenvolvimento 1");
     glutMouseFunc(mouse);
 
@@ -176,8 +176,9 @@ void mouse(int button, int state, int x, int y)
         if (state == GLUT_DOWN) //botao esquerdo do mouse pressionado
         {                       // Conversao de escala dos eixos do mouse para valores do ortho
             x = (float)(x * 0.3125 - 100);
-            y = (float)(-1 * y * 0.417 + 100);
-
+            y = (float)(-1 * y * 0.3125 + 100);
+            mousex = x-jogadorx;
+            mousey = y-jogadory;
             //so seleciona o jogador clicando dentro do seu raio
             if (sqrt((x - jogadorx) * (x - jogadorx) + (y - jogadory) * (y - jogadory)) <= (11))
                 mouseDown = true;
@@ -195,8 +196,8 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
     {
         //se o mouse estiver pressionado atualizar os valores da esfera do jogador
         // Conversao de escala dos eixos do mouse para valores do ortho
-        jogadorx = (float)(x * 0.3125 - 100);
-        jogadory = (float)(-1 * y * 0.417 + 100);
+        jogadorx = (float)(x * 0.3125 - 100)-mousex;
+        jogadory = (float)(-1 * y * 0.3125 + 100)-mousey;
         if (jogadorx > 100)
             jogadorx = 100; //limitando a movimentacao com as bordas da tela
         if (jogadorx < -100)
