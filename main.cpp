@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string>
 #include <sstream>
+#include <cstring>
 using namespace std;
 #define NUM 10
 namespace patch //Correcao da funcao to_string
@@ -105,10 +106,11 @@ void init_esfera(int i)
 void desenhaPlano()
 {
     glColor3f(1.0, 0.0, 0.0); //vermelho para teste
-    glBegin(GL_LINES);
+    glBegin(GL_QUADS);
     glVertex2f(-100.0, -90.0);
     glVertex2f(100.0, -90.0);
-
+    glVertex2f(100.0, -100.0);
+    glVertex2f(-100.0, -100.0);    
     glEnd();
 }
 void display()
