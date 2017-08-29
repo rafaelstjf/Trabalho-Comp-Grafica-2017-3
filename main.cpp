@@ -173,7 +173,7 @@ void mouse(int button, int state, int x, int y)
             y = (float)(-1 * y * 0.417 + 100);
 
             //so seleciona o jogador clicando dentro do seu raio
-            if (sqrt((x - jogadorx) * (x - jogadorx) + (y - jogadory) * (y - jogadory)) < (10))
+            if (sqrt((x - jogadorx) * (x - jogadorx) + (y - jogadory) * (y - jogadory)) <= (11))
                 mouseDown = true;
         }
         else //botao esquerdo do mouse solto
@@ -210,7 +210,7 @@ void idle()
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
     t = glutGet(GLUT_ELAPSED_TIME);
-    t /= 100.0;
+    t /= 150.0;
     /* Calculate delta t */
     dt = t - tLast;
     //funcoes do professor para variacao de tempo a cima
