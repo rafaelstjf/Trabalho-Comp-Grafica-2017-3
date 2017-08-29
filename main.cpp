@@ -1,3 +1,9 @@
+/*
+  Name:        main.cpp
+  Author:      Rafael de Souza Terra & Rodrigo Coelho Villa Verde
+  Release:     29/08/2013
+  Description: Sistema de Colisao 2D
+*/
 #include <iostream>
 #include <stdlib.h>
 #include <GL/glut.h>
@@ -225,7 +231,7 @@ void idle()
         if (sqrt((ball[i].x - jogadorx) * (ball[i].x - jogadorx) + (ball[i].y - jogadory) * (ball[i].y - jogadory)) < (10 + ball[i].raio)) //colisao jogador esfera
         {
             init_esfera(i);
-            pontos += ball[i].raio;
+            pontos += 16-ball[i].raio;
         }
     }
     tLast = t;
@@ -235,6 +241,8 @@ void idle()
     }
     if (vidas <= 0) //terminando o jogo
         dificuldade = 0;
+    if (dificuldade>10)
+        vidas=0;
 }
 /************
 formula da colisao veio daqui:
