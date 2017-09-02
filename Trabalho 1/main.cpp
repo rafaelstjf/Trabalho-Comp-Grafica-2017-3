@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string>
 #include <sstream>
+#include "missile.h"
 #ifdef __linux__
 #include <cstring>
 #endif
@@ -33,41 +34,54 @@ void idle();
 void display();
 void init();
 void mouse(int button, int state, int x, int y);
-void desenhaCruz();
+void drawAim();
 void motion(int x, int y);
+void reshape();
+void startWindow(int argc, char **argv);
+missile* teste = new missile();
 
 int main(int argc, char **argv)
 {
+    
+    startWindow(argc, argv);   
+    return 0;
+}
+
+void startWindow(int argc, char **argv){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(50, 50);
-    glutCreateWindow("Desenvolvimento 1");
+    glutCreateWindow("Trabalho 1");
     glutMouseFunc(mouse);
-
+    // glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
     init();
     glutDisplayFunc(display);
     glutIdleFunc(idle);
     glutMainLoop();
-    return 0;
 }
 
-void desenhaCruz()
-{
-    glColor3f(0.0, 0.0, 1.0); //vermelho para teste
+void drawAim(){
+    glColor3f(0.0, 0.0, 1.0);
+    //quadrado
     glBegin(GL_LINE_LOOP);
     glVertex2f(jogadorx - 3,  jogadory - 3);
     glVertex2f(jogadorx + 3, jogadory - 3);
     glVertex2f(jogadorx+3, jogadory + 3);    
     glVertex2f(jogadorx-3, jogadory + 3);
     glEnd();
+    /* Crosshair
     glBegin(GL_LINES);
     glVertex2f(jogadorx - 3, jogadory);
     glVertex2f(jogadorx + 3, jogadory);
     glVertex2f(jogadorx, jogadory - 3);
     glVertex2f(jogadorx, jogadory + 3);
     glEnd();
+    */
+}
+void reshape(){
+
 }
 void display()
 {
@@ -75,7 +89,8 @@ void display()
     glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    desenhaCruz();
+    drawAim();
+    teste->draw(jogadory, -jogadorx,1.0,0.0,0.0);    
     glutSwapBuffers();
 }
 void init()
