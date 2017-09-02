@@ -167,6 +167,9 @@ void keyboard(unsigned char key, int x, int y)
             init_esfera(i); // iniciando esferas
         }
         break;
+    case '1':
+    glutFullScreen();
+    break;
     }
 }
 void mouse(int button, int state, int x, int y)
