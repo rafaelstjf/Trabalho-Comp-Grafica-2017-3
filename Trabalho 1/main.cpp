@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 #include "missile.h"
+#include "filaAnima.h"
+#include "explosao.h"
 #ifdef __linux__
 #include <cstring>
 #endif
@@ -39,11 +41,12 @@ void motion(int x, int y);
 void reshape();
 void startWindow(int argc, char **argv);
 missile* teste = new missile();
+filaAnima explosoes = filaAnima(10);
 
 int main(int argc, char **argv)
 {
-    
-    startWindow(argc, argv);   
+
+    startWindow(argc, argv);
     return 0;
 }
 
@@ -68,7 +71,7 @@ void drawAim(){
     glBegin(GL_LINE_LOOP);
     glVertex2f(jogadorx - 3,  jogadory - 3);
     glVertex2f(jogadorx + 3, jogadory - 3);
-    glVertex2f(jogadorx+3, jogadory + 3);    
+    glVertex2f(jogadorx+3, jogadory + 3);
     glVertex2f(jogadorx-3, jogadory + 3);
     glEnd();
     /* Crosshair
@@ -90,7 +93,28 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     drawAim();
-    teste->draw(jogadory, -jogadorx,1.0,0.0,0.0);    
+    explosoes.desenhos();
+    //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
+    /******   CANHOES  *******/
+    glColor3f(0, 0, 1);
+    glBegin(GL_QUADS);
+    glVertex2f(5, -90);
+    glVertex2f(-5, -90);
+    glVertex2f(-5, -80);
+    glVertex2f(5, -80);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex2f(-85, -90);
+    glVertex2f(-95, -90);
+    glVertex2f(-95, -80);
+    glVertex2f(-85, -80);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex2f(95, -90);
+    glVertex2f(85, -90);
+    glVertex2f(85, -80);
+    glVertex2f(95, -80);
+    glEnd();
     glutSwapBuffers();
 }
 void init()
@@ -107,10 +131,18 @@ void mouse(int button, int state, int x, int y)
     if(button == GLUT_LEFT_BUTTON){
         if(state == GLUT_DOWN){
             mouseDown = true;
-            
+            float xreal=(float)(x * 0.3125 - 100);
+            float yreal=(float)(-1*y * 0.3125+100);
+            if(xreal<-40&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85,0);}
+            else if(xreal>40&&explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85,1);}
+            else if(explosoes.bala[2]>0){explosoes.addObjeto(xreal,yreal,0,-85,2);}
+            else if(xreal<0&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85,0);}
+            else if(explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85,1);}
+            else if(explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85,0);}
+
         }
     }
-    
+
 }
 void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 {
@@ -127,8 +159,12 @@ void idle()
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
     t = glutGet(GLUT_ELAPSED_TIME);
-    t /= 150.0;
+    t /= 500.0;
     /* Calculate delta t */
     dt = t - tLast;
+    explosoes.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
+
+
+    tLast = t;
 }

@@ -3,6 +3,7 @@
 missile::missile(){
 }
 void missile::draw(int x1, int y1, float red, float green, float blue){
+    glPushMatrix();
     x = x1;
     y = y1;
     color[1] = red;
@@ -13,8 +14,9 @@ void missile::draw(int x1, int y1, float red, float green, float blue){
     glVertex2f(x, y+1);
     glVertex2f(x+1, y+1);
     glVertex2f(x+1, y);
-    glVertex2f(x, y);    
+    glVertex2f(x, y);
     glEnd();
+    glPopMatrix();
 }
 missile::~missile(){
 }
