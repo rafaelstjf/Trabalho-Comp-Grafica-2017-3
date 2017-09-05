@@ -115,6 +115,45 @@ void display()
     glVertex2f(85, -80);
     glVertex2f(95, -80);
     glEnd();
+    /***** FIM CANHOES *****/
+   /*****   CIDADES   *****/
+    glColor3f(0, 1, 0);
+    for (int cd = -80 ; cd<=70; cd+=25){
+    if(cd!=-5){
+    glBegin(GL_QUADS);
+    glVertex2f(cd+10, -95);
+    glVertex2f(cd, -95);
+    glVertex2f(cd, -90);
+    glVertex2f(cd+10, -90);
+    glEnd();
+    }}
+    /***** FIM CIDADES *****/
+   /*****    BALAS    *****/
+    glColor3f(0, 0, 1);
+    for (int bl = 0 ; bl<explosoes.bala[2]; bl++){
+    glBegin(GL_QUADS);
+    glVertex2f(-7+2*bl, -97);
+    glVertex2f(-8+2*bl, -97);
+    glVertex2f(-8+2*bl, -93);
+    glVertex2f(-7+2*bl, -93);
+    glEnd();
+    }
+    for (int bl = 0 ; bl<explosoes.bala[0]; bl++){
+    glBegin(GL_QUADS);
+    glVertex2f(-97+2*bl, -97);
+    glVertex2f(-98+2*bl, -97);
+    glVertex2f(-98+2*bl, -93);
+    glVertex2f(-97+2*bl, -93);
+    glEnd();
+    }
+    for (int bl = 0 ; bl<explosoes.bala[1]; bl++){
+    glBegin(GL_QUADS);
+    glVertex2f(82+2*bl, -97);
+    glVertex2f(81+2*bl, -97);
+    glVertex2f(81+2*bl, -93);
+    glVertex2f(82+2*bl, -93);
+    glEnd();
+    }
     glutSwapBuffers();
 }
 void init()
