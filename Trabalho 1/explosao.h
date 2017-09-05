@@ -4,12 +4,12 @@
 class explosao
 {
     public:
-        explosao(float x, float y, float initx, float inity);
+        explosao(float x, float y, float initx, float inity,int vel=4000);
         void desenhar();
-        float tempo = 0;
+        float tempo = 0,dt;
     private:
         float raio,x,y,linex,liney,dy,dx,cor=1,initx,inity;
-        int vel=500,cont=0;
+        int vel=4000,cont=0;
 };
 
 

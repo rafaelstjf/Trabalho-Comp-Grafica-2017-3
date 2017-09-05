@@ -31,6 +31,7 @@ int pontos = 0;                                   //variavel para contar os pont
 int vidas = 10;                                   //variavel para controle de vidas
 int dificuldade = 1;                              //variavel para controle de dificuldade
 bool mouseDown = false;
+float clok = 0;
 //funcoes
 void idle();
 void display();
@@ -42,6 +43,7 @@ void reshape();
 void startWindow(int argc, char **argv);
 missile* teste = new missile();
 filaAnima explosoes = filaAnima(10);
+filaAnima inimigos = filaAnima(10);
 
 int main(int argc, char **argv)
 {
@@ -94,6 +96,7 @@ void display()
     glLoadIdentity();
     drawAim();
     explosoes.desenhos();
+    inimigos.desenhos();
     //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
     /******   CANHOES  *******/
     glColor3f(0, 0, 1);
@@ -172,12 +175,12 @@ void mouse(int button, int state, int x, int y)
             mouseDown = true;
             float xreal=(float)(x * 0.3125 - 100);
             float yreal=(float)(-1*y * 0.3125+100);
-            if(xreal<-40&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85,0);}
-            else if(xreal>40&&explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85,1);}
-            else if(explosoes.bala[2]>0){explosoes.addObjeto(xreal,yreal,0,-85,2);}
-            else if(xreal<0&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85,0);}
-            else if(explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85,1);}
-            else if(explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85,0);}
+            if(xreal<-40&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85);explosoes.bala[0]--;}
+            else if(xreal>40&&explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85);explosoes.bala[1]--;}
+            else if(explosoes.bala[2]>0){explosoes.addObjeto(xreal,yreal,0,-85);explosoes.bala[2]--;}
+            else if(xreal<0&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85);explosoes.bala[0]--;}
+            else if(explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85);explosoes.bala[1]--;}
+            else if(explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85);explosoes.bala[0]--;}
 
         }
     }
@@ -202,8 +205,13 @@ void idle()
     /* Calculate delta t */
     dt = t - tLast;
     explosoes.atualizaTempo(dt);
+    inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
-
-
-    tLast = t;
+    /***** MISSEIS *****/
+    if(clok>20){
+    inimigos.addObjeto(0,-80,0,100,50000);
+    clok=0;
+    }
+    clok+=dt;
+    tLast = t; //atualiza o tempo, deixar no fim da idle
 }

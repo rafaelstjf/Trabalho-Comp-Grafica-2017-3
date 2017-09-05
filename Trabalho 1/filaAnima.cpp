@@ -4,17 +4,17 @@
 filaAnima::filaAnima(int temp){
     this->tempo = temp;
 }
-void filaAnima::addObjeto(float x, float y, float initx, float inity, int bala)
+void filaAnima::addObjeto(float x, float y, float initx, float inity, float vel)
 {
-    explo.push_back(explosao(x,y,initx,inity));
+    explo.push_back(explosao(x,y,initx,inity,vel));
     tam++;
-    this->bala[bala]--;
 }
 void filaAnima::atualizaTempo(float dt)
 {
         for(int i =0;i<tam;i++)
     {
         explo[i].tempo+=dt;
+        explo[i].dt=dt;
     }
 }
 
@@ -28,5 +28,11 @@ void filaAnima::desenhos()
             tam--;
         }
         explo[i].desenhar();
+    }
+}
+void filaAnima::colisao(filaAnima ex){
+    for(int i =0;i<tam;i++)
+    {
+        //explo[i].
     }
 }
