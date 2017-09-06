@@ -40,6 +40,7 @@ void mouse(int button, int state, int x, int y);
 void drawAim();
 void motion(int x, int y);
 void reshape();
+void keyboardPress(unsigned char key, int x, int y);
 void startWindow(int argc, char **argv);
 missile* teste = new missile();
 filaAnima explosoes = filaAnima(10);
@@ -61,6 +62,7 @@ void startWindow(int argc, char **argv){
     glutMouseFunc(mouse);
     // glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
+    glutKeyboardFunc( keyboardPress );
     init();
     glutDisplayFunc(display);
     glutIdleFunc(idle);
@@ -89,7 +91,6 @@ void reshape(){
 }
 void display()
 {
-    //glutFullScreen();
     glutSetCursor(GLUT_CURSOR_NONE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -123,7 +124,7 @@ void display()
     for (int cd = -80 ; cd<=70; cd+=25){
     if(cd!=-5){
     glBegin(GL_QUADS);
-    glVertex2f(cd+10, -95);
+    glVertex2f(cd+10, -95);//(-75,-90),(-50,-90),(-25,-90)
     glVertex2f(cd, -95);
     glVertex2f(cd, -90);
     glVertex2f(cd+10, -90);
@@ -158,6 +159,19 @@ void display()
     }
     glutSwapBuffers();
 }
+void keyboardPress(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+		case 27:
+			exit(0);
+		break;
+		case 'f':
+            glutFullScreen();
+        break;
+	}
+}
+
 void init()
 {
     glClearColor(0.7, 0.7, 0.7, 0.0);
@@ -211,16 +225,23 @@ void idle()
     std::mt19937 rng(rand());
     std::uniform_int_distribution<int> uni(-100, 100);
     auto random_x = uni(rng);
-    std::uniform_int_distribution<int> duni(0, 2);
+    std::uniform_int_distribution<int> duni(0, 8);
     auto cit = duni(rng);
     if(cit==1){inimigos.addObjeto(0,-80,random_x,100,50000);}
     else if(cit==0){inimigos.addObjeto(-90,-80,random_x,100,50000);}
-    else{inimigos.addObjeto(90,-80,random_x,100,50000);}
+    else if(cit==2){inimigos.addObjeto(90,-80,random_x,100,50000);}
+    else if(cit==3){inimigos.addObjeto(-75,-90,random_x,100,50000);}
+    else if(cit==4){inimigos.addObjeto(-50,-90,random_x,100,50000);}
+    else if(cit==5){inimigos.addObjeto(-25,-90,random_x,100,50000);}
+    else if(cit==6){inimigos.addObjeto(25,-90,random_x,100,50000);}
+    else if(cit==7){inimigos.addObjeto(50,-90,random_x,100,50000);}
+    else if(cit==8){inimigos.addObjeto(75,-90,random_x,100,50000);}
     }
     clok=0;
     }
     inimigos.colisao(explosoes);
     inimigos.colisao(inimigos);
+    inimigos.dividir();
     clok+=dt;
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }

@@ -4,7 +4,7 @@
 class explosao
 {
     public:
-        explosao(float x, float y, float initx, float inity,int vel=400);
+        explosao(float x, float y, float initx, float inity,int vel=1000);
         void desenhar();
         float tempo = 0,dt;
         float raio,linex,liney,x,y;

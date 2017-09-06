@@ -1,5 +1,7 @@
 #include "filaAnima.h"
 #include <math.h>
+#include <random>
+#include <time.h>
 
 filaAnima::filaAnima(int temp){
     this->tempo = temp;
@@ -50,4 +52,32 @@ void filaAnima::colisao(filaAnima ex){
         }
         }
     }
+}
+void filaAnima::dividir(){
+    int x,y;
+     for(int i =0;i<tam;i++){
+      if(explo[i].liney<51&&explo[i].liney>50){
+        std::mt19937 rng(rand());
+        std::uniform_int_distribution<int> uni(0, 1000);
+        auto percent = uni(rng);
+        if(percent>999){
+        for(int j=0;j<3;j++){
+        std::uniform_int_distribution<int> duni(0, 8);
+        auto cit = duni(rng);
+        if(cit==1){x=0;y=-80;}
+        else if(cit==0){x=-90;y=-80;}
+        else if(cit==2){x=90;y=-80;}
+        else if(cit==3){x=-75;y=-90;}
+        else if(cit==4){x=-50;y=-90;}
+        else if(cit==5){x=-25;y=-90;}
+        else if(cit==6){x=25;y=-90;}
+        else if(cit==7){x=50;y=-90;}
+        else if(cit==8){x=75;y=-90;}
+        explo.push_back(explosao(x,y,explo[i].linex,explo[i].liney,explo[i].vel));
+        tam++;
+        }
+        }
+        }
+     }
+
 }
