@@ -62,7 +62,7 @@ void startWindow(int argc, char **argv)
     glutInitWindowPosition(50, 50);
     glutCreateWindow("Trabalho 1");
     glutMouseFunc(mouse);
-    glutReshapeFunc(reshape);
+    // glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
     glutKeyboardFunc(keyboardPress);
     init();
@@ -101,22 +101,22 @@ void display()
     /******   CANHOES  *******/
     glColor3f(0, 0, 1);
     glBegin(GL_QUADS);
-    glVertex2f(5, -90);
-    glVertex2f(-5, -90);
-    glVertex2f(-5, -80);
-    glVertex2f(5, -80);
+    glVertex2f(110, -88.75);
+    glVertex2f(90, -88.75);
+    glVertex2f(90, -77.5);
+    glVertex2f(110, -77.5);
     glEnd();
     glBegin(GL_QUADS);
-    glVertex2f(-85, -90);
-    glVertex2f(-95, -90);
-    glVertex2f(-95, -80);
-    glVertex2f(-85, -80);
+    glVertex2f(-70, -88.75);
+    glVertex2f(-90, -88.75);
+    glVertex2f(-90, -77.5);
+    glVertex2f(-70, -77.5);
     glEnd();
     glBegin(GL_QUADS);
-    glVertex2f(95, -90);
-    glVertex2f(85, -90);
-    glVertex2f(85, -80);
-    glVertex2f(95, -80);
+    glVertex2f(290, -88.75);
+    glVertex2f(270, -88.75);
+    glVertex2f(270, -77.5);
+    glVertex2f(290, -77.5);
     glEnd();
     /***** FIM CANHOES *****/
     /*****   CIDADES   *****/
@@ -204,8 +204,8 @@ void mouse(int button, int state, int x, int y)
         if (state == GLUT_DOWN)
         {
             mouseDown = true;
-            float xreal = (float)(x * 0.3125 - 100);
-            float yreal = (float)(-1 * y * 0.3125 + 100);
+            float xreal = (float)(mousex / 2 - 100);
+            float yreal = (float)(-1 * mousey / 2 + 125);
             if (xreal < -40 && explosoes.bala[0] > 0)
             {
                 explosoes.addObjeto(xreal, yreal, -90, -85);
@@ -256,8 +256,8 @@ void reshape(int w, int h)
 void idle()
 {
     glutPostRedisplay();
-    jogadorx = (float)(mousex * 0.3125 - 100);
-    jogadory = (float)(-1 * mousey * 0.3125 + 100);
+    jogadorx = (float)(mousex / 2 - 100);
+    jogadory = (float)(-1 * mousey / 2 + 125);
     float t, dt;
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
@@ -269,24 +269,53 @@ void idle()
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
     /***** MISSEIS *****/
-    if(clok>10){
-    for(int i = 0; i<4;i++){
-    std::mt19937 rng(rand());
-    std::uniform_int_distribution<int> uni(-100, 100);
-    auto random_x = uni(rng);
-    std::uniform_int_distribution<int> duni(0, 8);
-    auto cit = duni(rng);
-    if(cit==1){inimigos.addObjeto(0,-80,random_x,300,50000);}
-    else if(cit==0){inimigos.addObjeto(-90,-80,random_x,300,50000);}
-    else if(cit==2){inimigos.addObjeto(90,-80,random_x,300,50000);}
-    else if(cit==3){inimigos.addObjeto(-75,-90,random_x,300,50000);}
-    else if(cit==4){inimigos.addObjeto(-50,-90,random_x,300,50000);}
-    else if(cit==5){inimigos.addObjeto(-25,-90,random_x,300,50000);}
-    else if(cit==6){inimigos.addObjeto(25,-90,random_x,300,50000);}
-    else if(cit==7){inimigos.addObjeto(50,-90,random_x,300,50000);}
-    else if(cit==8){inimigos.addObjeto(75,-90,random_x,300,50000);}
-    }
-    clok=0;
+    if (clok > 10)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            std::mt19937 rng(rand());
+            std::uniform_int_distribution<int> uni(-100, 100);
+            auto random_x = uni(rng);
+            std::uniform_int_distribution<int> duni(0, 8);
+            auto cit = duni(rng);
+            if (cit == 1)
+            {
+                inimigos.addObjeto(0, -80, random_x, 300, 50000);
+            }
+            else if (cit == 0)
+            {
+                inimigos.addObjeto(-90, -80, random_x, 300, 50000);
+            }
+            else if (cit == 2)
+            {
+                inimigos.addObjeto(90, -80, random_x, 300, 50000);
+            }
+            else if (cit == 3)
+            {
+                inimigos.addObjeto(-75, -90, random_x, 300, 50000);
+            }
+            else if (cit == 4)
+            {
+                inimigos.addObjeto(-50, -90, random_x, 300, 50000);
+            }
+            else if (cit == 5)
+            {
+                inimigos.addObjeto(-25, -90, random_x, 300, 50000);
+            }
+            else if (cit == 6)
+            {
+                inimigos.addObjeto(25, -90, random_x, 300, 50000);
+            }
+            else if (cit == 7)
+            {
+                inimigos.addObjeto(50, -90, random_x, 300, 50000);
+            }
+            else if (cit == 8)
+            {
+                inimigos.addObjeto(75, -90, random_x, 300, 50000);
+            }
+        }
+        clok = 0;
     }
     inimigos.colisao(explosoes);
     inimigos.colisao(inimigos);
