@@ -104,17 +104,10 @@ void display()
     /******   CANHOES  *******/
     glColor3f(0, 0, 1);
     glBegin(GL_QUADS);
-<<<<<<< HEAD
     glVertex2f(110, -88.75);
     glVertex2f(90, -88.75);
     glVertex2f(90, -77.5);
     glVertex2f(110, -77.5);
-=======
-    glVertex2f(110, -90);
-    glVertex2f(98, -90);
-    glVertex2f(98, -80);
-    glVertex2f(110, -80);
->>>>>>> 08cb147ec11545b338c82f2fd15cb2df6e35b8fd
     glEnd();
     glBegin(GL_QUADS);
     glVertex2f(-70, -88.75);
