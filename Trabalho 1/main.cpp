@@ -24,8 +24,8 @@ std::string to_string(const T &n)
 }
 }
 //Variaveis globais
-int width = 640;
-int height = 640;
+int width = 800;
+int height = 450;
 float jogadorx = 0, jogadory = 0, mousex, mousey; //posicao do jogador e do mouse
 int pontos = 0;                                   //variavel para contar os pontos
 int vidas = 10;                                   //variavel para controle de vidas
@@ -177,7 +177,7 @@ void init()
     glClearColor(0.7, 0.7, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-100.0, 100.0, -100.0, 100.0, -100.0, 100.0);
+    glOrtho(-100.0, 300, -100.0, 125, -100.0, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -220,22 +220,22 @@ void idle()
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
     /***** MISSEIS *****/
-    if(clok>20){
+    if(clok>10){
     for(int i = 0; i<4;i++){
     std::mt19937 rng(rand());
     std::uniform_int_distribution<int> uni(-100, 100);
     auto random_x = uni(rng);
     std::uniform_int_distribution<int> duni(0, 8);
     auto cit = duni(rng);
-    if(cit==1){inimigos.addObjeto(0,-80,random_x,100,50000);}
-    else if(cit==0){inimigos.addObjeto(-90,-80,random_x,100,50000);}
-    else if(cit==2){inimigos.addObjeto(90,-80,random_x,100,50000);}
-    else if(cit==3){inimigos.addObjeto(-75,-90,random_x,100,50000);}
-    else if(cit==4){inimigos.addObjeto(-50,-90,random_x,100,50000);}
-    else if(cit==5){inimigos.addObjeto(-25,-90,random_x,100,50000);}
-    else if(cit==6){inimigos.addObjeto(25,-90,random_x,100,50000);}
-    else if(cit==7){inimigos.addObjeto(50,-90,random_x,100,50000);}
-    else if(cit==8){inimigos.addObjeto(75,-90,random_x,100,50000);}
+    if(cit==1){inimigos.addObjeto(0,-80,random_x,300,50000);}
+    else if(cit==0){inimigos.addObjeto(-90,-80,random_x,300,50000);}
+    else if(cit==2){inimigos.addObjeto(90,-80,random_x,300,50000);}
+    else if(cit==3){inimigos.addObjeto(-75,-90,random_x,300,50000);}
+    else if(cit==4){inimigos.addObjeto(-50,-90,random_x,300,50000);}
+    else if(cit==5){inimigos.addObjeto(-25,-90,random_x,300,50000);}
+    else if(cit==6){inimigos.addObjeto(25,-90,random_x,300,50000);}
+    else if(cit==7){inimigos.addObjeto(50,-90,random_x,300,50000);}
+    else if(cit==8){inimigos.addObjeto(75,-90,random_x,300,50000);}
     }
     clok=0;
     }
