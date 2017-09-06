@@ -269,7 +269,6 @@ void idle()
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
     /***** MISSEIS *****/
-<<<<<<< HEAD
     if(clok>10){
     for(int i = 0; i<4;i++){
     std::mt19937 rng(rand());
@@ -288,55 +287,6 @@ void idle()
     else if(cit==8){inimigos.addObjeto(75,-90,random_x,300,50000);}
     }
     clok=0;
-=======
-    if (clok > 20)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            std::mt19937 rng(rand());
-            std::uniform_int_distribution<int> uni(-100, 100);
-            auto random_x = uni(rng);
-            std::uniform_int_distribution<int> duni(0, 8);
-            auto cit = duni(rng);
-            if (cit == 1)
-            {
-                inimigos.addObjeto(0, -80, random_x, 100, 50000);
-            }
-            else if (cit == 0)
-            {
-                inimigos.addObjeto(-90, -80, random_x, 100, 50000);
-            }
-            else if (cit == 2)
-            {
-                inimigos.addObjeto(90, -80, random_x, 100, 50000);
-            }
-            else if (cit == 3)
-            {
-                inimigos.addObjeto(-75, -90, random_x, 100, 50000);
-            }
-            else if (cit == 4)
-            {
-                inimigos.addObjeto(-50, -90, random_x, 100, 50000);
-            }
-            else if (cit == 5)
-            {
-                inimigos.addObjeto(-25, -90, random_x, 100, 50000);
-            }
-            else if (cit == 6)
-            {
-                inimigos.addObjeto(25, -90, random_x, 100, 50000);
-            }
-            else if (cit == 7)
-            {
-                inimigos.addObjeto(50, -90, random_x, 100, 50000);
-            }
-            else if (cit == 8)
-            {
-                inimigos.addObjeto(75, -90, random_x, 100, 50000);
-            }
-        }
-        clok = 0;
->>>>>>> 92a8700c74a1cf48f760c37fccce91c70038465e
     }
     inimigos.colisao(explosoes);
     inimigos.colisao(inimigos);
