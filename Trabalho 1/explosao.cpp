@@ -21,10 +21,10 @@ void explosao::desenhar()
 {
         glPushMatrix();
         if(cont<vel){
-        if(linex<x)linex+=dx*dt*1000;
-        if(linex>x)linex-=dx*dt*1000;
-        if(liney<y)liney+=dy*dt*1000;
-        if(liney>y)liney-=dy*dt*1000;
+        if(linex<x)linex+=dx;//*dt*1000;
+        if(linex>x)linex-=dx;//*dt*1000;
+        if(liney<y)liney+=dy;//*dt*1000;
+        if(liney>y)liney-=dy;//*dt*1000;
         glColor3f(0.0, 0.0,1.0);
         glBegin(GL_LINES);
             glVertex2f(linex, liney);

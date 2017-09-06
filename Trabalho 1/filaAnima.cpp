@@ -61,7 +61,7 @@ void filaAnima::dividir(){
         std::uniform_int_distribution<int> uni(0, 1000);
         auto percent = uni(rng);
         if(percent>999){
-        for(int j=0;j<3;j++){
+        for(int j=0;j<2;j++){
         std::uniform_int_distribution<int> duni(0, 8);
         auto cit = duni(rng);
         if(cit==1){x=0;y=-80;}
@@ -73,7 +73,7 @@ void filaAnima::dividir(){
         else if(cit==6){x=25;y=-90;}
         else if(cit==7){x=50;y=-90;}
         else if(cit==8){x=75;y=-90;}
-        explo.push_back(explosao(x,y,explo[i].linex,explo[i].liney,explo[i].vel));
+        explo.push_back(explosao(x,y,explo[i].linex,explo[i].liney,3*explo[i].vel/4));
         tam++;
         }
         }

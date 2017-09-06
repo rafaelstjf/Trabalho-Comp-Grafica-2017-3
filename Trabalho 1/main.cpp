@@ -94,7 +94,6 @@ void display()
     glutSetCursor(GLUT_CURSOR_NONE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    drawAim();
     explosoes.desenhos();
     inimigos.desenhos();
     //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
@@ -157,6 +156,7 @@ void display()
     glVertex2f(82+2*bl, -93);
     glEnd();
     }
+    drawAim();
     glutSwapBuffers();
 }
 void keyboardPress(unsigned char key, int x, int y)
