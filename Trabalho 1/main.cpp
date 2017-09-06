@@ -62,7 +62,6 @@ void startWindow(int argc, char **argv)
     glutInitWindowPosition(50, 50);
     glutCreateWindow("Trabalho 1");
     glutMouseFunc(mouse);
-    glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
     glutKeyboardFunc(keyboardPress);
     init();
@@ -101,10 +100,10 @@ void display()
     /******   CANHOES  *******/
     glColor3f(0, 0, 1);
     glBegin(GL_QUADS);
-    glVertex2f(5, -90);
-    glVertex2f(-5, -90);
-    glVertex2f(-5, -80);
-    glVertex2f(5, -80);
+    glVertex2f(110, -90);
+    glVertex2f(98, -90);
+    glVertex2f(98, -80);
+    glVertex2f(110, -80);
     glEnd();
     glBegin(GL_QUADS);
     glVertex2f(-85, -90);
@@ -243,15 +242,6 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 {
     mousex = x;
     mousey = y;
-}
-void reshape(int w, int h)
-{
-    width = w;
-    height = h;
-    if (!fullscreen)
-    {
-        glutReshapeWindow(800, 450);
-    }
 }
 void idle()
 {
