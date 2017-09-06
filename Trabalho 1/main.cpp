@@ -47,7 +47,7 @@ filaAnima inimigos = filaAnima(10);
 
 int main(int argc, char **argv)
 {
-
+    srand(time(NULL));
     startWindow(argc, argv);
     return 0;
 }
@@ -76,22 +76,21 @@ void drawAim(){
     glVertex2f(jogadorx+3, jogadory + 3);
     glVertex2f(jogadorx-3, jogadory + 3);
     glEnd();
-    /* Crosshair
+    //Crosshair
     glBegin(GL_LINES);
     glVertex2f(jogadorx - 3, jogadory);
     glVertex2f(jogadorx + 3, jogadory);
     glVertex2f(jogadorx, jogadory - 3);
     glVertex2f(jogadorx, jogadory + 3);
     glEnd();
-    */
 }
 void reshape(){
 
 }
 void display()
 {
-    // glutFullScreen();
-    glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
+    //glutFullScreen();
+    glutSetCursor(GLUT_CURSOR_NONE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     drawAim();
@@ -181,7 +180,6 @@ void mouse(int button, int state, int x, int y)
             else if(xreal<0&&explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85);explosoes.bala[0]--;}
             else if(explosoes.bala[1]>0){explosoes.addObjeto(xreal,yreal,90,-85);explosoes.bala[1]--;}
             else if(explosoes.bala[0]>0){explosoes.addObjeto(xreal,yreal,-90,-85);explosoes.bala[0]--;}
-
         }
     }
 
@@ -209,9 +207,20 @@ void idle()
     //funcoes do professor para variacao de tempo a cima
     /***** MISSEIS *****/
     if(clok>20){
-    inimigos.addObjeto(0,-80,0,100,50000);
+    for(int i = 0; i<4;i++){
+    std::mt19937 rng(rand());
+    std::uniform_int_distribution<int> uni(-100, 100);
+    auto random_x = uni(rng);
+    std::uniform_int_distribution<int> duni(0, 2);
+    auto cit = duni(rng);
+    if(cit==1){inimigos.addObjeto(0,-80,random_x,100,50000);}
+    else if(cit==0){inimigos.addObjeto(-90,-80,random_x,100,50000);}
+    else{inimigos.addObjeto(90,-80,random_x,100,50000);}
+    }
     clok=0;
     }
+    inimigos.colisao(explosoes);
+    inimigos.colisao(inimigos);
     clok+=dt;
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }

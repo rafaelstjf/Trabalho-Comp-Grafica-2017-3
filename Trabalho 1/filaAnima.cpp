@@ -1,5 +1,5 @@
 #include "filaAnima.h"
-#include <iostream>
+#include <math.h>
 
 filaAnima::filaAnima(int temp){
     this->tempo = temp;
@@ -13,8 +13,11 @@ void filaAnima::atualizaTempo(float dt)
 {
         for(int i =0;i<tam;i++)
     {
-        explo[i].tempo+=dt;
         explo[i].dt=dt;
+        explo[i].tempo+=dt;
+        if(explo[i].tempo>(tempo/2)+1){
+        explo[i].dt=-dt;
+        }
     }
 }
 
@@ -22,9 +25,9 @@ void filaAnima::desenhos()
 {
     for(int i =0;i<tam;i++)
     {
-            if(explo[0].tempo>tempo)
+            if(explo[i].tempo>tempo)
         {
-            explo.erase(explo.begin());
+            explo.erase(explo.begin()+i);
             tam--;
         }
         explo[i].desenhar();
@@ -33,6 +36,18 @@ void filaAnima::desenhos()
 void filaAnima::colisao(filaAnima ex){
     for(int i =0;i<tam;i++)
     {
-        //explo[i].
+        float x =explo[i].linex;
+        float y =explo[i].liney;
+        for(int j =0;j<ex.tam;j++){
+        if(ex.explo[j].colide){
+            float x2 =ex.explo[j].linex;
+            float y2 =ex.explo[j].liney;
+            if(sqrt(pow(x-x2,2)+pow(y-y2,2))<ex.explo[j].raio+1){
+                explo[i].x=x;
+                explo[i].y=y;
+                explo[i].cont+=explo[i].vel;
+            }
+        }
+        }
     }
 }

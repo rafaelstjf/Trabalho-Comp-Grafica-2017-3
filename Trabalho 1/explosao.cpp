@@ -33,10 +33,12 @@ void explosao::desenhar()
         cont++;
         tempo=0;
         }else{
+        colide=1;
         glColor3f(cor, 0,0);
         glTranslatef(this->x, this->y, 0.0);
         glutSolidSphere(raio, 20, 2);
-        raio+=1.5*dt;
+        raio+=2.5*dt;
+
         cor*=0.9999;
         }
         glPopMatrix();
