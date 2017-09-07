@@ -18,3 +18,13 @@ conversor
 .Trashes
 ehthumbs.db
 Thumbs.db
+# specific to CodeBlocks IDE #
+##############################
+*.cbp
+*.layout
+*.depend
+
+# generated directories #
+#########################
+bin/
+obj/
