@@ -62,7 +62,7 @@ void startWindow(int argc, char **argv)
     glutInitWindowPosition(50, 50);
     glutCreateWindow("Trabalho 1");
     glutMouseFunc(mouse);
-    // glutReshapeFunc(reshape);
+    //glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
     glutKeyboardFunc(keyboardPress);
     init();
@@ -76,23 +76,23 @@ void drawAim()
     glColor3f(0.0, 0.0, 1.0);
     //quadrado
     glBegin(GL_LINE_LOOP);
-    glVertex2f(jogadorx - 6, jogadory - 6);
-    glVertex2f(jogadorx + 6, jogadory - 6);
-    glVertex2f(jogadorx + 6, jogadory + 6);
-    glVertex2f(jogadorx - 6, jogadory + 6);
+    glVertex2f(jogadorx - 4, jogadory - 2.25);
+    glVertex2f(jogadorx + 4, jogadory - 2.25);
+    glVertex2f(jogadorx + 4, jogadory + 2.25);
+    glVertex2f(jogadorx - 4, jogadory + 2.25);
     glEnd();
     //Crosshair
     glBegin(GL_LINES);
-    glVertex2f(jogadorx - 6, jogadory);
-    glVertex2f(jogadorx + 6, jogadory);
-    glVertex2f(jogadorx, jogadory - 6);
-    glVertex2f(jogadorx, jogadory + 6);
+    glVertex2f(jogadorx - 4, jogadory);
+    glVertex2f(jogadorx + 4, jogadory);
+    glVertex2f(jogadorx, jogadory - 2.25);
+    glVertex2f(jogadorx, jogadory + 2.25);
     glEnd();
 }
 
 void display()
 {
-    //glutSetCursor(GLUT_CURSOR_NONE);
+    glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     explosoes.desenhos();
@@ -166,6 +166,7 @@ void display()
     drawAim();
     glutSwapBuffers();
 }
+
 void keyboardPress(unsigned char key, int x, int y)
 {
     switch (key)
@@ -176,11 +177,13 @@ void keyboardPress(unsigned char key, int x, int y)
     case 'f':
         if (fullscreen)
         {
+            glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
             glutReshapeWindow(800, 450);
             glutPositionWindow(50, 50);
         }
         else
         {
+            glutSetCursor(GLUT_CURSOR_NONE);
             glutFullScreen();
         }
         fullscreen = !fullscreen;
