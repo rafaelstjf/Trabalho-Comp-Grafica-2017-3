@@ -44,7 +44,7 @@ void filaAnima::colisao(filaAnima ex){
         if(ex.explo[j].colide){
             float x2 =ex.explo[j].linex;
             float y2 =ex.explo[j].liney;
-            if(sqrt(pow(x-x2,2)+pow(y-y2,2))<ex.explo[j].raio+1){
+            if(sqrt(pow(x-x2,2)+pow(y-y2,2))<ex.explo[j].raio+2){
                 explo[i].x=x;
                 explo[i].y=y;
                 explo[i].cont+=explo[i].vel;
@@ -56,7 +56,7 @@ void filaAnima::colisao(filaAnima ex){
 void filaAnima::dividir(){
     int x,y;
      for(int i =0;i<tam;i++){
-      if(explo[i].liney<101&&explo[i].liney>100){
+      if(explo[i].liney<126.125&&explo[i].liney>125){
         std::mt19937 rng(rand());
         std::uniform_int_distribution<int> uni(0, 1000);
         auto percent = uni(rng);
@@ -64,15 +64,15 @@ void filaAnima::dividir(){
         for(int j=0;j<2;j++){
         std::uniform_int_distribution<int> duni(0, 8);
         auto cit = duni(rng);
-        if(cit==1){x=0;y=-80;}
-        else if(cit==0){x=-90;y=-80;}
-        else if(cit==2){x=90;y=-80;}
-        else if(cit==3){x=-75;y=-90;}
-        else if(cit==4){x=-50;y=-90;}
-        else if(cit==5){x=-25;y=-90;}
-        else if(cit==6){x=25;y=-90;}
-        else if(cit==7){x=50;y=-90;}
-        else if(cit==8){x=75;y=-90;}
+        if(cit==1){x=100;y=-77.5;}
+        else if(cit==0){x=-80;y=-77.5;}
+        else if(cit==2){x=280;y=-77.5;}
+        else if(cit==3){x=-50;y=-88.75;}
+        else if(cit==4){x=-0;y=-88.75;}
+        else if(cit==5){x=50;y=-88.75;}
+        else if(cit==6){x=150;y=-88.75;}
+        else if(cit==7){x=200;y=-88.75;}
+        else if(cit==8){x=270;y=-88.75;}
         explo.push_back(explosao(x,y,explo[i].linex,explo[i].liney,3*explo[i].vel/4));
         tam++;
         }

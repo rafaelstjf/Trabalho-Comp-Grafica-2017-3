@@ -62,10 +62,7 @@ void startWindow(int argc, char **argv)
     glutInitWindowPosition(50, 50);
     glutCreateWindow("Trabalho 1");
     glutMouseFunc(mouse);
-<<<<<<< HEAD
     // glutReshapeFunc(reshape);
-=======
->>>>>>> 08cb147ec11545b338c82f2fd15cb2df6e35b8fd
     glutPassiveMotionFunc(motion);
     glutKeyboardFunc(keyboardPress);
     init();
@@ -79,23 +76,23 @@ void drawAim()
     glColor3f(0.0, 0.0, 1.0);
     //quadrado
     glBegin(GL_LINE_LOOP);
-    glVertex2f(jogadorx - 3, jogadory - 3);
-    glVertex2f(jogadorx + 3, jogadory - 3);
-    glVertex2f(jogadorx + 3, jogadory + 3);
-    glVertex2f(jogadorx - 3, jogadory + 3);
+    glVertex2f(jogadorx - 6, jogadory - 6);
+    glVertex2f(jogadorx + 6, jogadory - 6);
+    glVertex2f(jogadorx + 6, jogadory + 6);
+    glVertex2f(jogadorx - 6, jogadory + 6);
     glEnd();
     //Crosshair
     glBegin(GL_LINES);
-    glVertex2f(jogadorx - 3, jogadory);
-    glVertex2f(jogadorx + 3, jogadory);
-    glVertex2f(jogadorx, jogadory - 3);
-    glVertex2f(jogadorx, jogadory + 3);
+    glVertex2f(jogadorx - 6, jogadory);
+    glVertex2f(jogadorx + 6, jogadory);
+    glVertex2f(jogadorx, jogadory - 6);
+    glVertex2f(jogadorx, jogadory + 6);
     glEnd();
 }
 
 void display()
 {
-    glutSetCursor(GLUT_CURSOR_NONE);
+    //glutSetCursor(GLUT_CURSOR_NONE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     explosoes.desenhos();
@@ -124,15 +121,15 @@ void display()
     /***** FIM CANHOES *****/
     /*****   CIDADES   *****/
     glColor3f(0, 1, 0);
-    for (int cd = -80; cd <= 70; cd += 25)
+    for (int cd = -60; cd <= 240; cd += 50)
     {
-        if (cd != -5)
+        if (cd != 90)
         {
             glBegin(GL_QUADS);
-            glVertex2f(cd + 10, -95); //(-75,-90),(-50,-90),(-25,-90)
-            glVertex2f(cd, -95);
-            glVertex2f(cd, -90);
-            glVertex2f(cd + 10, -90);
+            glVertex2f(cd + 20, -94.375); //(-75,-90),(-50,-90),(-25,-90)
+            glVertex2f(cd, -94.375);
+            glVertex2f(cd, -88.75);
+            glVertex2f(cd + 20, -88.75);
             glEnd();
         }
     }
@@ -142,28 +139,28 @@ void display()
     for (int bl = 0; bl < explosoes.bala[2]; bl++)
     {
         glBegin(GL_QUADS);
-        glVertex2f(-7 + 2 * bl, -97);
-        glVertex2f(-8 + 2 * bl, -97);
-        glVertex2f(-8 + 2 * bl, -93);
-        glVertex2f(-7 + 2 * bl, -93);
+        glVertex2f(86 + 3 * bl, -96.625);
+        glVertex2f(84 + 3 * bl, -96.625);
+        glVertex2f(84 + 3 * bl, -92.125);
+        glVertex2f(86 + 3 * bl, -92.125);
         glEnd();
     }
     for (int bl = 0; bl < explosoes.bala[0]; bl++)
     {
         glBegin(GL_QUADS);
-        glVertex2f(-97 + 2 * bl, -97);
-        glVertex2f(-98 + 2 * bl, -97);
-        glVertex2f(-98 + 2 * bl, -93);
-        glVertex2f(-97 + 2 * bl, -93);
+        glVertex2f(-94 + 3 * bl, -96.625);
+        glVertex2f(-96 + 3 * bl, -96.625);
+        glVertex2f(-96 + 3 * bl, -92.125);
+        glVertex2f(-94 + 3 * bl, -92.125);
         glEnd();
     }
     for (int bl = 0; bl < explosoes.bala[1]; bl++)
     {
         glBegin(GL_QUADS);
-        glVertex2f(82 + 2 * bl, -97);
-        glVertex2f(81 + 2 * bl, -97);
-        glVertex2f(81 + 2 * bl, -93);
-        glVertex2f(82 + 2 * bl, -93);
+        glVertex2f(264 + 3 * bl, -96.625);
+        glVertex2f(262 + 3 * bl, -96.625);
+        glVertex2f(262 + 3 * bl, -92.125);
+        glVertex2f(264 + 3 * bl, -92.125);
         glEnd();
     }
     drawAim();
@@ -209,34 +206,34 @@ void mouse(int button, int state, int x, int y)
             mouseDown = true;
             float xreal = (float)(mousex / 2 - 100);
             float yreal = (float)(-1 * mousey / 2 + 125);
-            if (xreal < -40 && explosoes.bala[0] > 0)
+            if (xreal < 20 && explosoes.bala[0] > 0)
             {
-                explosoes.addObjeto(xreal, yreal, -90, -85);
+                explosoes.addObjeto(xreal, yreal, -80, -83.125);
                 explosoes.bala[0]--;
             }
-            else if (xreal > 40 && explosoes.bala[1] > 0)
+            else if (xreal > 180 && explosoes.bala[1] > 0)
             {
-                explosoes.addObjeto(xreal, yreal, 90, -85);
+                explosoes.addObjeto(xreal, yreal, 280, -83.125);
                 explosoes.bala[1]--;
             }
             else if (explosoes.bala[2] > 0)
             {
-                explosoes.addObjeto(xreal, yreal, 0, -85);
+                explosoes.addObjeto(xreal, yreal, 100, -83.125);
                 explosoes.bala[2]--;
             }
-            else if (xreal < 0 && explosoes.bala[0] > 0)
+            else if (xreal < 100 && explosoes.bala[0] > 0)
             {
-                explosoes.addObjeto(xreal, yreal, -90, -85);
+                explosoes.addObjeto(xreal, yreal, -80, -83.125);
                 explosoes.bala[0]--;
             }
             else if (explosoes.bala[1] > 0)
             {
-                explosoes.addObjeto(xreal, yreal, 90, -85);
+                explosoes.addObjeto(xreal, yreal, 280, -83.125);
                 explosoes.bala[1]--;
             }
             else if (explosoes.bala[0] > 0)
             {
-                explosoes.addObjeto(xreal, yreal, -90, -85);
+                explosoes.addObjeto(xreal, yreal, -80, -83.125);
                 explosoes.bala[0]--;
             }
         }
@@ -268,45 +265,45 @@ void idle()
         for (int i = 0; i < 4; i++)
         {
             std::mt19937 rng(rand());
-            std::uniform_int_distribution<int> uni(-100, 100);
+            std::uniform_int_distribution<int> uni(-100, 300);
             auto random_x = uni(rng);
             std::uniform_int_distribution<int> duni(0, 8);
             auto cit = duni(rng);
             if (cit == 1)
             {
-                inimigos.addObjeto(0, -80, random_x, 300, 50000);
+                inimigos.addObjeto(100, -77.5, random_x, 300, 50000);
             }
             else if (cit == 0)
             {
-                inimigos.addObjeto(-90, -80, random_x, 300, 50000);
+                inimigos.addObjeto(-80, -77.5, random_x, 300, 50000);
             }
             else if (cit == 2)
             {
-                inimigos.addObjeto(90, -80, random_x, 300, 50000);
+                inimigos.addObjeto(280, -77.5, random_x, 300, 50000);
             }
             else if (cit == 3)
             {
-                inimigos.addObjeto(-75, -90, random_x, 300, 50000);
+                inimigos.addObjeto(-50, -88.75, random_x, 300, 50000);
             }
             else if (cit == 4)
             {
-                inimigos.addObjeto(-50, -90, random_x, 300, 50000);
+                inimigos.addObjeto(0, -88.75, random_x, 300, 50000);
             }
             else if (cit == 5)
             {
-                inimigos.addObjeto(-25, -90, random_x, 300, 50000);
+                inimigos.addObjeto(50, -88.75, random_x, 300, 50000);
             }
             else if (cit == 6)
             {
-                inimigos.addObjeto(25, -90, random_x, 300, 50000);
+                inimigos.addObjeto(150, -88.75, random_x, 300, 50000);
             }
             else if (cit == 7)
             {
-                inimigos.addObjeto(50, -90, random_x, 300, 50000);
+                inimigos.addObjeto(200, -88.75, random_x, 300, 50000);
             }
             else if (cit == 8)
             {
-                inimigos.addObjeto(75, -90, random_x, 300, 50000);
+                inimigos.addObjeto(250, -88.75, random_x, 300, 50000);
             }
         }
         clok = 0;
