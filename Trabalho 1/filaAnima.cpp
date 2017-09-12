@@ -56,11 +56,11 @@ void filaAnima::colisao(filaAnima ex){
 void filaAnima::dividir(){
     int x,y;
      for(int i =0;i<tam;i++){
-      if(explo[i].liney<126.125&&explo[i].liney>125){
+      if(explo[i].liney<100.1&&explo[i].liney>100){
         std::mt19937 rng(rand());
-        std::uniform_int_distribution<int> uni(0, 1000);
+        std::uniform_int_distribution<int> uni(0, 100);
         auto percent = uni(rng);
-        if(percent>999){
+        if(percent>99){
         for(int j=0;j<2;j++){
         std::uniform_int_distribution<int> duni(0, 8);
         auto cit = duni(rng);

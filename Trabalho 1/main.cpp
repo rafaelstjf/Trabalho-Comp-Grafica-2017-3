@@ -9,6 +9,7 @@
 #include "missile.h"
 #include "filaAnima.h"
 #include "explosao.h"
+#include "menu.h"
 #ifdef __linux__
 #include <cstring>
 #endif
@@ -42,8 +43,11 @@ void drawAim();
 void motion(int x, int y);
 void reshape(int w, int h);
 void keyboardPress(unsigned char key, int x, int y);
+void specialKeysPress(int key, int x, int y);
 void startWindow(int argc, char **argv);
-missile *teste = new missile();
+menu inicio;
+bool comecou = false;
+bool opcao = 0;
 filaAnima explosoes = filaAnima(10);
 filaAnima inimigos = filaAnima(10);
 
@@ -51,6 +55,7 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
     startWindow(argc, argv);
+    glutMainLoop();
     return 0;
 }
 
@@ -65,10 +70,10 @@ void startWindow(int argc, char **argv)
     //glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
     glutKeyboardFunc(keyboardPress);
+    glutSpecialFunc( specialKeysPress );
     init();
     glutDisplayFunc(display);
     glutIdleFunc(idle);
-    glutMainLoop();
 }
 
 void drawAim()
@@ -92,9 +97,11 @@ void drawAim()
 
 void display()
 {
-    glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    if(!comecou){
+    inicio.draw((int)opcao);
+    }else{
     explosoes.desenhos();
     inimigos.desenhos();
     //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
@@ -164,6 +171,7 @@ void display()
         glEnd();
     }
     drawAim();
+    }
     glutSwapBuffers();
 }
 
@@ -173,6 +181,10 @@ void keyboardPress(unsigned char key, int x, int y)
     {
     case 27:
         exit(0);
+        break;
+    case 13:
+        if(!comecou&&!opcao)
+            comecou=true;
         break;
     case 'f':
         if (fullscreen)
@@ -193,6 +205,7 @@ void keyboardPress(unsigned char key, int x, int y)
 
 void init()
 {
+    glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
     glClearColor(0.7, 0.7, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -202,6 +215,7 @@ void init()
 }
 void mouse(int button, int state, int x, int y)
 {
+    if(comecou){
     if (button == GLUT_LEFT_BUTTON)
     {
         if (state == GLUT_DOWN)
@@ -241,17 +255,34 @@ void mouse(int button, int state, int x, int y)
             }
         }
     }
+    }
 }
 void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 {
     mousex = x;
     mousey = y;
 }
+
+void specialKeysPress(int key, int x, int y)
+{
+	switch(key)
+	{
+		case GLUT_KEY_UP:
+		    opcao=0;
+            break;
+		case GLUT_KEY_DOWN:
+		    opcao=1;
+            break;
+		case GLUT_KEY_RIGHT:
+            break;
+        case GLUT_KEY_LEFT:
+            break;
+	}
+	glutPostRedisplay();
+}
 void idle()
 {
     glutPostRedisplay();
-    jogadorx = (float)(mousex / 2 - 100);
-    jogadory = (float)(-1 * mousey / 2 + 125);
     float t, dt;
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
@@ -262,10 +293,15 @@ void idle()
     explosoes.atualizaTempo(dt);
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
+    if(!comecou){
+
+    }else{
+    jogadorx = (float)(mousex / 2 - 100);
+    jogadory = (float)(-1 * mousey / 2 + 125);
     /***** MISSEIS *****/
     if (clok > 10)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 2; i++)
         {
             std::mt19937 rng(rand());
             std::uniform_int_distribution<int> uni(-100, 300);
@@ -315,5 +351,6 @@ void idle()
     inimigos.colisao(inimigos);
     inimigos.dividir();
     clok += dt;
+    }
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }
