@@ -39,6 +39,7 @@ y[1]=50;
 
 void menu::draw(int i)
 {
+    glutSetCursor(GLUT_CURSOR_NONE);
     glColor3f(0.0, 0.0, 1.0);
     //quadrado
     glBegin(GL_LINE_LOOP);

@@ -6,9 +6,9 @@
 filaAnima::filaAnima(int temp){
     this->tempo = temp;
 }
-void filaAnima::addObjeto(float x, float y, float initx, float inity, float vel)
+void filaAnima::addObjeto(float x, float y, float initx, float inity, float vel,int alvo)
 {
-    explo.push_back(explosao(x,y,initx,inity,vel));
+    explo.push_back(explosao(x,y,initx,inity,vel,alvo));
     tam++;
 }
 void filaAnima::atualizaTempo(float dt)
@@ -48,12 +48,13 @@ void filaAnima::colisao(filaAnima ex){
                 explo[i].x=x;
                 explo[i].y=y;
                 explo[i].cont+=explo[i].vel;
+                explo[i].falha=1;
             }
         }
         }
     }
 }
-void filaAnima::dividir(){
+void filaAnima::dividir(bool inteira[]){
     int x,y;
      for(int i =0;i<tam;i++){
       if(explo[i].liney<100.1&&explo[i].liney>100){
@@ -64,17 +65,19 @@ void filaAnima::dividir(){
         for(int j=0;j<2;j++){
         std::uniform_int_distribution<int> duni(0, 8);
         auto cit = duni(rng);
-        if(cit==1){x=100;y=-77.5;}
+        if(inteira[cit]){
+        if(cit==2){x=100;y=-77.5;}
         else if(cit==0){x=-80;y=-77.5;}
-        else if(cit==2){x=280;y=-77.5;}
+        else if(cit==1){x=280;y=-77.5;}
         else if(cit==3){x=-50;y=-88.75;}
-        else if(cit==4){x=-0;y=-88.75;}
+        else if(cit==4){x=0;y=-88.75;}
         else if(cit==5){x=50;y=-88.75;}
         else if(cit==6){x=150;y=-88.75;}
         else if(cit==7){x=200;y=-88.75;}
-        else if(cit==8){x=270;y=-88.75;}
-        explo.push_back(explosao(x,y,explo[i].linex,explo[i].liney,3*explo[i].vel/4));
+        else if(cit==8){x=250;y=-88.75;}
+        explo.push_back(explosao(x,y,explo[i].linex,explo[i].liney,3*explo[i].vel/4,cit));
         tam++;
+        }else j--;
         }
         }
         }

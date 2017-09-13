@@ -6,14 +6,14 @@ class filaAnima
 {
 public:
     filaAnima(int temp);
-    void addObjeto(float x, float y, float initx, float inity,float vel = 1000);
+    void addObjeto(float x, float y, float initx, float inity,float vel = 1000,int alvo = 10);
     void atualizaTempo(float dt);
     void desenhos();
     int bala[3]={10,10,10};
     void colisao(filaAnima ex);
     std::vector<explosao> explo;
     int tam = 0;
-    void dividir();
+    void dividir(bool inteira[]);
 private:
 
     int tempo;

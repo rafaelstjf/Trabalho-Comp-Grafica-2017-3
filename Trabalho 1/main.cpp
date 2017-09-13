@@ -33,6 +33,7 @@ int vidas = 10;                                   //variavel para controle de vi
 int dificuldade = 1;                              //variavel para controle de dificuldade
 bool mouseDown = false;
 bool fullscreen = false;
+bool inteira[10];
 float clok = 0;
 //funcoes
 void idle();
@@ -53,6 +54,8 @@ filaAnima inimigos = filaAnima(10);
 
 int main(int argc, char **argv)
 {
+    for(int i = 0; i<10 ; i++)
+        inteira[i]=true;
     srand(time(NULL));
     startWindow(argc, argv);
     glutMainLoop();
@@ -128,21 +131,26 @@ void display()
     /***** FIM CANHOES *****/
     /*****   CIDADES   *****/
     glColor3f(0, 1, 0);
+    int i=3;
     for (int cd = -60; cd <= 240; cd += 50)
     {
         if (cd != 90)
         {
-            glBegin(GL_QUADS);
-            glVertex2f(cd + 20, -94.375); //(-75,-90),(-50,-90),(-25,-90)
-            glVertex2f(cd, -94.375);
-            glVertex2f(cd, -88.75);
-            glVertex2f(cd + 20, -88.75);
-            glEnd();
+            if(inteira[i]){
+                glBegin(GL_QUADS);
+                glVertex2f(cd + 20, -94.375);
+                glVertex2f(cd, -94.375);
+                glVertex2f(cd, -88.75);
+                glVertex2f(cd + 20, -88.75);
+                glEnd();
+            }
+            i++;
         }
     }
     /***** FIM CIDADES *****/
     /*****    BALAS    *****/
     glColor3f(0, 0, 1);
+    if(!inteira[2])explosoes.bala[2]=0;
     for (int bl = 0; bl < explosoes.bala[2]; bl++)
     {
         glBegin(GL_QUADS);
@@ -152,6 +160,7 @@ void display()
         glVertex2f(86 + 3 * bl, -92.125);
         glEnd();
     }
+    if(!inteira[0])explosoes.bala[0]=0;
     for (int bl = 0; bl < explosoes.bala[0]; bl++)
     {
         glBegin(GL_QUADS);
@@ -161,6 +170,7 @@ void display()
         glVertex2f(-94 + 3 * bl, -92.125);
         glEnd();
     }
+    if(!inteira[1])explosoes.bala[1]=0;
     for (int bl = 0; bl < explosoes.bala[1]; bl++)
     {
         glBegin(GL_QUADS);
@@ -268,10 +278,10 @@ void specialKeysPress(int key, int x, int y)
 	switch(key)
 	{
 		case GLUT_KEY_UP:
-		    opcao=0;
+		    opcao=!opcao;
             break;
 		case GLUT_KEY_DOWN:
-		    opcao=1;
+		    opcao=!opcao;
             break;
 		case GLUT_KEY_RIGHT:
             break;
@@ -282,6 +292,11 @@ void specialKeysPress(int key, int x, int y)
 }
 void idle()
 {
+    for(int i = 0; i<9 ; i++){
+        inteira[10]=false;
+        if(inteira[i])
+            inteira[10]=true;
+    }
     glutPostRedisplay();
     float t, dt;
     static float tLast = 0.0;
@@ -299,6 +314,7 @@ void idle()
     jogadorx = (float)(mousex / 2 - 100);
     jogadory = (float)(-1 * mousey / 2 + 125);
     /***** MISSEIS *****/
+    if(inteira[10])
     if (clok > 10)
     {
         for (int i = 0; i < 2; i++)
@@ -308,49 +324,60 @@ void idle()
             auto random_x = uni(rng);
             std::uniform_int_distribution<int> duni(0, 8);
             auto cit = duni(rng);
-            if (cit == 1)
+            if(inteira[cit]){
+            if (cit == 2)
             {
-                inimigos.addObjeto(100, -77.5, random_x, 300, 50000);
+                inimigos.addObjeto(100, -77.5, random_x, 300, 50000,cit);
             }
             else if (cit == 0)
             {
-                inimigos.addObjeto(-80, -77.5, random_x, 300, 50000);
+
+                inimigos.addObjeto(-80, -77.5, random_x, 300, 50000,cit);
             }
-            else if (cit == 2)
+            else if (cit == 1)
             {
-                inimigos.addObjeto(280, -77.5, random_x, 300, 50000);
+                inimigos.addObjeto(280, -77.5, random_x, 300, 50000,cit);
             }
             else if (cit == 3)
             {
-                inimigos.addObjeto(-50, -88.75, random_x, 300, 50000);
+                inimigos.addObjeto(-50, -88.75, random_x, 300, 50000,cit);
             }
             else if (cit == 4)
             {
-                inimigos.addObjeto(0, -88.75, random_x, 300, 50000);
+                inimigos.addObjeto(0, -88.75, random_x, 300, 50000,cit);
             }
             else if (cit == 5)
             {
-                inimigos.addObjeto(50, -88.75, random_x, 300, 50000);
+                inimigos.addObjeto(50, -88.75, random_x, 300, 50000,cit);
             }
             else if (cit == 6)
             {
-                inimigos.addObjeto(150, -88.75, random_x, 300, 50000);
+                inimigos.addObjeto(150, -88.75, random_x, 300, 50000,cit);
             }
             else if (cit == 7)
             {
-                inimigos.addObjeto(200, -88.75, random_x, 300, 50000);
+                inimigos.addObjeto(200, -88.75, random_x, 300, 50000,cit);
             }
             else if (cit == 8)
             {
-                inimigos.addObjeto(250, -88.75, random_x, 300, 50000);
+                inimigos.addObjeto(250, -88.75, random_x, 300, 50000,cit);
             }
+            }else i--;
         }
         clok = 0;
     }
     inimigos.colisao(explosoes);
     inimigos.colisao(inimigos);
-    inimigos.dividir();
+    if(inteira[10])
+    inimigos.dividir(inteira);
     clok += dt;
+    //std::cout<<inimigos.explo.size()<<std::endl;
+    for(unsigned int i = 0;i<inimigos.explo.size();i++){
+        if(inimigos.explo[i].destruiu)
+        if(inimigos.explo[i].alvo<9){
+            inteira[inimigos.explo[i].alvo]=false;
+        }
+    }
     }
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }

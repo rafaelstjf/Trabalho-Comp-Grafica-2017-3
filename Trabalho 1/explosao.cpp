@@ -3,7 +3,7 @@
 #include <iostream>
 #include <math.h>
 
-explosao::explosao(float x, float y, float initx, float inity,int vel)
+explosao::explosao(float x, float y, float initx, float inity,int vel,int alvo)
 {
     this->x=x;
     this->y=y;
@@ -13,6 +13,7 @@ explosao::explosao(float x, float y, float initx, float inity,int vel)
     this->initx=initx;
     this->inity=inity;
     this->vel = vel;
+    this->alvo = alvo;
     dx=sqrt(pow((linex-x),2))/vel;
     dy=sqrt(pow((liney-y),2))/vel;
 }
@@ -38,8 +39,10 @@ void explosao::desenhar()
         glTranslatef(this->x, this->y, 0.0);
         glutSolidSphere(raio, 20, 2);
         raio+=2.5*dt;
-
         cor*=0.9999;
+        if(!falha){
+            destruiu=true;
+        }
         }
         glPopMatrix();
 }
