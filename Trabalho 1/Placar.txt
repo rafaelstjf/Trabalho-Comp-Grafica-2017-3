@@ -1,0 +1,10 @@
+﻿teste1	9
+teste2	8
+teste3	7
+teste4	6
+teste5	5
+teste6	4
+teste7	3
+teste8	2
+teste9	1
+teste0	0
