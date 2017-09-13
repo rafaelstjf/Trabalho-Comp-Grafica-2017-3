@@ -42,7 +42,6 @@ y[1]=50;
 
 void menu::draw(int i)
 {
-    glutSetCursor(GLUT_CURSOR_NONE);
     glColor3f(0.0, 0.0, 1.0);
     //quadrado
     glBegin(GL_LINE_LOOP);
@@ -64,13 +63,5 @@ void menu::draw(int i)
     {
         cre*=-1;
     }
-
-}
-
-void menu::drawf(int f, int pontos){
-std::string print = "FASE:  "+patch::to_string(f);
-output(print.c_str(),-100,110);
-print = "PONTOS: "+patch::to_string(pontos);
-output(print.c_str(),-100,90);
 
 }
