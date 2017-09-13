@@ -1,6 +1,9 @@
 #include "menu.h"
 #include <string>
 #include <sstream>
+#ifdef __linux__
+#include <cstring>
+#endif
 
 namespace patch //Correcao da funcao to_string
 {

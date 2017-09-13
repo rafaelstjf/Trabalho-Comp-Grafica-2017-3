@@ -93,17 +93,18 @@ string Placar::getPosicao(int i )
 void Placar::salvarPontuacao()
 {
     string linha;
-    arquivo.open("Placar.txt",fstream::out | fstream::trunc);
+    arquivo.open("Placar.txt",fstream::out);
     if(arquivo.is_open())
     {
 
         for(int i =0; i<10; i++)
         {
-            arquivo <<   top10[i].nome << "\t" << top10[i].pontuacao;
+            arquivo <<   top10[i].nome << "\t" << top10[i].pontuacao << endl;
         }
     }
     else
         cout << "Erro na abertura do arquivo de saida!" << endl;
+        arquivo.close();
 }
 
 Placar::~Placar()
