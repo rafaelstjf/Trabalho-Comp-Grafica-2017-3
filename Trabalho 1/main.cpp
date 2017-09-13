@@ -62,10 +62,8 @@ menu inicio;
 
 int main(int argc, char **argv)
 {
-<<<<<<< HEAD
-    for(int i = 0; i<11 ; i++)
-        inteira[i]=true;
-=======
+
+
     nome[0] = 'A';
     for (int i = 1; i < 20; i++)
     {
@@ -73,7 +71,6 @@ int main(int argc, char **argv)
     }
     for (int i = 0; i < 10; i++)
         inteira[i] = true;
->>>>>>> 33d12568379445f6fb4fca9bfc8de97c8ab9dc01
     srand(time(NULL));
     startWindow(argc, argv);
     glutMainLoop();
@@ -294,8 +291,9 @@ void keyboardPress(unsigned char key, int x, int y)
         switch (key)
         {
         case 13:
-            if (!comecou && !opcao)
+            if (!comecou && !opcao){
                 comecou = true;
+                }
             else if (!comecou && opcao)
                 emPlacar = true;
             break;
@@ -338,6 +336,7 @@ void keyboardPress(unsigned char key, int x, int y)
                     explosoes.bala[i] = 10;
                 inteira[i] = true;
             }
+            comecou=false;
             break;
         }
         if (!confirmaInsercao)
@@ -352,11 +351,6 @@ void keyboardPress(unsigned char key, int x, int y)
             else if (key == 8)
                 nome[indPlacar] = ' ';
         }
-<<<<<<< HEAD
-        comecou=false;
-        break;
-=======
->>>>>>> 33d12568379445f6fb4fca9bfc8de97c8ab9dc01
     }
 }
 
@@ -482,18 +476,6 @@ void specialKeysPress(int key, int x, int y)
 }
 void idle()
 {
-<<<<<<< HEAD
-    if(pause){return;}
-    for(int i = 3; i<9 ; i++){
-        inteira[10]=false;
-        if(inteira[i])
-            inteira[10]=true;
-    }
-    if(inteira[10]==false)
-        comecou=false;
-    glutPostRedisplay();
-=======
->>>>>>> 33d12568379445f6fb4fca9bfc8de97c8ab9dc01
     float t, dt;
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
@@ -505,11 +487,11 @@ void idle()
         tLast = t;
         return;
     }
-    for (int i = 0; i < 9; i++)
+    for (int i = 3; i < 9; i++)
     {
         inteira[10] = false;
         if (inteira[i])
-            inteira[10] = true;
+            inteira[10] = inteira[i];
     }
     glutPostRedisplay();
     dt = t - tLast;
@@ -539,40 +521,40 @@ void idle()
                     {
                         if (cit == 2)
                         {
-                            inimigos.addObjeto(100, -77.5, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(100, -77.5, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 0)
                         {
 
-                            inimigos.addObjeto(-80, -77.5, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(-80, -77.5, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 1)
                         {
-                            inimigos.addObjeto(280, -77.5, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(280, -77.5, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 3)
                         {
-                            inimigos.addObjeto(-50, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(-50, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 4)
                         {
-                            inimigos.addObjeto(0, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(0, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 5)
                         {
-                            inimigos.addObjeto(50, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(50, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 6)
                         {
-                            inimigos.addObjeto(150, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(150, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 7)
                         {
-                            inimigos.addObjeto(200, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(200, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                         else if (cit == 8)
                         {
-                            inimigos.addObjeto(250, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
+                            inimigos.addObjeto(250, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
                         }
                     }
                     else
@@ -615,5 +597,7 @@ void idle()
             }
         }
     }
+    if(!inteira[10])
+        emPlacar=true;
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }
