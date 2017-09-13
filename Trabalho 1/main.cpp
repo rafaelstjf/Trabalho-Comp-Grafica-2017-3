@@ -596,7 +596,10 @@ void idle()
             }
         }
     }
-    if(!inteira[10])
+    if((!inteira[3]&&!inteira[4]&&!inteira[5]&&!inteira[6]&&!inteira[7]&&!inteira[8])){
         emPlacar=true;
+        comecou=false;
+    }
+
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }
