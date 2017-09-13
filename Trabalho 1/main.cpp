@@ -62,14 +62,12 @@ menu inicio;
 
 int main(int argc, char **argv)
 {
-
-
     nome[0] = 'A';
     for (int i = 1; i < 20; i++)
     {
         nome[i] = ' ';
     }
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 11; i++)
         inteira[i] = true;
     srand(time(NULL));
     startWindow(argc, argv);
@@ -226,6 +224,7 @@ void display()
         /*****   CIDADES   *****/
         glColor3f(cor, 1, 0);
         int i = 3;
+        inteira[10]=false;
         for (int cd = -60; cd <= 240; cd += 50)
         {
             if (cd != 90)
@@ -238,6 +237,7 @@ void display()
                     glVertex2f(cd, -88.75);
                     glVertex2f(cd + 20, -88.75);
                     glEnd();
+                    inteira[10]=true;
                 }
                 i++;
             }
@@ -489,9 +489,8 @@ void idle()
     }
     for (int i = 3; i < 9; i++)
     {
-        inteira[10] = false;
-        if (inteira[i])
-            inteira[10] = inteira[i];
+        //if (inteira[i])
+          //  inteira[10] = inteira[i];
     }
     glutPostRedisplay();
     dt = t - tLast;
