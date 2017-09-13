@@ -64,9 +64,10 @@ void menu::draw(int i)
 
 }
 
-void menu::drawf(int f){
-std::string print = "FASE: "+patch::to_string(f);
+void menu::drawf(int f, int pontos){
+std::string print = "FASE:  "+patch::to_string(f);
 output(print.c_str(),-100,110);
-
+print = "PONTOS: "+patch::to_string(pontos);
+output(print.c_str(),-100,90);
 
 }

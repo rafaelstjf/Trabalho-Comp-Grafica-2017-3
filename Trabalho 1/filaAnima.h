@@ -10,7 +10,7 @@ public:
     void atualizaTempo(float dt);
     void desenhos();
     int bala[3]={10,10,10};
-    void colisao(filaAnima ex);
+    int colisao(filaAnima ex);
     std::vector<explosao> explo;
     int tam = 0;
     void dividir(bool inteira[]);

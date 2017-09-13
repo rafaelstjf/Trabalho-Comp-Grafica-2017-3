@@ -182,7 +182,7 @@ void display()
         glVertex2f(264 + 3 * bl, -92.125);
         glEnd();
     }
-    inicio.drawf(fase);
+    inicio.drawf(fase,pontos);
     drawAim();
     }
     glutSwapBuffers();
@@ -370,8 +370,8 @@ void idle()
         }
         clok = 0;
     }
-    inimigos.colisao(explosoes);
-    inimigos.colisao(inimigos);
+    pontos+=inimigos.colisao(explosoes);
+    pontos+=inimigos.colisao(inimigos);
     if(inteira[10])
     inimigos.dividir(inteira);
     clok += dt;
@@ -385,13 +385,20 @@ void idle()
     if(fase==f&&inimigos.explo.size()==0){
         fase++;
         f=0;
+        pontos+=explosoes.bala[0]*10;
         explosoes.bala[0]=10;
         inteira[0]=true;
+        pontos+=explosoes.bala[1]*10;
         explosoes.bala[1]=10;
         inteira[1]=true;
+        pontos+=explosoes.bala[2]*10;
         explosoes.bala[2]=10;
         inteira[2]=true;
         clok=1;
+         for(int i = 0; i<9 ; i++){
+            if(inteira[i])
+                pontos+=100;
+         }
     }
     }
     tLast = t; //atualiza o tempo, deixar no fim da idle

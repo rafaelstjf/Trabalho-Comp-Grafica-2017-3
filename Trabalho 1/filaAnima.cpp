@@ -35,12 +35,14 @@ void filaAnima::desenhos()
         explo[i].desenhar();
     }
 }
-void filaAnima::colisao(filaAnima ex){
+int filaAnima::colisao(filaAnima ex){
+    int pontos=0;
     for(int i =0;i<tam;i++)
     {
         float x =explo[i].linex;
         float y =explo[i].liney;
         for(int j =0;j<ex.tam;j++){
+        if(!explo[i].falha)
         if(ex.explo[j].colide){
             float x2 =ex.explo[j].linex;
             float y2 =ex.explo[j].liney;
@@ -49,10 +51,12 @@ void filaAnima::colisao(filaAnima ex){
                 explo[i].y=y;
                 explo[i].cont+=explo[i].vel;
                 explo[i].falha=1;
+                pontos+=10;
             }
         }
         }
     }
+    return pontos;
 }
 void filaAnima::dividir(bool inteira[]){
     int x,y;

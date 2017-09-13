@@ -8,7 +8,7 @@ class menu{
 public:
     menu();
     void draw(int i);
-    void drawf(int f);
+    void drawf(int f,int pontos);
 private:
     float x[2];
     float y[2];
