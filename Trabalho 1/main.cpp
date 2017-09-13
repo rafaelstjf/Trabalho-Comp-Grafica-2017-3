@@ -30,13 +30,13 @@ int width = 800;
 int height = 450;
 float jogadorx = 0, jogadory = 0, mousex, mousey; //posicao do jogador e do mouse
 int pontos = 0;                                   //variavel para contar os pontos
-int vidas = 10;                            //variavel para controle de vidas
-int indPlacar=0;
-int dificuldade = 1;                              //variavel para controle de dificuldade
+int vidas = 10;                                   //variavel para controle de vidas
+int indPlacar = 0;
+int dificuldade = 1; //variavel para controle de dificuldade
 bool mouseDown = false;
 bool fullscreen = false;
 float clok = 0;
-bool emPlacar = false, confirmaInsercao=false;
+bool emPlacar = false, confirmaInsercao = false;
 Placar *pl = new Placar();
 char nome[20];
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
     nome[0] = 'A';
-    for(int i=1; i< 20; i++)
+    for (int i = 1; i < 20; i++)
     {
         nome[i] = ' ';
     }
@@ -83,33 +83,51 @@ void startWindow(int argc, char **argv)
     //glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
     glutKeyboardFunc(keyboardPress);
-    glutSpecialFunc( specialKeysPress );
+    glutSpecialFunc(specialKeysPress);
     init();
     glutDisplayFunc(display);
     glutIdleFunc(idle);
 }
 void exibePlacar() //funcao para printar o placar na tela
 {
-    glColor3f(0, 0, 0);     //cor do texto
+    glColor3f(0, 0, 0); //cor do texto
 
     int len;
-    string output, titulo ="PLACAR";
+    string output, titulo = "PLACAR";
+    //borda Externa
+    glColor3f(0.0, 0.0, 1.0);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(-60, -90);
+    glVertex2f(260, -90);
+    glVertex2f(260, 115);
+    glVertex2f(-60, 115);
+    glEnd();
+    //Borda Interna
+    glColor3f(0.0, 0.0, 1.0);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(-59, -89);
+    glVertex2f(259, -89);
+    glVertex2f(259, 114);
+    glVertex2f(-59, 114);
+    glEnd();
+    //Texto
+    glColor3f(0.0, 0.0, 0.0);
     glRasterPos2f(50, 80);
-    for(int i=0; i<6; i++)
+    for (int i = 0; i < 6; i++)
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, titulo[i]); //printa com a fonte GLUT_BITMAP_8_BY_13
-    for(int k = 0; k<10; k++)
+    for (int k = 0; k < 10; k++)
     {
 
-        glColor3f((k*1.0)/10,0, 1-((k*1.0)/10));
+        glColor3f((k * 1.0) / 10, 0, 1 - ((k * 1.0) / 10));
         output = pl->getPosicao(k);
         len = (int)strlen(output.c_str());
-        glRasterPos2f(45, 50-10*k);
+        glRasterPos2f(45, 50 - 10 * k);
         for (int i = 0; i < len; i++)
         {
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, output[i]);
         }
     }
-    if(!confirmaInsercao)
+    if (!confirmaInsercao)
     {
         /*  //desenha triangulos
           glColor3f(0.0, 0.0, 1.0);
@@ -127,11 +145,11 @@ void exibePlacar() //funcao para printar o placar na tela
         for (int i = 0; i < 20; i++)
         {
             //local
-            if(i==indPlacar)
-                glColor3f(1.0, 0, 0);     //cor do texto
+            if (i == indPlacar)
+                glColor3f(1.0, 0, 0); //cor do texto
             else
-                glColor3f(0, 0, 0);     //cor do texto
-            glRasterPos2f(45+5.5*i, -60);
+                glColor3f(0, 0, 0); //cor do texto
+            glRasterPos2f(45 + 5.5 * i, -60);
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, nome[i]);
         }
     }
@@ -159,31 +177,14 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    if(!comecou&& !emPlacar)
+    if (!comecou && !emPlacar)
     {
 
         inicio.draw((int)opcao);
     }
-    else if(!comecou && emPlacar)
+    else if (!comecou && emPlacar)
     {
-        //borda Externa
-        glColor3f(0.0, 0.0, 1.0);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(-60,-90);
-        glVertex2f(260, -90);
-        glVertex2f(260, 115);
-        glVertex2f(-60, 115);
-        glEnd();
-        //Borda Interna
-        glColor3f(0.0,0.0,1.0);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(-59,-89);
-        glVertex2f(259, -89);
-        glVertex2f(259, 114);
-        glVertex2f(-59, 114);
-        glEnd();
         exibePlacar();
-
     }
 
     else
@@ -263,54 +264,54 @@ void display()
 
 void keyboardPress(unsigned char key, int x, int y)
 {
-    if(!emPlacar)
+    if (!emPlacar)
     {
         switch (key)
         {
-        case 27:
-            exit(0);
-            break;
         case 13:
-            if(!comecou&&!opcao)
-                comecou=true;
-            else if(!comecou && opcao)
+            if (!comecou && !opcao)
+                comecou = true;
+            else if (!comecou && opcao)
                 emPlacar = true;
-            break;
-        case 'f':
-            if (fullscreen)
-            {
-                glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
-                glutReshapeWindow(800, 450);
-                glutPositionWindow(50, 50);
-            }
-            else
-            {
-                glutSetCursor(GLUT_CURSOR_NONE);
-                glutFullScreen();
-            }
-            fullscreen = !fullscreen;
             break;
         }
     }
     else
     {
-        if(!confirmaInsercao)
+        if (!confirmaInsercao)
         {
-            if(key== 13)
+            if (key == 13)
             {
                 string str(nome);
                 confirmaInsercao = true;
                 pl->inserirJogador(nome, 10);
                 pl->salvarPontuacao();
-
             }
-            else if(key == 8)
+            else if (key == 8)
                 nome[indPlacar] = ' ';
         }
     }
-
-
-
+    switch (key)
+    {
+    case 27:
+        exit(0);
+        break;
+    case 'f':
+        if (fullscreen)
+        {
+            glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
+            glutReshapeWindow(800, 450);
+            glutPositionWindow(50, 50);
+        }
+        else
+        {
+            glutPostRedisplay();
+            glutSetCursor(GLUT_CURSOR_NONE);
+            glutFullScreen();
+        }
+        fullscreen = !fullscreen;
+        break;
+    }
 }
 
 void init()
@@ -325,7 +326,7 @@ void init()
 }
 void mouse(int button, int state, int x, int y)
 {
-    if(comecou)
+    if (comecou)
     {
         if (button == GLUT_LEFT_BUTTON)
         {
@@ -376,15 +377,15 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 
 void specialKeysPress(int key, int x, int y)
 {
-    if(!emPlacar)
+    if (!emPlacar)
     {
-        switch(key)
+        switch (key)
         {
         case GLUT_KEY_UP:
-            opcao=0;
+            opcao = 0;
             break;
         case GLUT_KEY_DOWN:
-            opcao=1;
+            opcao = 1;
             break;
         case GLUT_KEY_RIGHT:
             break;
@@ -394,33 +395,33 @@ void specialKeysPress(int key, int x, int y)
     }
     else
     {
-        if(!confirmaInsercao)
+        if (!confirmaInsercao)
         {
-            switch(key)
+            switch (key)
             {
             case GLUT_KEY_UP:
 
                 nome[indPlacar]++;
-                if(nome[indPlacar]>90)
+                if (nome[indPlacar] > 90)
                     nome[indPlacar] = 65;
                 break;
             case GLUT_KEY_DOWN:
                 nome[indPlacar]--;
-                if(nome[indPlacar]<65)
+                if (nome[indPlacar] < 65)
                     nome[indPlacar] = 90;
                 break;
             case GLUT_KEY_RIGHT:
 
-                if(indPlacar<=18)
+                if (indPlacar <= 18)
                     indPlacar++;
-                if(nome[indPlacar] == ' ')
+                if (nome[indPlacar] == ' ')
                     nome[indPlacar] = 65;
                 break;
             case GLUT_KEY_LEFT:
 
-                if(indPlacar>=1)
+                if (indPlacar >= 1)
                     indPlacar--;
-                if(nome[indPlacar] == ' ')
+                if (nome[indPlacar] == ' ')
                     nome[indPlacar] = 65;
                 break;
             }
@@ -442,11 +443,10 @@ void idle()
     explosoes.atualizaTempo(dt);
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
-    if(!comecou)
+    if (!comecou)
     {
-
     }
-    else if(comecou)
+    else if (comecou)
     {
         jogadorx = (float)(mousex / 2 - 100);
         jogadory = (float)(-1 * mousey / 2 + 125);
