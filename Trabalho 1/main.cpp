@@ -368,6 +368,23 @@ void keyboardPress(unsigned char key, int x, int y)
         }
         fullscreen = !fullscreen;
         break;
+    case 'p':
+        pause=!pause;
+        break;
+    case 'r':
+        fase=1;
+        pontos=0;
+        f=0;
+        inimigos.explo.clear();
+        explosoes.explo.clear();
+        inimigos.tam=0;
+        explosoes.tam=0;
+        for(int i = 0; i<9 ; i++){
+            if(i<3)
+            explosoes.bala[i]=10;
+            inteira[i]=true;
+        }
+        break;
     }
 }
 
@@ -493,6 +510,13 @@ void specialKeysPress(int key, int x, int y)
 }
 void idle()
 {
+    if(pause){return;}
+    for(int i = 0; i<9 ; i++){
+        inteira[10]=false;
+        if(inteira[i])
+            inteira[10]=true;
+    }
+    glutPostRedisplay();
     float t, dt;
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
