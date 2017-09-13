@@ -50,6 +50,7 @@ menu inicio;
 bool comecou = false;
 bool opcao = 0;
 int fase = 1,f=0;
+bool pause = false;
 filaAnima explosoes = filaAnima(10);
 filaAnima inimigos = filaAnima(10);
 
@@ -101,6 +102,7 @@ void drawAim()
 
 void display()
 {
+    if(pause){return;}
     int cor = fase%2;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -213,6 +215,9 @@ void keyboardPress(unsigned char key, int x, int y)
         }
         fullscreen = !fullscreen;
         break;
+    case 'p':
+        pause=!pause;
+        break;
     }
 }
 
@@ -228,6 +233,7 @@ void init()
 }
 void mouse(int button, int state, int x, int y)
 {
+    if(pause){return;}
     if(comecou){
     if (button == GLUT_LEFT_BUTTON)
     {
@@ -295,6 +301,7 @@ void specialKeysPress(int key, int x, int y)
 }
 void idle()
 {
+    if(pause){return;}
     for(int i = 0; i<9 ; i++){
         inteira[10]=false;
         if(inteira[i])
