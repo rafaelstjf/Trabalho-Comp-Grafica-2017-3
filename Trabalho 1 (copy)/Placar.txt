@@ -1,0 +1,10 @@
+AAAAAAAAAAAAAAAAAAAB	10
+QABBAB	10
+TCA	10
+Z	10
+XA                  	10
+﻿teste1	9
+teste2	8
+teste3	7
+teste4	6
+teste5	5

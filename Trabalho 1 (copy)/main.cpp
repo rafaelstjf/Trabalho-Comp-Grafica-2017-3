@@ -8,9 +8,9 @@
 #include <sstream>
 #include "missile.h"
 #include "filaAnima.h"
-#include "Placar.h"
 #include "explosao.h"
 #include "menu.h"
+#include "Placar.h"
 #ifdef __linux__
 #include <cstring>
 #endif
@@ -31,18 +31,13 @@ int height = 450;
 float jogadorx = 0, jogadory = 0, mousex, mousey; //posicao do jogador e do mouse
 int pontos = 0;                                   //variavel para contar os pontos
 int vidas = 10;                                   //variavel para controle de vidas
-int dificuldade = 1;                              //variavel para controle de dificuldade
-int indPlacar = 0;                                //variavel para controlar o indice do vetor do placar
+int indPlacar = 0;
+int dificuldade = 1; //variavel para controle de dificuldade
 bool mouseDown = false;
 bool fullscreen = false;
-bool inteira[10];
-float clok = 1;
+float clok = 0;
+bool emPlacar = false, confirmaInsercao = false;
 Placar *pl = new Placar();
-bool comecou = false, emPlacar = false, confirmaInsercao = false;
-bool opcao = 0;
-int fase = 1, f = 0;
-filaAnima explosoes = filaAnima(10);
-filaAnima inimigos = filaAnima(10);
 char nome[20];
 
 //funcoes
@@ -56,24 +51,44 @@ void reshape(int w, int h);
 void keyboardPress(unsigned char key, int x, int y);
 void specialKeysPress(int key, int x, int y);
 void startWindow(int argc, char **argv);
-void drawScore();
+void exibePlacar();
+
 menu inicio;
+bool comecou = false;
+bool opcao = 0;
+filaAnima explosoes = filaAnima(10);
+filaAnima inimigos = filaAnima(10);
 
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
     nome[0] = 'A';
     for (int i = 1; i < 20; i++)
     {
         nome[i] = ' ';
     }
-    for (int i = 0; i < 10; i++)
-        inteira[i] = true;
-    srand(time(NULL));
     startWindow(argc, argv);
     glutMainLoop();
     return 0;
 }
-void drawScore() //funcao para printar o placar na tela
+
+void startWindow(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(width, height);
+    glutInitWindowPosition(50, 50);
+    glutCreateWindow("Trabalho 1");
+    glutMouseFunc(mouse);
+    //glutReshapeFunc(reshape);
+    glutPassiveMotionFunc(motion);
+    glutKeyboardFunc(keyboardPress);
+    glutSpecialFunc(specialKeysPress);
+    init();
+    glutDisplayFunc(display);
+    glutIdleFunc(idle);
+}
+void exibePlacar() //funcao para printar o placar na tela
 {
     glColor3f(0, 0, 0); //cor do texto
 
@@ -139,24 +154,6 @@ void drawScore() //funcao para printar o placar na tela
         }
     }
 }
-
-void startWindow(int argc, char **argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(width, height);
-    glutInitWindowPosition(50, 50);
-    glutCreateWindow("Trabalho 1");
-    glutMouseFunc(mouse);
-    //glutReshapeFunc(reshape);
-    glutPassiveMotionFunc(motion);
-    glutKeyboardFunc(keyboardPress);
-    glutSpecialFunc(specialKeysPress);
-    init();
-    glutDisplayFunc(display);
-    glutIdleFunc(idle);
-}
-
 void drawAim()
 {
     glColor3f(0.0, 0.0, 1.0);
@@ -178,7 +175,6 @@ void drawAim()
 
 void display()
 {
-    int cor = fase % 2;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     if (!comecou && !emPlacar)
@@ -188,15 +184,16 @@ void display()
     }
     else if (!comecou && emPlacar)
     {
-        drawScore();
+        exibePlacar();
     }
+
     else
     {
         explosoes.desenhos();
         inimigos.desenhos();
         //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
         /******   CANHOES  *******/
-        glColor3f(0, cor, 1);
+        glColor3f(0, 0, 1);
         glBegin(GL_QUADS);
         glVertex2f(110, -88.75);
         glVertex2f(90, -88.75);
@@ -217,29 +214,22 @@ void display()
         glEnd();
         /***** FIM CANHOES *****/
         /*****   CIDADES   *****/
-        glColor3f(cor, 1, 0);
-        int i = 3;
+        glColor3f(0, 1, 0);
         for (int cd = -60; cd <= 240; cd += 50)
         {
             if (cd != 90)
             {
-                if (inteira[i])
-                {
-                    glBegin(GL_QUADS);
-                    glVertex2f(cd + 20, -94.375);
-                    glVertex2f(cd, -94.375);
-                    glVertex2f(cd, -88.75);
-                    glVertex2f(cd + 20, -88.75);
-                    glEnd();
-                }
-                i++;
+                glBegin(GL_QUADS);
+                glVertex2f(cd + 20, -94.375); //(-75,-90),(-50,-90),(-25,-90)
+                glVertex2f(cd, -94.375);
+                glVertex2f(cd, -88.75);
+                glVertex2f(cd + 20, -88.75);
+                glEnd();
             }
         }
         /***** FIM CIDADES *****/
         /*****    BALAS    *****/
-        glColor3f(0, cor, 1);
-        if (!inteira[2])
-            explosoes.bala[2] = 0;
+        glColor3f(0, 0, 1);
         for (int bl = 0; bl < explosoes.bala[2]; bl++)
         {
             glBegin(GL_QUADS);
@@ -249,8 +239,6 @@ void display()
             glVertex2f(86 + 3 * bl, -92.125);
             glEnd();
         }
-        if (!inteira[0])
-            explosoes.bala[0] = 0;
         for (int bl = 0; bl < explosoes.bala[0]; bl++)
         {
             glBegin(GL_QUADS);
@@ -260,8 +248,6 @@ void display()
             glVertex2f(-94 + 3 * bl, -92.125);
             glEnd();
         }
-        if (!inteira[1])
-            explosoes.bala[1] = 0;
         for (int bl = 0; bl < explosoes.bala[1]; bl++)
         {
             glBegin(GL_QUADS);
@@ -271,10 +257,9 @@ void display()
             glVertex2f(264 + 3 * bl, -92.125);
             glEnd();
         }
-        inicio.drawf(fase, pontos);
         drawAim();
     }
-glutSwapBuffers();
+    glutSwapBuffers();
 }
 
 void keyboardPress(unsigned char key, int x, int y)
@@ -299,7 +284,7 @@ void keyboardPress(unsigned char key, int x, int y)
             {
                 string str(nome);
                 confirmaInsercao = true;
-                pl->inserirJogador(nome, pontos);
+                pl->inserirJogador(nome, 10);
                 pl->salvarPontuacao();
             }
             else if (key == 8)
@@ -392,16 +377,15 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 
 void specialKeysPress(int key, int x, int y)
 {
-
     if (!emPlacar)
     {
         switch (key)
         {
         case GLUT_KEY_UP:
-            opcao = !opcao;
+            opcao = 0;
             break;
         case GLUT_KEY_DOWN:
-            opcao = !opcao;
+            opcao = 1;
             break;
         case GLUT_KEY_RIGHT:
             break;
@@ -443,16 +427,11 @@ void specialKeysPress(int key, int x, int y)
             }
         }
     }
+
     glutPostRedisplay();
 }
 void idle()
 {
-    for (int i = 0; i < 9; i++)
-    {
-        inteira[10] = false;
-        if (inteira[i])
-            inteira[10] = true;
-    }
     glutPostRedisplay();
     float t, dt;
     static float tLast = 0.0;
@@ -467,101 +446,63 @@ void idle()
     if (!comecou)
     {
     }
-    else
+    else if (comecou)
     {
         jogadorx = (float)(mousex / 2 - 100);
         jogadory = (float)(-1 * mousey / 2 + 125);
         /***** MISSEIS *****/
-        if (inteira[10] && f < fase)
-            if (clok > 2)
+        if (clok > 10)
+        {
+            for (int i = 0; i < 2; i++)
             {
-                f++;
-                for (int i = 0; i < 3; i++)
+                std::mt19937 rng(rand());
+                std::uniform_int_distribution<int> uni(-100, 300);
+                auto random_x = uni(rng);
+                std::uniform_int_distribution<int> duni(0, 8);
+                auto cit = duni(rng);
+                if (cit == 1)
                 {
-                    std::mt19937 rng(rand());
-                    std::uniform_int_distribution<int> uni(-100, 300);
-                    auto random_x = uni(rng);
-                    std::uniform_int_distribution<int> duni(0, 8);
-                    auto cit = duni(rng);
-                    if (inteira[cit])
-                    {
-                        if (cit == 2)
-                        {
-                            inimigos.addObjeto(100, -77.5, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 0)
-                        {
-
-                            inimigos.addObjeto(-80, -77.5, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 1)
-                        {
-                            inimigos.addObjeto(280, -77.5, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 3)
-                        {
-                            inimigos.addObjeto(-50, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 4)
-                        {
-                            inimigos.addObjeto(0, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 5)
-                        {
-                            inimigos.addObjeto(50, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 6)
-                        {
-                            inimigos.addObjeto(150, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 7)
-                        {
-                            inimigos.addObjeto(200, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                        else if (cit == 8)
-                        {
-                            inimigos.addObjeto(250, -88.75, random_x, 125, 30000 - (fase * 2000), cit);
-                        }
-                    }
-                    else
-                        i--;
+                    inimigos.addObjeto(100, -77.5, random_x, 300, 50000);
                 }
-                clok = 0;
+                else if (cit == 0)
+                {
+                    inimigos.addObjeto(-80, -77.5, random_x, 300, 50000);
+                }
+                else if (cit == 2)
+                {
+                    inimigos.addObjeto(280, -77.5, random_x, 300, 50000);
+                }
+                else if (cit == 3)
+                {
+                    inimigos.addObjeto(-50, -88.75, random_x, 300, 50000);
+                }
+                else if (cit == 4)
+                {
+                    inimigos.addObjeto(0, -88.75, random_x, 300, 50000);
+                }
+                else if (cit == 5)
+                {
+                    inimigos.addObjeto(50, -88.75, random_x, 300, 50000);
+                }
+                else if (cit == 6)
+                {
+                    inimigos.addObjeto(150, -88.75, random_x, 300, 50000);
+                }
+                else if (cit == 7)
+                {
+                    inimigos.addObjeto(200, -88.75, random_x, 300, 50000);
+                }
+                else if (cit == 8)
+                {
+                    inimigos.addObjeto(250, -88.75, random_x, 300, 50000);
+                }
             }
-        pontos += inimigos.colisao(explosoes);
-        pontos += inimigos.colisao(inimigos);
-        if (inteira[10])
-            inimigos.dividir(inteira);
+            clok = 0;
+        }
+        inimigos.colisao(explosoes);
+        inimigos.colisao(inimigos);
+        inimigos.dividir();
         clok += dt;
-        //std::cout<<inimigos.explo.size()<<std::endl;
-        for (unsigned int i = 0; i < inimigos.explo.size(); i++)
-        {
-            if (inimigos.explo[i].destruiu)
-                if (inimigos.explo[i].alvo < 9)
-                {
-                    inteira[inimigos.explo[i].alvo] = false;
-                }
-        }
-        if (fase == f && inimigos.explo.size() == 0)
-        {
-            fase++;
-            f = 0;
-            pontos += explosoes.bala[0] * 10;
-            explosoes.bala[0] = 10;
-            inteira[0] = true;
-            pontos += explosoes.bala[1] * 10;
-            explosoes.bala[1] = 10;
-            inteira[1] = true;
-            pontos += explosoes.bala[2] * 10;
-            explosoes.bala[2] = 10;
-            inteira[2] = true;
-            clok = 1;
-            for (int i = 0; i < 9; i++)
-            {
-                if (inteira[i])
-                    pontos += 100;
-            }
-        }
     }
     tLast = t; //atualiza o tempo, deixar no fim da idle
 }
