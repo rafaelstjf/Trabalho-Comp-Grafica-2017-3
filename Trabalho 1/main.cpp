@@ -33,7 +33,7 @@ int vidas = 10;                                   //variavel para controle de vi
 int dificuldade = 1;                              //variavel para controle de dificuldade
 bool mouseDown = false;
 bool fullscreen = false;
-bool inteira[10];
+bool inteira[11];
 float clok = 1;
 //funcoes
 void idle();
@@ -56,7 +56,7 @@ filaAnima inimigos = filaAnima(10);
 
 int main(int argc, char **argv)
 {
-    for(int i = 0; i<10 ; i++)
+    for(int i = 0; i<11 ; i++)
         inteira[i]=true;
     srand(time(NULL));
     startWindow(argc, argv);
@@ -231,6 +231,7 @@ void keyboardPress(unsigned char key, int x, int y)
             explosoes.bala[i]=10;
             inteira[i]=true;
         }
+        comecou=false;
         break;
     }
 }
@@ -316,11 +317,13 @@ void specialKeysPress(int key, int x, int y)
 void idle()
 {
     if(pause){return;}
-    for(int i = 0; i<9 ; i++){
+    for(int i = 3; i<9 ; i++){
         inteira[10]=false;
         if(inteira[i])
             inteira[10]=true;
     }
+    if(inteira[10]==false)
+        comecou=false;
     glutPostRedisplay();
     float t, dt;
     static float tLast = 0.0;
