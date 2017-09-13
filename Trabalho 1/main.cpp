@@ -41,6 +41,7 @@ Placar *pl = new Placar();
 bool comecou = false, emPlacar = false, confirmaInsercao = false;
 bool opcao = 0;
 int fase = 1, f = 0;
+bool pause = false;
 filaAnima explosoes = filaAnima(10);
 filaAnima inimigos = filaAnima(10);
 char nome[20];
@@ -178,6 +179,10 @@ void drawAim()
 
 void display()
 {
+    if (pause)
+    {
+        return;
+    }
     int cor = fase % 2;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -274,7 +279,7 @@ void display()
         inicio.drawf(fase, pontos);
         drawAim();
     }
-glutSwapBuffers();
+    glutSwapBuffers();
 }
 
 void keyboardPress(unsigned char key, int x, int y)
@@ -289,10 +294,47 @@ void keyboardPress(unsigned char key, int x, int y)
             else if (!comecou && opcao)
                 emPlacar = true;
             break;
+        case 'p':
+            pause = !pause;
+            break;
+        case 'r':
+            fase = 1;
+            pontos = 0;
+            f = 0;
+            inimigos.explo.clear();
+            explosoes.explo.clear();
+            inimigos.tam = 0;
+            explosoes.tam = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                if (i < 3)
+                    explosoes.bala[i] = 10;
+                inteira[i] = true;
+            }
+            break;
         }
     }
     else
     {
+        switch (key)
+        {
+        case 'r':
+            fase = 1;
+            pontos = 0;
+            f = 0;
+            inimigos.explo.clear();
+            explosoes.explo.clear();
+            inimigos.tam = 0;
+            explosoes.tam = 0;
+            emPlacar = false;
+            for (int i = 0; i < 9; i++)
+            {
+                if (i < 3)
+                    explosoes.bala[i] = 10;
+                inteira[i] = true;
+            }
+            break;
+        }
         if (!confirmaInsercao)
         {
             if (key == 13)
@@ -341,6 +383,10 @@ void init()
 }
 void mouse(int button, int state, int x, int y)
 {
+    if (pause)
+    {
+        return;
+    }
     if (comecou)
     {
         if (button == GLUT_LEFT_BUTTON)
@@ -447,6 +493,17 @@ void specialKeysPress(int key, int x, int y)
 }
 void idle()
 {
+    float t, dt;
+    static float tLast = 0.0;
+    /* Get elapsed time and convert to s */
+    t = glutGet(GLUT_ELAPSED_TIME);
+    t /= 500.0;
+    /* Calculate delta t */
+    if (pause)
+    {
+        tLast = t;
+        return;
+    }
     for (int i = 0; i < 9; i++)
     {
         inteira[10] = false;
@@ -454,12 +511,6 @@ void idle()
             inteira[10] = true;
     }
     glutPostRedisplay();
-    float t, dt;
-    static float tLast = 0.0;
-    /* Get elapsed time and convert to s */
-    t = glutGet(GLUT_ELAPSED_TIME);
-    t /= 500.0;
-    /* Calculate delta t */
     dt = t - tLast;
     explosoes.atualizaTempo(dt);
     inimigos.atualizaTempo(dt);

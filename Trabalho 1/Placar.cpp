@@ -28,15 +28,15 @@ Placar::Placar()
 {
     string linha;
     int i=0;
-    arquivo.open("Placar.txt",fstream::in | fstream::trunc);
-     if(arquivo.is_open())
+    ifstream input("Placar.txt");
+    //arquivo.open("Placar.txt",fstream::in | fstream::trunc);
+    if(input.is_open())
      {
 
        // arquivo.clear();
-        while(arquivo >> top10[i].nome >>  top10[i].pontuacao && i<10){
+        while(input >> top10[i].nome >>  top10[i].pontuacao && i<10){
             i++;
         }
-         arquivo.close();
      }
      else
      {
@@ -46,7 +46,7 @@ Placar::Placar()
             top10[k].pontuacao = 0;
          }
      }
-
+     input.close();
     bubbleSort(top10, 10);
 
 }
