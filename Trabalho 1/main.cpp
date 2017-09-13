@@ -34,7 +34,7 @@ int dificuldade = 1;                              //variavel para controle de di
 bool mouseDown = false;
 bool fullscreen = false;
 bool inteira[10];
-float clok = 0;
+float clok = 1;
 //funcoes
 void idle();
 void display();
@@ -49,6 +49,7 @@ void startWindow(int argc, char **argv);
 menu inicio;
 bool comecou = false;
 bool opcao = 0;
+int fase = 1,f=0;
 filaAnima explosoes = filaAnima(10);
 filaAnima inimigos = filaAnima(10);
 
@@ -100,6 +101,7 @@ void drawAim()
 
 void display()
 {
+    int cor = fase%2;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     if(!comecou){
@@ -109,7 +111,7 @@ void display()
     inimigos.desenhos();
     //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
     /******   CANHOES  *******/
-    glColor3f(0, 0, 1);
+    glColor3f(0, cor, 1);
     glBegin(GL_QUADS);
     glVertex2f(110, -88.75);
     glVertex2f(90, -88.75);
@@ -130,7 +132,7 @@ void display()
     glEnd();
     /***** FIM CANHOES *****/
     /*****   CIDADES   *****/
-    glColor3f(0, 1, 0);
+    glColor3f(cor, 1, 0);
     int i=3;
     for (int cd = -60; cd <= 240; cd += 50)
     {
@@ -149,7 +151,7 @@ void display()
     }
     /***** FIM CIDADES *****/
     /*****    BALAS    *****/
-    glColor3f(0, 0, 1);
+    glColor3f(0, cor, 1);
     if(!inteira[2])explosoes.bala[2]=0;
     for (int bl = 0; bl < explosoes.bala[2]; bl++)
     {
@@ -180,6 +182,7 @@ void display()
         glVertex2f(264 + 3 * bl, -92.125);
         glEnd();
     }
+    inicio.drawf(fase);
     drawAim();
     }
     glutSwapBuffers();
@@ -314,10 +317,11 @@ void idle()
     jogadorx = (float)(mousex / 2 - 100);
     jogadory = (float)(-1 * mousey / 2 + 125);
     /***** MISSEIS *****/
-    if(inteira[10])
-    if (clok > 10)
+    if(inteira[10]&&f<fase)
+    if (clok > 2)
     {
-        for (int i = 0; i < 2; i++)
+        f++;
+        for (int i = 0; i < 3; i++)
         {
             std::mt19937 rng(rand());
             std::uniform_int_distribution<int> uni(-100, 300);
@@ -327,40 +331,40 @@ void idle()
             if(inteira[cit]){
             if (cit == 2)
             {
-                inimigos.addObjeto(100, -77.5, random_x, 300, 50000,cit);
+                inimigos.addObjeto(100, -77.5, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 0)
             {
 
-                inimigos.addObjeto(-80, -77.5, random_x, 300, 50000,cit);
+                inimigos.addObjeto(-80, -77.5, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 1)
             {
-                inimigos.addObjeto(280, -77.5, random_x, 300, 50000,cit);
+                inimigos.addObjeto(280, -77.5, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 3)
             {
-                inimigos.addObjeto(-50, -88.75, random_x, 300, 50000,cit);
+                inimigos.addObjeto(-50, -88.75, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 4)
             {
-                inimigos.addObjeto(0, -88.75, random_x, 300, 50000,cit);
+                inimigos.addObjeto(0, -88.75, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 5)
             {
-                inimigos.addObjeto(50, -88.75, random_x, 300, 50000,cit);
+                inimigos.addObjeto(50, -88.75, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 6)
             {
-                inimigos.addObjeto(150, -88.75, random_x, 300, 50000,cit);
+                inimigos.addObjeto(150, -88.75, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 7)
             {
-                inimigos.addObjeto(200, -88.75, random_x, 300, 50000,cit);
+                inimigos.addObjeto(200, -88.75, random_x, 125, 30000-(fase*2000),cit);
             }
             else if (cit == 8)
             {
-                inimigos.addObjeto(250, -88.75, random_x, 300, 50000,cit);
+                inimigos.addObjeto(250, -88.75, random_x, 125, 30000-(fase*2000),cit);
             }
             }else i--;
         }
@@ -377,6 +381,17 @@ void idle()
         if(inimigos.explo[i].alvo<9){
             inteira[inimigos.explo[i].alvo]=false;
         }
+    }
+    if(fase==f&&inimigos.explo.size()==0){
+        fase++;
+        f=0;
+        explosoes.bala[0]=10;
+        inteira[0]=true;
+        explosoes.bala[1]=10;
+        inteira[1]=true;
+        explosoes.bala[2]=10;
+        inteira[2]=true;
+        clok=1;
     }
     }
     tLast = t; //atualiza o tempo, deixar no fim da idle
