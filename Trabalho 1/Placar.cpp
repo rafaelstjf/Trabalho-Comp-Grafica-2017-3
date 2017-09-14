@@ -34,11 +34,9 @@ Placar::Placar()
     string linha;
     int i=0;
     ifstream input("Placar.txt");
-    //arquivo.open("Placar.txt",fstream::in | fstream::trunc);
     if(input.is_open())
      {
 
-       // arquivo.clear();
         while(input >> top10[i].nome >>  top10[i].pontuacao && i<10){
             i++;
         }
@@ -60,11 +58,16 @@ int Placar::getPontuacao(int i)
 {
     return top10[i].pontuacao;
 }
-
+//Retorna o nome de uma determinada posicao
 string Placar::getNome(int i)
 {
     return top10[i].nome;
 }
+/*
+Cria um novo jogador e o adiciona ao top 10 
+se ele tiver uma pontuacao maior que o ultimo
+e depois ordena
+*/
 void Placar::inserirJogador(string nome, int pontuacao)
 {
     Jogadores novo;
@@ -78,13 +81,14 @@ void Placar::inserirJogador(string nome, int pontuacao)
     }
 
 }
-
+//Retorna o nome + a pontuacao de uma determinada posicao
 string Placar::getPosicao(int i )
 {
     string posicao;
     posicao = top10[i].nome + "\t"+ patch::to_string(top10[i].pontuacao);
     return posicao;
 }
+//Salva a pontuacao em um arquivo
 void Placar::salvarPontuacao()
 {
     string linha;
@@ -104,5 +108,5 @@ void Placar::salvarPontuacao()
 
 Placar::~Placar()
 {
-    //dtor
+    
 }
