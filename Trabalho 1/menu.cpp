@@ -53,7 +53,7 @@ void menu::draw(int i)
     glEnd();
     output("JOGAR",100,100);
     output("PLACAR",100,50);
-    output("PRECIONE ESC PARA SAIR",100,-50);
+    output("PRESSIONE ESC PARA SAIR",100,-50);
     output("MISSILE",-50,100);
     output("COMAND",-50,80);
         glColor3f(animacao/30, 0,1-animacao/30);
