@@ -28,7 +28,7 @@ void output(const char *string,float x,float y) //funcao para printar na tela
 }
 
 
-menu::menu(){
+menu::menu(){//inicializa as variaveis
 animacao = 1;
 cre = 0.1;
 
@@ -42,21 +42,22 @@ y[1]=50;
 
 void menu::draw(int i)
 {
-    glutSetCursor(GLUT_CURSOR_NONE);
-    glColor3f(0.0, 0.0, 1.0);
-    //quadrado
+    glutSetCursor(GLUT_CURSOR_NONE);//sem mouse no menu
+    glColor3f(0.0, 0.0, 1.0);// cor da caixa de seleçao
+    //desenha a caixa de seleçao
     glBegin(GL_LINE_LOOP);
     glVertex2f(x[i]-10,y[i]+13);
     glVertex2f(x[i]+100,y[i]+13);
     glVertex2f(x[i]+100,y[i]-5);
     glVertex2f(x[i]-10,y[i]-5);
     glEnd();
+    //escreve as coisas na tela
     output("JOGAR",100,100);
     output("PLACAR",100,50);
     output("PRESSIONE ESC PARA SAIR",100,-50);
     output("MISSILE",-50,100);
     output("COMAND",-50,80);
-        glColor3f(animacao/30, 0,1-animacao/30);
+        glColor3f(animacao/30, 0,1-animacao/30);//animacao da tela de menu
         glTranslatef(-2*animacao, -2*animacao, 0.0);
         glutSolidSphere(animacao, 20, 2);
     animacao+=cre;
@@ -67,10 +68,10 @@ void menu::draw(int i)
 
 }
 
-void menu::drawf(int f, int pontos){
-std::string print = "FASE:  "+patch::to_string(f);
+void menu::drawf(int f, int pontos){//durante o jogo
+std::string print = "FASE:  "+patch::to_string(f);//escreve a fase
 output(print.c_str(),-100,110);
-print = "PONTOS: "+patch::to_string(pontos);
+print = "PONTOS: "+patch::to_string(pontos);//escreve os pontos
 output(print.c_str(),-100,90);
 
 }

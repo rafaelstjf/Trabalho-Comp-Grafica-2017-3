@@ -2,13 +2,13 @@
 #define MENU_H_INCLUDED
 
 #include <GL/glut.h>
-
+//classe para desenhar o menu
 class menu{
 
 public:
     menu();
-    void draw(int i);
-    void drawf(int f,int pontos);
+    void draw(int i);//desenha o menu
+    void drawf(int f,int pontos);//desenha o GUI no jogo
 private:
     float x[2];
     float y[2];
