@@ -6,16 +6,16 @@ class filaAnima
 {
 public:
     filaAnima(int temp);
-    void addObjeto(float x, float y, float initx, float inity,float vel = 1000,int alvo = 10);
+    void addObjeto(float x, float y, float initx, float inity,float vel = 1000,int alvo = 10);//intancia explosoes
     void atualizaTempo(float dt);
-    void desenhos();
-    int bala[3]={10,10,10};
-    int colisao(filaAnima ex);
-    std::vector<explosao> explo;
-    int tam = 0;
-    void dividir(bool inteira[]);
+    void desenhos();//desenha na tela
+    int bala[3]={10,10,10};//inicia com 10 tiros
+    int colisao(filaAnima ex);//controla colisao
+    std::vector<explosao> explo;//vetor de explosoes
+    int tam = 0;//tamanho do vector
+    void dividir(bool inteira[]);//divide os misseis no topo da tela
 private:
 
-    int tempo;
+    int tempo;// controla o tempo
 };
 #endif // FILAANIMA_H_INCLUDED

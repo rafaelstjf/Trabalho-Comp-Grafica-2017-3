@@ -3,21 +3,21 @@
 #include <random>
 #include <time.h>
 
-filaAnima::filaAnima(int temp){
+filaAnima::filaAnima(int temp){//inicia a variavel tempo
     this->tempo = temp;
 }
 void filaAnima::addObjeto(float x, float y, float initx, float inity, float vel,int alvo)
 {
-    explo.push_back(explosao(x,y,initx,inity,vel,alvo));
-    tam++;
+    explo.push_back(explosao(x,y,initx,inity,vel,alvo));//instancia explosoes
+    tam++;//aumenta o tamanho do vector
 }
 void filaAnima::atualizaTempo(float dt)
 {
-        for(int i =0;i<tam;i++)
+        for(int i =0;i<tam;i++)//percorre pelo vector
     {
-        explo[i].dt=dt;
-        explo[i].tempo+=dt;
-        if(explo[i].tempo>(tempo/2)+1){
+        explo[i].dt=dt;//envia o dt
+        explo[i].tempo+=dt;//incrementa o tempo
+        if(explo[i].tempo>(tempo/2)+1){//faz a explosão diminuir depois de um tempo
         explo[i].dt=-dt;
         }
     }

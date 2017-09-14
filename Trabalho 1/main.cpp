@@ -35,15 +35,15 @@ int dificuldade = 1;                              //variavel para controle de di
 int indPlacar = 0;                                //variavel para controlar o indice do vetor do placar
 bool mouseDown = false;
 bool fullscreen = false;
-bool inteira[11];
-float clok = 1;
+bool inteira[11];//sabe se cada cidade ta inteira e na ultima posiçao se alguma ainda existe
+float clok = 1;  //tempo entre os misseis
 Placar *pl = new Placar();
 bool comecou = false, emPlacar = false, confirmaInsercao = true;
-bool opcao = 0;
-int fase = 1, f = 0;
-bool pause = false;
-filaAnima explosoes = filaAnima(10);
-filaAnima inimigos = filaAnima(10);
+bool opcao = 0; //posicao no menu
+int fase = 1, f = 0; //fase e controle da mesma
+bool pause = false; // pausa o game
+filaAnima explosoes = filaAnima(10); //incializa a estrurura dos nossos tiros explosoes de duracao 10
+filaAnima inimigos = filaAnima(10); //incializa a estrurura dos tiros inimigos explosoes de duracao 10
 char nome[20];
 
 //funcoes
@@ -51,14 +51,14 @@ void idle();
 void display();
 void init();
 void mouse(int button, int state, int x, int y);
-void drawAim();
+void drawAim(); //desenha mira
 void motion(int x, int y);
 void reshape(int w, int h);
 void keyboardPress(unsigned char key, int x, int y);
 void specialKeysPress(int key, int x, int y);
-void startWindow(int argc, char **argv);
-void drawScore();
-menu inicio;
+void startWindow(int argc, char **argv);//inicia o opengl
+void drawScore();//desenha o score
+menu inicio; //instancia um menu
 
 int main(int argc, char **argv)
 {
@@ -68,8 +68,8 @@ int main(int argc, char **argv)
         nome[i] = ' ';
     }
     for (int i = 0; i < 11; i++)
-        inteira[i] = true;
-    srand(time(NULL));
+        inteira[i] = true; //inicia as cidades inteiras
+    srand(time(NULL)); //pega o tempo do sistema para randomizar a funcao rand
     startWindow(argc, argv);
     glutMainLoop();
     return 0;
@@ -181,24 +181,24 @@ void display()
 {
     if (pause)
     {
-        return;
+        return;//nao roda nada se estiver pausado
     }
-    int cor = fase % 2;
+    int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     if (!comecou && !emPlacar)
     {
 
-        inicio.draw((int)opcao);
+        inicio.draw((int)opcao);//faz o menu
     }
     else if (!comecou && emPlacar)
     {
-        drawScore();
+        drawScore();//faz o score
     }
-    else
+    else//roda o jogo normal
     {
-        explosoes.desenhos();
-        inimigos.desenhos();
+        explosoes.desenhos();//desenha nossos tiros
+        inimigos.desenhos();//desenha os tiros inimigos
         //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
         /******   CANHOES  *******/
         glColor3f(0, cor, 1);
@@ -224,12 +224,12 @@ void display()
         /*****   CIDADES   *****/
         glColor3f(cor, 1, 0);
         int i = 3;
-        inteira[10]=false;
+        inteira[10]=false;//nem uma cidade esta inteira
         for (int cd = -60; cd <= 240; cd += 50)
         {
-            if (cd != 90)
+            if (cd != 90)//nao desenha em baixo do canhao central
             {
-                if (inteira[i])
+                if (inteira[i])//se a cidade estiver inteira
                 {
                     glBegin(GL_QUADS);
                     glVertex2f(cd + 20, -94.375);
@@ -237,7 +237,7 @@ void display()
                     glVertex2f(cd, -88.75);
                     glVertex2f(cd + 20, -88.75);
                     glEnd();
-                    inteira[10]=true;
+                    inteira[10]=true;//alguma cidade esta inteira
                 }
                 i++;
             }
@@ -317,7 +317,7 @@ void keyboardPress(unsigned char key, int x, int y)
         case 'p':
             pause = !pause;
             break;
-        case 'r':
+        case 'r'://reseta todas variaveis
             fase = 1;
             pontos = 0;
             f = 0;
@@ -417,7 +417,7 @@ void mouse(int button, int state, int x, int y)
                 mouseDown = true;
                 float xreal = (float)(mousex / 2 - 100);
                 float yreal = (float)(-1 * mousey / 2 + 125);
-                if (xreal < 20 && explosoes.bala[0] > 0)
+                if (xreal < 20 && explosoes.bala[0] > 0)//faz o canhao mais proximo atirar
                 {
                     explosoes.addObjeto(xreal, yreal, -80, -83.125);
                     explosoes.bala[0]--;
@@ -525,18 +525,13 @@ void idle()
         tLast = t;
         return;
     }
-    for (int i = 3; i < 9; i++)
-    {
-        //if (inteira[i])
-          //  inteira[10] = inteira[i];
-    }
     glutPostRedisplay();
     dt = t - tLast;
     explosoes.atualizaTempo(dt);
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
     if (!comecou)
-    {
+    {//idle no menu se precisar
     }
     else
     {
@@ -551,10 +546,10 @@ void idle()
                 {
                     std::mt19937 rng(rand());
                     std::uniform_int_distribution<int> uni(-100, 300);
-                    auto random_x = uni(rng);
+                    auto random_x = uni(rng);//x randomico
                     std::uniform_int_distribution<int> duni(0, 8);
-                    auto cit = duni(rng);
-                    if (inteira[cit])
+                    auto cit = duni(rng);//cidade randomica
+                    if (inteira[cit])//se a cidade ainda existir
                     {
                         if (cit == 2)
                         {
@@ -599,13 +594,13 @@ void idle()
                 }
                 clok = 0;
             }
-        pontos += inimigos.colisao(explosoes);
-        pontos += inimigos.colisao(inimigos);
+        pontos += inimigos.colisao(explosoes);//colide os inimigos com nossas explosoes
+        pontos += inimigos.colisao(inimigos);//colide os inimigos com suas explosoes
         if (inteira[10])
-            inimigos.dividir(inteira);
+            inimigos.dividir(inteira);//divide os misseis inimigos
         clok += dt;
         //std::cout<<inimigos.explo.size()<<std::endl;
-        for (unsigned int i = 0; i < inimigos.explo.size(); i++)
+        for (unsigned int i = 0; i < inimigos.explo.size(); i++)//verifica se a cidade esta sendo destruida
         {
             if (inimigos.explo[i].destruiu)
                 if (inimigos.explo[i].alvo < 9)
@@ -613,7 +608,7 @@ void idle()
                     inteira[inimigos.explo[i].alvo] = false;
                 }
         }
-        if (fase == f && inimigos.explo.size() == 0)
+        if (fase == f && inimigos.explo.size() == 0)//passa de fase
         {
             fase++;
             f = 0;
@@ -628,13 +623,13 @@ void idle()
             inteira[2] = true;
             clok = 1;
             for (int i = 0; i < 9; i++)
-            {
+            {//conta ponto
                 if (inteira[i])
                     pontos += 100;
             }
         }
     }
-    if(!inteira[10]){
+    if(!inteira[10]){//fim do jogo
         emPlacar=true;
         confirmaInsercao=false;
         comecou=false;
