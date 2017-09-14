@@ -24,7 +24,6 @@ public:
     string getPosicao(int i);
     int getPontuacao(int i);
     string getNome(int i);
-    void Teste();
 
 private:
     Jogadores top10[10];

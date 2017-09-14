@@ -10,6 +10,7 @@ std::string to_string(const T &n)
 }
 }
 
+//algoritmo de ordenacao para ordenar as posicoes do placar
 void Placar::bubbleSort(Jogadores arr[], int n)
 {
     int i, j;
@@ -24,6 +25,10 @@ void Placar::bubbleSort(Jogadores arr[], int n)
                 arr[j+1] = aux;
             }
 }
+/*
+Construtor do placar
+abre o arquivo e carrega os dados
+*/
 Placar::Placar()
 {
     string linha;
@@ -50,26 +55,12 @@ Placar::Placar()
     bubbleSort(top10, 10);
 
 }
-void Placar::Teste()
-{
-    arquivo.open("Placar.txt",fstream::in | fstream::out );
-    string linha;
-    if(arquivo.is_open())
-    {
-        arquivo.clear();
-
-        while(arquivo.good())
-        {
-            arquivo >> linha;
-            cout << linha << endl;
-        }
-    }
-}
-
+//Retorna a pontuacao de uma determinada posicao
 int Placar::getPontuacao(int i)
 {
     return top10[i].pontuacao;
 }
+
 string Placar::getNome(int i)
 {
     return top10[i].nome;
