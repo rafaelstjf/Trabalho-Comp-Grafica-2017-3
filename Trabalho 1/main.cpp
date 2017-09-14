@@ -38,7 +38,7 @@ bool fullscreen = false;
 bool inteira[11];
 float clok = 1;
 Placar *pl = new Placar();
-bool comecou = false, emPlacar = false, confirmaInsercao = false;
+bool comecou = false, emPlacar = false, confirmaInsercao = true;
 bool opcao = 0;
 int fase = 1, f = 0;
 bool pause = false;
@@ -290,6 +290,23 @@ void keyboardPress(unsigned char key, int x, int y)
     {
         switch (key)
         {
+        case 27 :
+            exit(0);
+            break;
+        case 'f':
+        if (fullscreen)
+        {
+            glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
+            glutReshapeWindow(800, 450);
+            glutPositionWindow(50, 50);
+        }
+        else
+        {
+            glutSetCursor(GLUT_CURSOR_NONE);
+            glutFullScreen();
+        }
+        fullscreen = !fullscreen;
+        break;
         case 13:
             if (!comecou && !opcao){
                 comecou = true;
@@ -314,13 +331,32 @@ void keyboardPress(unsigned char key, int x, int y)
                     explosoes.bala[i] = 10;
                 inteira[i] = true;
             }
+            comecou=false;
             break;
         }
+
     }
     else
     {
         switch (key)
         {
+        case 'f':
+        if (fullscreen)
+        {
+            glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
+            glutReshapeWindow(800, 450);
+            glutPositionWindow(50, 50);
+        }
+        else
+        {
+            glutSetCursor(GLUT_CURSOR_NONE);
+            glutFullScreen();
+        }
+        fullscreen = !fullscreen;
+        break;
+        case 27 :
+            exit(0);
+            break;
         case 'r':
             fase = 1;
             pontos = 0;
@@ -350,6 +386,8 @@ void keyboardPress(unsigned char key, int x, int y)
             }
             else if (key == 8)
                 nome[indPlacar] = ' ';
+            if(indPlacar>0)
+                indPlacar--;
         }
     }
 }
@@ -480,7 +518,7 @@ void idle()
     static float tLast = 0.0;
     /* Get elapsed time and convert to s */
     t = glutGet(GLUT_ELAPSED_TIME);
-    t /= 500.0;
+    t /= 300.0;
     /* Calculate delta t */
     if (pause)
     {
@@ -596,9 +634,11 @@ void idle()
             }
         }
     }
-    if((!inteira[3]&&!inteira[4]&&!inteira[5]&&!inteira[6]&&!inteira[7]&&!inteira[8])){
+    if(!inteira[10]){
         emPlacar=true;
+        confirmaInsercao=false;
         comecou=false;
+        inteira[10]=true;
     }
 
     tLast = t; //atualiza o tempo, deixar no fim da idle
