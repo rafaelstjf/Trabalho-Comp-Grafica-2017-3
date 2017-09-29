@@ -21,7 +21,7 @@ bool backface  = true;
 int width = 500, height = 500;
 int distOrigem = 30;
 
-int main()
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -49,11 +49,11 @@ void init(void){
     glEnable(GL_CULL_FACE);                // Habilita Backface-Culling
 }
 void display(void){
-    glClear(GL_COLOR_BUFFER_BIT | G_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
     gluPerspective(60.0, (GLfloat) width/(GLfloat) height, 1.0, 200.0);
- 
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity ();
     gluLookAt (0.0, 0.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
