@@ -1,6 +1,6 @@
 #include <iostream>
 #include <GL/glut.h>
-
+#include "Modelo.h"
 using namespace std;
 
 //Funcoes
@@ -20,10 +20,10 @@ bool zbuffer   = true;
 bool backface  = true;
 int width = 500, height = 500;
 int distOrigem = 30;
-
+Modelo* formiga = new Modelo("ant.ply");
 int main(int argc, char** argv)
 {
-    glutInit(&argc, argv);
+    /*glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize (width, height);
     glutInitWindowPosition (100, 100);
@@ -36,6 +36,8 @@ int main(int argc, char** argv)
     glutKeyboardFunc(keyboard);
     glutIdleFunc(idle);
     glutMainLoop();
+    */
+    //formiga->exibirVertices();
     return 0;
 }
 void init(void){
