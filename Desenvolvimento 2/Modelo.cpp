@@ -2,7 +2,6 @@
 
 Modelo::Modelo(string nomeArquivo)
 {
-    cout << nomeArquivo << endl;
     string linha;
     arquivo.open(nomeArquivo, fstream::in);
     if(arquivo.is_open())
