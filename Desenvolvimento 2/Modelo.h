@@ -12,19 +12,16 @@ using namespace std;
 class Modelo
 {
 private:
-    typedef struct Lista
-    {
-        vector<int> elementos;
-    } Lista;
     int tamVertices;
     int tamFaces;
     fstream arquivo;
-    Lista** faces;
+    int** faces;
     double** vertices;
 public:
     Modelo(string nomeArquivo);
     int getTamVertices();
     void exibirVertices();
+    void exibirFaces();
     int getTamFaces();
     virtual ~Modelo();
 

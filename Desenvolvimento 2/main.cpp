@@ -37,7 +37,8 @@ int main(int argc, char** argv)
     glutIdleFunc(idle);
     glutMainLoop();
     */
-    //formiga->exibirVertices();
+    // formiga->exibirVertices();
+    formiga->exibirFaces();
     return 0;
 }
 void init(void){
