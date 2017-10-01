@@ -1,8 +1,24 @@
 #include <iostream>
 #include <GL/glut.h>
 #include "Modelo.h"
+#include <stdlib.h>
+#include <sstream>
+#include <string>
+#ifdef __linux__
+#include <cstring>
+#endif
 using namespace std;
 
+namespace patch //Correcao da funcao to_string
+{
+template <typename T>
+std::string to_string(const T &n)
+{
+    std::ostringstream stm;
+    stm << n;
+    return stm.str();
+}
+}
 //Funcoes
 void init(void);
 void display(void);
@@ -23,6 +39,9 @@ int width = 500, height = 500;
 int distOrigem = 30;
 int modeloAtual = 1;
 bool wireframe = true;
+bool trocaModelo = true;
+int qntTriangulos;
+string bufferTitulo;
 //modelos
 Modelo *ant = new Modelo("ant.ply");
 Modelo *apple = new Modelo("apple.ply");
@@ -59,11 +78,13 @@ void init(void)
 }
 void display(void)
 {
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 200.0);
-
+    bufferTitulo = to_string(qntTriangulos);
+    glutSetWindowTitle(bufferTitulo.c_str());    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(0.0, 10.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -114,9 +135,14 @@ void desenhaVertices(Modelo *m)
 }
 void desenhaFaces(Modelo *m)
 {
+   
     glColor3f(0.0, 1.0, 0.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
+    if(trocaModelo){
+        qntTriangulos = m->getTamFaces()*2;
+        trocaModelo = false;
+    }
     if (wireframe)
         glBegin(GL_LINE_LOOP);
     else
@@ -135,18 +161,23 @@ void keyboard(unsigned char key, int x, int y)
     {
     case 'l':
         modeloAtual = 1;
+        trocaModelo = true;
         break;
     case '2':
         modeloAtual = 2;
+        trocaModelo = true;
         break;
     case '3':
         modeloAtual = 3;
+        trocaModelo = true;
         break;
     case '4':
         modeloAtual = 4;
+        trocaModelo = true;
         break;
     case '5':
         modeloAtual = 5;
+        trocaModelo = true;
         break;
     case '6':
         cout << "Carregando modelo do arquivo" << endl;
@@ -154,6 +185,7 @@ void keyboard(unsigned char key, int x, int y)
         cin >> nomeModelo;
         inputUsuario = new Modelo(nomeModelo);
         modeloAtual = 6;
+        trocaModelo = true;
         break;
     case 'f': //muda o wireframe
         wireframe = !wireframe;
