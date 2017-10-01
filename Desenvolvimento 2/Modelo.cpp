@@ -9,10 +9,10 @@ Modelo::Modelo(string nomeArquivo)
     {
         arquivo.clear();
         getline(arquivo, linha);
-        if (linha == "ply") //verifica se o arquivo realmente � um modelo
+        if (linha.find("ply")!= -1)//verifica se o arquivo realmente � um modelo
         {
             getline(arquivo, linha);
-            if(linha == "format ascii 1.0") //verifica se o arquivo esta no formato ascii
+            if(linha.find("format ascii 1.0")!=-1) //verifica se o arquivo esta no formato ascii
             {
 
                 while (linha.find("element vertex")== -1 && arquivo.good()) //procura a linha com o tamanho dos vertices
