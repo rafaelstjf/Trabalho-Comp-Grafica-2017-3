@@ -11,51 +11,59 @@ Modelo::Modelo(string nomeArquivo)
         getline(arquivo, linha);
         if (linha == "ply") //verifica se o arquivo realmente � um modelo
         {
-            while (linha.find("element vertex")== -1 && arquivo.good()) //procura a linha com o tamanho dos vertices
+            getline(arquivo, linha);
+            if(linha == "format ascii 1.0") //verifica se o arquivo esta no formato ascii
             {
 
-                getline(arquivo, linha);
-            }
+                while (linha.find("element vertex")== -1 && arquivo.good()) //procura a linha com o tamanho dos vertices
+                {
 
-            tamVertices = atoi((linha.substr(14)).c_str());
-            while (linha.find("element face") == -1 && arquivo.good()) //procura a linha com o tamanho das faces
-            {
-                getline(arquivo, linha);
-            }
+                    getline(arquivo, linha);
+                }
 
-            tamFaces = atoi((linha.substr(13)).c_str());
-            while (linha.find("end_header") == -1 && arquivo.good()) //percorre o arquivo at� o fim do cabecalho
-            {
-                getline(arquivo, linha);
-            }
+                tamVertices = atoi((linha.substr(14)).c_str());
+                while (linha.find("element face") == -1 && arquivo.good()) //procura a linha com o tamanho das faces
+                {
+                    getline(arquivo, linha);
+                }
 
-            vertices = new double *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
-            for (int i = 0; i < tamVertices; i++)
-            {
-                vertices[i] = new double[3];
-            }
-            for (int i = 0; i < tamVertices; i++)
-            {
-                arquivo >> vertices[i][0] >> vertices[i][1] >> vertices[i][2];
-            }
-            faces = new  int*[tamFaces]; //cria uma matriz de faces do tamanho informado
-            for (int i = 0; i < tamFaces; i++)
-            {
-                faces[i] = new int[4];
-            }
+                tamFaces = atoi((linha.substr(13)).c_str());
+                while (linha.find("end_header") == -1 && arquivo.good()) //percorre o arquivo at� o fim do cabecalho
+                {
+                    getline(arquivo, linha);
+                }
 
-            for (int i = 0; i < tamFaces; i++)
-            {
-                //considerando que todos os ply tem 4 vertices
-              arquivo >> faces[i][0] >> faces[i][1] >> faces[i][2] >> faces[i][3];
-            }
+                vertices = new double *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
+                for (int i = 0; i < tamVertices; i++)
+                {
+                    vertices[i] = new double[3];
+                }
+                for (int i = 0; i < tamVertices; i++)
+                {
+                    arquivo >> vertices[i][0] >> vertices[i][1] >> vertices[i][2];
+                }
+                faces = new  int*[tamFaces]; //cria uma matriz de faces do tamanho informado
+                for (int i = 0; i < tamFaces; i++)
+                {
+                    faces[i] = new int[4];
+                }
 
+                for (int i = 0; i < tamFaces; i++)
+                {
+                    //considerando que todos os ply tem 4 vertices
+                    arquivo >> faces[i][0] >> faces[i][1] >> faces[i][2] >> faces[i][3];
+                }
+
+            }
+            else
+                cout << "Arquivo nao esta no formato ascii 1.0!" << endl;
         }
         else
             cout << "Arquivo invalido!" << endl;
     }
     else
         cout << "Erro na abertura do arquivo!" << endl;
+    arquivo.close();
 }
 void Modelo::exibirVertices() //funcao para verificacao/testes
 {
@@ -66,16 +74,37 @@ void Modelo::exibirVertices() //funcao para verificacao/testes
         cout << endl;
     }
 }
-void Modelo::exibirFaces(){
-    for(int i = 0; i< tamFaces; i++){
-        for(int j = 0; j<4; j++){
-             cout << faces[i][j] << " ";
-            
+void Modelo::exibirFaces()
+{
+    for(int i = 0; i< tamFaces; i++)
+    {
+        for(int j = 0; j<4; j++)
+        {
+            cout << faces[i][j] << " ";
+
         }
         cout << endl;
     }
 }
+double** Modelo::getVertices()
+{
+    return vertices;
+}
+int** Modelo::getFaces()
+{
+    return faces;
+}
+int Modelo::getTamFaces()
+{
+    return tamFaces;
+}
+int Modelo::getTamVertices()
+{
+    return tamVertices;
+}
 Modelo::~Modelo()
 {
-    //dtor
+
+    delete [] vertices;
+    delete [] faces;
 }

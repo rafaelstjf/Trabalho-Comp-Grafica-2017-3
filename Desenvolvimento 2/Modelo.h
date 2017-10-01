@@ -20,6 +20,8 @@ private:
 public:
     Modelo(string nomeArquivo);
     int getTamVertices();
+    int** getFaces();
+    double** getVertices();
     void exibirVertices();
     void exibirFaces();
     int getTamFaces();
