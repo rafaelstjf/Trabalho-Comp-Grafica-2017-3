@@ -43,8 +43,8 @@ bool trocaModelo = true;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("ant.ply");
-Modelo *apple = new Modelo("apple.ply");
+Modelo *ant = new Modelo("skull.ply");
+Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("cow.ply");
 Modelo *inputUsuario;
 
@@ -69,25 +69,28 @@ void init(void)
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL); // Utiliza cor do objeto como material
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
-    glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
     glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
 }
 void display(void)
 {
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 200.0);
     bufferTitulo = to_string(qntTriangulos);
-    glutSetWindowTitle(bufferTitulo.c_str());    
+    glutSetWindowTitle(bufferTitulo.c_str());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0.0, 10.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(0.0, 0.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+      glRotatef( rotationY, 0.0, 1.0, 0.0 );
+      glRotatef( rotationX, 1.0, 0.0, 0.0 );
 
     switch (modeloAtual)
     {
@@ -135,7 +138,7 @@ void desenhaVertices(Modelo *m)
 }
 void desenhaFaces(Modelo *m)
 {
-   
+
     glColor3f(0.0, 1.0, 0.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
@@ -190,6 +193,17 @@ void keyboard(unsigned char key, int x, int y)
     case 'f': //muda o wireframe
         wireframe = !wireframe;
         break;
+    case '+' :
+         distOrigem--;
+         if(distOrigem<0) distOrigem=0;
+         break;
+    case '-' :
+         distOrigem++;
+         if(distOrigem>180) distOrigem=180;
+         break;
+    case 27:
+         exit(0);
+         break;
     }
 }
 void motion(int x, int y)
