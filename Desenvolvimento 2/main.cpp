@@ -146,16 +146,16 @@ void desenhaFaces(Modelo *m)
         qntTriangulos = m->getTamFaces()*2;
         trocaModelo = false;
     }
+    for (int i = 0; i < m->getTamFaces(); i++)
+    {
     if (wireframe)
         glBegin(GL_LINE_LOOP);
     else
         glBegin(GL_TRIANGLE_FAN);
-    for (int i = 0; i < m->getTamFaces(); i++)
-    {
-        for (int k = 0; k < 4; k++)
+        for (int k = 1; k < 4; k++)
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
-    }
     glEnd();
+    }
 }
 void keyboard(unsigned char key, int x, int y)
 {
