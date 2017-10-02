@@ -53,13 +53,14 @@ Modelo::Modelo(string nomeArquivo)
                     //considerando que todos os ply tem 4 vertices
                     arquivo >> faces[i][0] >> faces[i][1] >> faces[i][2] >> faces[i][3];
                 }
-
+                cout << "Modelo carregado!" << endl;
             }
             else
                 cout << "Arquivo nao esta no formato ascii 1.0!" << endl;
         }
         else
             cout << "Arquivo invalido!" << endl;
+
     }
     else
         cout << "Erro na abertura do arquivo!" << endl;

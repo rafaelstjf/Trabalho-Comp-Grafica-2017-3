@@ -43,10 +43,10 @@ bool trocaModelo = true;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("skull.ply");
-Modelo *apple = new Modelo("teapot.ply");
+Modelo *ant = new Modelo("ant.ply");
+Modelo *apple = new Modelo("apple.ply");
 Modelo *cow = new Modelo("cow.ply");
-Modelo *inputUsuario;
+Modelo *inputUsuario = nullptr;
 
 int main(int argc, char **argv)
 {
@@ -83,14 +83,14 @@ void display(void)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 200.0);
-    bufferTitulo = to_string(qntTriangulos);
+    bufferTitulo = patch::to_string(qntTriangulos);
     glutSetWindowTitle(bufferTitulo.c_str());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(0.0, 0.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-      glRotatef( rotationY, 0.0, 1.0, 0.0 );
-      glRotatef( rotationX, 1.0, 0.0, 0.0 );
+    glRotatef( rotationY, 0.0, 1.0, 0.0 );
+    glRotatef( rotationX, 1.0, 0.0, 0.0 );
 
     switch (modeloAtual)
     {
@@ -110,7 +110,8 @@ void display(void)
 
         break;
     case 6:
-
+        if(inputUsuario != nullptr)
+        desenhaFaces(inputUsuario);
         break;
     }
     glutSwapBuffers();
@@ -142,19 +143,20 @@ void desenhaFaces(Modelo *m)
     glColor3f(0.0, 1.0, 0.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
-    if(trocaModelo){
+    if(trocaModelo)
+    {
         qntTriangulos = m->getTamFaces()*2;
         trocaModelo = false;
     }
     for (int i = 0; i < m->getTamFaces(); i++)
     {
-    if (wireframe)
-        glBegin(GL_LINE_LOOP);
-    else
-        glBegin(GL_TRIANGLE_FAN);
+        if (wireframe)
+            glBegin(GL_LINE_LOOP);
+        else
+            glBegin(GL_TRIANGLE_FAN);
         for (int k = 1; k < 4; k++)
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
-    glEnd();
+        glEnd();
     }
 }
 void keyboard(unsigned char key, int x, int y)
@@ -183,27 +185,29 @@ void keyboard(unsigned char key, int x, int y)
         trocaModelo = true;
         break;
     case '6':
+        modeloAtual = 6;
+        trocaModelo = 6;
+        break;
+    case 'c':
         cout << "Carregando modelo do arquivo" << endl;
         cout << "Digite o nome+extensao do modelo" << endl;
         cin >> nomeModelo;
         inputUsuario = new Modelo(nomeModelo);
-        modeloAtual = 6;
-        trocaModelo = true;
         break;
     case 'f': //muda o wireframe
         wireframe = !wireframe;
         break;
     case '+' :
-         distOrigem--;
-         if(distOrigem<0) distOrigem=0;
-         break;
+        distOrigem--;
+        if(distOrigem<0) distOrigem=0;
+        break;
     case '-' :
-         distOrigem++;
-         if(distOrigem>180) distOrigem=180;
-         break;
+        distOrigem++;
+        if(distOrigem>180) distOrigem=180;
+        break;
     case 27:
-         exit(0);
-         break;
+        exit(0);
+        break;
     }
 }
 void motion(int x, int y)
@@ -221,11 +225,13 @@ void mouse(int button, int state, int x, int y)
         last_y = y;
     }
     if (button == 3 && state == GLUT_DOWN)
-    { //zoom out
+    {
+        //zoom out
         distOrigem--;
     }
     if (button == 4 && state == GLUT_DOWN)
-    { //zoom in
+    {
+        //zoom in
         distOrigem++;
     }
 }
