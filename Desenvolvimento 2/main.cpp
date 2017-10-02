@@ -89,8 +89,8 @@ void display(void)
     glLoadIdentity();
     gluLookAt(0.0, 0.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    glRotatef( rotationY, 0.0, 1.0, 0.0 );
-    glRotatef( rotationX, 1.0, 0.0, 0.0 );
+    glRotatef(rotationY, 0.0, 1.0, 0.0);
+    glRotatef(rotationX, 1.0, 0.0, 0.0);
 
     switch (modeloAtual)
     {
@@ -110,8 +110,8 @@ void display(void)
 
         break;
     case 6:
-        if(inputUsuario != nullptr)
-        desenhaFaces(inputUsuario);
+        if (inputUsuario != nullptr)
+            desenhaFaces(inputUsuario);
         break;
     }
     glutSwapBuffers();
@@ -130,12 +130,13 @@ void desenhaVertices(Modelo *m)
 {
     glColor3f(1.0, 0.0, 0.0);
     double **vertices = m->getVertices();
-    glBegin(GL_LINE_LOOP);
+
     for (int i = 0; i < m->getTamVertices(); i++)
     {
+        glBegin(GL_LINE_LOOP);
         glVertex3f(vertices[i][0], vertices[i][1], vertices[i][2]);
+        glEnd();
     }
-    glEnd();
 }
 void desenhaFaces(Modelo *m)
 {
@@ -143,9 +144,9 @@ void desenhaFaces(Modelo *m)
     glColor3f(0.0, 1.0, 0.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
-    if(trocaModelo)
+    if (trocaModelo)
     {
-        qntTriangulos = m->getTamFaces()*2;
+        qntTriangulos = m->getTamFaces() * 2;
         trocaModelo = false;
     }
     for (int i = 0; i < m->getTamFaces(); i++)
@@ -153,10 +154,18 @@ void desenhaFaces(Modelo *m)
         if (wireframe)
             glBegin(GL_LINE_LOOP);
         else
+        {
+            glColor3f(1.0, 0.0, 0.0);
+            glBegin(GL_LINE_LOOP);
+            for (int k = 1; k < 4; k++)
+                glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+            glEnd();
+            glColor3f(0.0, 1.0, 0.0);
             glBegin(GL_TRIANGLE_FAN);
-        for (int k = 1; k < 4; k++)
-            glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
-        glEnd();
+            for (int k = 1; k < 4; k++)
+                glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+            glEnd();
+        }
     }
 }
 void keyboard(unsigned char key, int x, int y)
@@ -197,13 +206,15 @@ void keyboard(unsigned char key, int x, int y)
     case 'f': //muda o wireframe
         wireframe = !wireframe;
         break;
-    case '+' :
+    case '+':
         distOrigem--;
-        if(distOrigem<0) distOrigem=0;
+        if (distOrigem < 0)
+            distOrigem = 0;
         break;
-    case '-' :
+    case '-':
         distOrigem++;
-        if(distOrigem>180) distOrigem=180;
+        if (distOrigem > 180)
+            distOrigem = 180;
         break;
     case 27:
         exit(0);
