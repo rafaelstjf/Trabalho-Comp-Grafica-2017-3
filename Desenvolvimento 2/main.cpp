@@ -154,18 +154,10 @@ void desenhaFaces(Modelo *m)
         if (wireframe)
             glBegin(GL_LINE_LOOP);
         else
-        {
-            glColor3f(1.0, 0.0, 0.0);
-            glBegin(GL_LINE_LOOP);
-            for (int k = 1; k < 4; k++)
-                glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
-            glEnd();
-            glColor3f(0.0, 1.0, 0.0);
             glBegin(GL_TRIANGLE_FAN);
-            for (int k = 1; k < 4; k++)
-                glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
-            glEnd();
-        }
+        for (int k = 1; k < 4; k++)
+            glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+        glEnd();
     }
 }
 void keyboard(unsigned char key, int x, int y)
