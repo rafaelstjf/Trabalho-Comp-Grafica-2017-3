@@ -36,14 +36,36 @@ Modelo::Modelo(string nomeArquivo)
                 }
 
                 vertices = new double *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
+                rgb = new int *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
                 for (int i = 0; i < tamVertices; i++)
                 {
                     vertices[i] = new double[3];
+                    rgb[i] = new int[3];
+                }
+                for(int i = 0; i<tamVertices; i++){
+                    for(int j = 0; j<3; j++)
+                        rgb[i][j] = Branco;
                 }
                 for (int i = 0; i < tamVertices; i++)
                 {
-                    arquivo >> vertices[i][0] >> vertices[i][1] >> vertices[i][2];
-                }
+                    int count = 0;
+                    int countrgb = 0;
+                    string temp;
+                    getline(arquivo, linha);
+                    stringstream ss(linha);
+                    while(getline(ss, temp,(char)32)){
+                        if(count<3){
+                            vertices[i][count] = atof(temp.c_str());
+                            count++;
+                        }
+                        else
+                        /* if(count>=3 && temCor){
+                            rgb[i][countrgb] = atoi(temp.c_str());
+                            countrgb++;
+                        }*/
+                        break;
+                    }
+                    }
                 faces = new int *[tamFaces]; //cria uma matriz de faces do tamanho informado
                 for (int i = 0; i < tamFaces; i++)
                 {
@@ -125,6 +147,9 @@ int Modelo::getTamVertices()
 double **Modelo::getNormal()
 {
     return normal;
+}
+int **Modelo::getCor(){
+    return rgb;
 }
 Modelo::~Modelo()
 {
