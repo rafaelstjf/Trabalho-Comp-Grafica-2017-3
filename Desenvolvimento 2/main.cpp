@@ -43,8 +43,8 @@ bool trocaModelo = true;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("ant.ply");
-Modelo *apple = new Modelo("apple.ply");
+Modelo *ant = new Modelo("skull.ply");
+Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("cow.ply");
 Modelo *inputUsuario = nullptr;
 
@@ -141,12 +141,12 @@ void desenhaVertices(Modelo *m)
 void desenhaFaces(Modelo *m)
 {
 
-    glColor3f(0.0, 1.0, 0.0);
+    glColor3f(1.0, 1.0, 1.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
     if (trocaModelo)
     {
-        qntTriangulos = m->getTamFaces() * 2;
+        qntTriangulos = m->getTamFaces();
         trocaModelo = false;
     }
     for (int i = 0; i < m->getTamFaces(); i++)
