@@ -192,7 +192,7 @@ void desenhaFaces(Modelo *m)
     }
     for (int i = 0; i < m->getTamFaces(); i++)
     {
-        glFrontFace(GL_CW);
+        glFrontFace(GL_CCW);
         glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
         setMaterial();
         if (wireframe)
