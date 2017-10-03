@@ -40,11 +40,11 @@ int distOrigem = 30;
 int modeloAtual = 1;
 bool wireframe = true;
 bool trocaModelo = true;
-bool back_face = true;
+bool back_face = false;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("skulls.ply");
+Modelo *ant = new Modelo("big_dodge.ply");
 Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("cow.ply");
 Modelo *inputUsuario = nullptr;
@@ -77,7 +77,7 @@ void init(void)
    // Cor da fonte de luz (RGBA)
    GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
    // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
-   GLfloat posicao_luz[] = { 50.0, 50.0, 50.0, 1.0};
+   GLfloat posicao_luz[] = { 500.0, 500.0, 500.0, 1.0};
 
    // Define parametros da luz
    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
@@ -90,6 +90,22 @@ void init(void)
     glEnable(GL_CULL_FACE); // Habilita Backface-Culling
 
 }
+
+void setMaterial(void)
+{
+   // Material do objeto (neste caso, ruby). Parametros em RGBA
+   GLfloat objeto_ambient[]   = { .1, .1, .1, 1.0 };
+   GLfloat objeto_difusa[]    = { 1, 1, 1, 1.0 };
+   GLfloat objeto_especular[] = { 1, 1, 1, 1.0 };
+   GLfloat objeto_brilho[]    = { 90.0f };
+
+   // Define os parametros da superficie a ser iluminada
+   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+}
+
 void display(void)
 {
 
@@ -127,7 +143,8 @@ void display(void)
         desenhaFaces(cow);
         break;
     case 4:
-        glutSolidTeapot(5);
+        setMaterial();
+        glutSolidTeapot(2);
         break;
     case 5:
 
@@ -175,8 +192,9 @@ void desenhaFaces(Modelo *m)
     }
     for (int i = 0; i < m->getTamFaces(); i++)
     {
-        glFrontFace(GL_CCW);
+        glFrontFace(GL_CW);
         glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
+        setMaterial();
         if (wireframe)
             glBegin(GL_LINE_LOOP);
         else
