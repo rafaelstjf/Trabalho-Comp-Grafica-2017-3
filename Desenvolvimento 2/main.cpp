@@ -44,7 +44,7 @@ bool back_face = true;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("skull.ply");
+Modelo *ant = new Modelo("skulls.ply");
 Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("cow.ply");
 Modelo *inputUsuario = nullptr;
@@ -73,10 +73,22 @@ void init(void)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL); // Utiliza cor do objeto como material
+
+   // Cor da fonte de luz (RGBA)
+   GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
+   // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
+   GLfloat posicao_luz[] = { 50.0, 50.0, 50.0, 1.0};
+
+   // Define parametros da luz
+   glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
+   glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
+   glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
+   glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
-    glEnable(GL_DEPTH_TEST); // Habilita Z-buffer    
+    glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
     glEnable(GL_CULL_FACE); // Habilita Backface-Culling
-    
+
 }
 void display(void)
 {
@@ -115,7 +127,7 @@ void display(void)
         desenhaFaces(cow);
         break;
     case 4:
-
+        glutSolidTeapot(5);
         break;
     case 5:
 
@@ -163,11 +175,12 @@ void desenhaFaces(Modelo *m)
     }
     for (int i = 0; i < m->getTamFaces(); i++)
     {
+        glFrontFace(GL_CCW);
         glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
         if (wireframe)
             glBegin(GL_LINE_LOOP);
         else
-            glBegin(GL_TRIANGLE_FAN);
+            glBegin(GL_POLYGON);
         for (int k = 1; k < 4; k++)
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
         glEnd();
