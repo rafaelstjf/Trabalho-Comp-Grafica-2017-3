@@ -17,6 +17,7 @@ private:
     fstream arquivo;
     int** faces;
     double** vertices;
+    double** normal;
 public:
     Modelo(string nomeArquivo);
     int getTamVertices();
@@ -25,6 +26,7 @@ public:
     void exibirVertices();
     void exibirFaces();
     int getTamFaces();
+    double** getNormal();
     virtual ~Modelo();
 
 };
