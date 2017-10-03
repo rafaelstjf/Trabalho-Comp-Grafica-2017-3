@@ -74,7 +74,9 @@ void init(void)
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL); // Utiliza cor do objeto como material
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
-    glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
+    glEnable(GL_DEPTH_TEST); // Habilita Z-buffer    
+    glEnable(GL_CULL_FACE); // Habilita Backface-Culling
+    
 }
 void display(void)
 {
@@ -91,6 +93,11 @@ void display(void)
 
     glRotatef(rotationY, 0.0, 1.0, 0.0);
     glRotatef(rotationX, 1.0, 0.0, 0.0);
+    if (zbuffer)
+        glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
+    else
+        glDisable(GL_DEPTH_TEST); // Habilita Z-buffer
+
     if (back_face)
         glEnable(GL_CULL_FACE); // Habilita Backface-Culling
     else
@@ -160,7 +167,7 @@ void desenhaFaces(Modelo *m)
         if (wireframe)
             glBegin(GL_LINE_LOOP);
         else
-            glBegin(GL_TRIANGLE_STRIP);
+            glBegin(GL_TRIANGLE_FAN);
         for (int k = 1; k < 4; k++)
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
         glEnd();
@@ -220,6 +227,13 @@ void keyboard(unsigned char key, int x, int y)
             cout << "Back face culling ativado!" << endl;
         else
             cout << "Back face culling desativado!" << endl;
+        break;
+    case 'z':
+        zbuffer = !zbuffer;
+        if (zbuffer)
+            cout << "Zbuffer culling ativado!" << endl;
+        else
+            cout << "Zbuffer culling desativado!" << endl;
         break;
     case 27:
         exit(0);
