@@ -6,7 +6,11 @@
 #include <string>
 #include <stdlib.h>
 #include <vector>
-
+#include <sstream>
+#ifndef _LINUX_
+#include <cstring>
+#endif
+#define Branco 255
 using namespace std;
 
 class Modelo
@@ -17,6 +21,8 @@ private:
     fstream arquivo;
     int** faces;
     double** vertices;
+    bool temCor = true;
+    int** rgb;
     double** normal;
 public:
     Modelo(string nomeArquivo);
@@ -27,6 +33,7 @@ public:
     void exibirFaces();
     int getTamFaces();
     double** getNormal();
+    int** getCor();
     virtual ~Modelo();
 
 };
