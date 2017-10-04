@@ -117,7 +117,7 @@ Modelo::Modelo(string nomeArquivo)
                     normal[i][2] = (n1[0] * n2[1] - n1[1] * n2[0]);
                     float dist1 = sqrt( pow(normal[i][0],2) + pow(normal[i][0],2));
                     float dist2 = sqrt( pow(normal[i][1],2) + pow(normal[i][1],2));
-                    float dist3 = sqrt( pow(normal[i][2],2) + pow(normal[i][2],2) + pow(normal[i][2],2));
+                    float dist3 = sqrt( pow(normal[i][2],2) + pow(normal[i][2],2));
                     float dist = dist1*dist2*dist3;
                     normal[i][0] = normal[i][0]/dist;
                     normal[i][1] = normal[i][1]/dist;
