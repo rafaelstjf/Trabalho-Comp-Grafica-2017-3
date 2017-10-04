@@ -115,7 +115,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 200.0);
+    gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 20000000.0);
     bufferTitulo = patch::to_string(qntTriangulos);
     glutSetWindowTitle(bufferTitulo.c_str());
     glMatrixMode(GL_MODELVIEW);
