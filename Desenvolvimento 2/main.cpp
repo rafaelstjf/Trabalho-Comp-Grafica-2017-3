@@ -47,6 +47,7 @@ string bufferTitulo;
 Modelo *ant = new Modelo("big_dodge.ply");
 Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("cow.ply");
+Modelo *ketchup = new Modelo("ketchup.ply");
 Modelo *inputUsuario = nullptr;
 
 int main(int argc, char **argv)
@@ -68,22 +69,23 @@ int main(int argc, char **argv)
 }
 void init(void)
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.4, 0.4, 0.4, 0.0);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL); // Utiliza cor do objeto como material
 
-   // Cor da fonte de luz (RGBA)
-   GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
-   // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
-   GLfloat posicao_luz[] = { 500.0, 500.0, 500.0, 1.0};
+    // Cor da fonte de luz (RGBA)
+    GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
+    GLfloat cor_luzA[]     = { 1.0, 1.0, 1.0, 1.0};
+    // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
+    GLfloat posicao_luz[] = { 500.0, 500.0, 500.0, 1.0};
 
-   // Define parametros da luz
-   glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
-   glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
-   glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
-   glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+    // Define parametros da luz
+    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luzA);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
 
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
@@ -94,17 +96,17 @@ void init(void)
 
 void setMaterial(void)
 {
-   // Material do objeto (neste caso, ruby). Parametros em RGBA
-   GLfloat objeto_ambient[]   = { .1, .1, .1, 1.0 };
-   GLfloat objeto_difusa[]    = { 1, 1, 1, 1.0 };
-   GLfloat objeto_especular[] = { 1, 1, 1, 1.0 };
-   GLfloat objeto_brilho[]    = { 90.0f };
+    // Material do objeto (neste caso, ruby). Parametros em RGBA
+    GLfloat objeto_ambient[]   = { .1, .1, .1, 1.0 };
+    GLfloat objeto_difusa[]    = { 1, 1, 1, 1.0 };
+    GLfloat objeto_especular[] = { 1, 1, 1, 1.0 };
+    GLfloat objeto_brilho[]    = { 90.0f };
 
-   // Define os parametros da superficie a ser iluminada
-   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
-   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+    // Define os parametros da superficie a ser iluminada
+    glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 }
 
 void display(void)
@@ -122,6 +124,8 @@ void display(void)
 
     glRotatef(rotationY, 0.0, 1.0, 0.0);
     glRotatef(rotationX, 1.0, 0.0, 0.0);
+    glShadeModel(GL_SMOOTH);
+
     if (zbuffer)
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
     else
@@ -148,7 +152,7 @@ void display(void)
         glutSolidTeapot(2);
         break;
     case 5:
-
+        desenhaFaces(ketchup);
         break;
     case 6:
         if (inputUsuario != nullptr)

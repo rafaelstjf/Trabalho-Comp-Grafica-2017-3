@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <sstream>
+#include <math.h>
 #ifndef _LINUX_
 #include <cstring>
 #endif
