@@ -16,25 +16,16 @@ Modelo::Modelo(string nomeArquivo)
             getline(arquivo, linha);
             if (linha.find("format ascii 1.0") != -1) //verifica se o arquivo esta no formato ascii
             {
-
-                while (linha.find("element vertex") == -1 && arquivo.good()) //procura a linha com o tamanho dos vertices
+                while (linha.find("end_header") == -1 && arquivo.good())
                 {
-
+                    if (linha.find("element vertex") != -1)
+                        tamVertices = atoi((linha.substr(14)).c_str());
+                    else if (linha.find("element face") != -1)
+                        tamFaces = atoi((linha.substr(13)).c_str());
+                    else if (linha.find("property uchar red") != -1 || linha.find("R ") != -1)
+                        temCor = true;
                     getline(arquivo, linha);
                 }
-
-                tamVertices = atoi((linha.substr(14)).c_str());
-                while (linha.find("element face") == -1 && arquivo.good()) //procura a linha com o tamanho das faces
-                {
-                    getline(arquivo, linha);
-                }
-
-                tamFaces = atoi((linha.substr(13)).c_str());
-                while (linha.find("end_header") == -1 && arquivo.good()) //percorre o arquivo at� o fim do cabecalho
-                {
-                    getline(arquivo, linha);
-                }
-
                 vertices = new double *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
                 rgb = new int *[tamVertices];         //aloca uma matriz de vertices do tamanho informado
                 for (int i = 0; i < tamVertices; i++)
@@ -66,7 +57,8 @@ Modelo::Modelo(string nomeArquivo)
                             rgb[i][countrgb] = atoi(temp.c_str());
                             countrgb++;
                         }
-                        else if (countrgb >= 3 && count >= 3){
+                        else if (countrgb >= 3 && count >= 3)
+                        {
                             break;
                         }
                     }
