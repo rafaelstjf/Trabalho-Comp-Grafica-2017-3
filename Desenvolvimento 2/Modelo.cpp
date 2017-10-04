@@ -36,15 +36,15 @@ Modelo::Modelo(string nomeArquivo)
                 }
 
                 vertices = new double *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
-                rgb = new int *[tamVertices]; //aloca uma matriz de vertices do tamanho informado
+                rgb = new int *[tamVertices];         //aloca uma matriz de vertices do tamanho informado
                 for (int i = 0; i < tamVertices; i++)
                 {
                     vertices[i] = new double[3];
                     rgb[i] = new int[3];
                 }
-                for(int i = 0; i<tamVertices; i++)
+                for (int i = 0; i < tamVertices; i++)
                 {
-                    for(int j = 0; j<3; j++)
+                    for (int j = 0; j < 3; j++)
                         rgb[i][j] = Branco;
                 }
                 for (int i = 0; i < tamVertices; i++)
@@ -54,36 +54,44 @@ Modelo::Modelo(string nomeArquivo)
                     string temp;
                     getline(arquivo, linha);
                     stringstream ss(linha);
-                    while(getline(ss, temp,(char)32))
+                    while (getline(ss, temp, (char)32))
                     {
-                        if(count<3)
+                        if (count < 3)
                         {
                             vertices[i][count] = atof(temp.c_str());
                             count++;
                         }
-                        else
-                            /* if(count>=3 && temCor){
-                                rgb[i][countrgb] = atoi(temp.c_str());
-                                countrgb++;
-                            }*/
+                        else if (count >= 3 && temCor && countrgb < 3)
+                        {
+                            rgb[i][countrgb] = atoi(temp.c_str());
+                            countrgb++;
+                        }
+                        else if (countrgb >= 3 && count >= 3){
                             break;
+                        }
                     }
-                    if(vertices[i][0]<minx)minx=vertices[i][0];
-                    if(vertices[i][1]<miny)miny=vertices[i][1];
-                    if(vertices[i][2]<minz)minz=vertices[i][2];
+                    if (vertices[i][0] < minx)
+                        minx = vertices[i][0];
+                    if (vertices[i][1] < miny)
+                        miny = vertices[i][1];
+                    if (vertices[i][2] < minz)
+                        minz = vertices[i][2];
 
-                    if(vertices[i][0]>maxx)maxx=vertices[i][0];
-                    if(vertices[i][1]>maxy)maxy=vertices[i][1];
-                    if(vertices[i][2]>maxz)maxz=vertices[i][2];
+                    if (vertices[i][0] > maxx)
+                        maxx = vertices[i][0];
+                    if (vertices[i][1] > maxy)
+                        maxy = vertices[i][1];
+                    if (vertices[i][2] > maxz)
+                        maxz = vertices[i][2];
                 }
-                maxx=(maxx-minx)/2;
-                maxy=(maxy-miny)/2;
-                maxz=(maxz-minz)/2;
+                maxx = (maxx - minx) / 2;
+                maxy = (maxy - miny) / 2;
+                maxz = (maxz - minz) / 2;
                 for (int i = 0; i < tamVertices; i++)
                 {
-                    vertices[i][0]-=minx+maxx;
-                    vertices[i][1]-=miny+maxy;
-                    vertices[i][2]-=minz+maxz;
+                    vertices[i][0] -= minx + maxx;
+                    vertices[i][1] -= miny + maxy;
+                    vertices[i][2] -= minz + maxz;
                 }
 
                 faces = new int *[tamFaces]; //cria uma matriz de faces do tamanho informado
@@ -115,13 +123,10 @@ Modelo::Modelo(string nomeArquivo)
                     normal[i][0] = (n1[1] * n2[2] - n1[2] * n2[1]);
                     normal[i][1] = (n1[2] * n2[0] - n1[0] * n2[2]);
                     normal[i][2] = (n1[0] * n2[1] - n1[1] * n2[0]);
-                    float dist1 = sqrt( pow(normal[i][0],2) + pow(normal[i][0],2));
-                    float dist2 = sqrt( pow(normal[i][1],2) + pow(normal[i][1],2));
-                    float dist3 = sqrt( pow(normal[i][2],2) + pow(normal[i][2],2));
-                    float dist = dist1*dist2*dist3;
-                    normal[i][0] = normal[i][0]/dist;
-                    normal[i][1] = normal[i][1]/dist;
-                    normal[i][2] = normal[i][2]/dist;
+                    float dist = sqrt(pow(normal[i][0], 2) + pow(normal[i][1], 2) + pow(normal[i][2], 2));
+                    normal[i][0] = normal[i][0] / dist;
+                    normal[i][1] = normal[i][1] / dist;
+                    normal[i][2] = normal[i][2] / dist;
                 }
                 cout << "Modelo carregado!" << endl;
             }
