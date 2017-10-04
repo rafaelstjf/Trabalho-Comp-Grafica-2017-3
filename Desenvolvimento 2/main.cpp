@@ -29,6 +29,7 @@ void motion(int x, int y);
 void mouse(int button, int state, int x, int y);
 void desenhaVertices(Modelo *m);
 void desenhaFaces(Modelo *m);
+void exibirEixos();
 //Variaveis
 float rotationX = 0.0, rotationY = 0.0;
 int last_x, last_y;
@@ -41,6 +42,7 @@ int modeloAtual = 1;
 bool wireframe = true;
 bool trocaModelo = true;
 bool back_face = false;
+bool flat = false;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
@@ -70,37 +72,53 @@ int main(int argc, char **argv)
 void init(void)
 {
     glClearColor(0.4, 0.4, 0.4, 0.0);
-    glShadeModel(GL_SMOOTH);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
     glEnable(GL_COLOR_MATERIAL); // Utiliza cor do objeto como material
 
     // Cor da fonte de luz (RGBA)
-    GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
-    GLfloat cor_luzA[]     = { 1.0, 1.0, 1.0, 1.0};
+    GLfloat cor_luz[] = {0.6, 0.6, 0.6, 1.0};
     // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
-    GLfloat posicao_luz[] = { 500.0, 500.0, 500.0, 1.0};
-
+    GLfloat posicao_luz[] = {120.0, 100.0, -50.0, 1.0};
+    GLfloat posicao_luz2[] = {-120.0, -100.0, 50.0, 1.0};
     // Define parametros da luz
-    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luzA);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
     glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
     glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, cor_luz);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, cor_luz);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, cor_luz);
+    glLightfv(GL_LIGHT1, GL_POSITION, posicao_luz2);
 
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
-    glEnable(GL_CULL_FACE); // Habilita Backface-Culling
+    glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
     glEnable(GL_NORMALIZE);
-
 }
-
+void exibirEixos()
+{
+    /*   glBegin(GL_LINES);
+    glVertex3f();
+    glVertex3f();
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f();
+    glVertex3f();
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3f();
+    glVertex3f();
+    glEnd();*/
+}
 void setMaterial(void)
 {
     // Material do objeto (neste caso, ruby). Parametros em RGBA
-    GLfloat objeto_ambient[]   = { .1, .1, .1, 1.0 };
-    GLfloat objeto_difusa[]    = { 1, 1, 1, 1.0 };
-    GLfloat objeto_especular[] = { 1, 1, 1, 1.0 };
-    GLfloat objeto_brilho[]    = { 90.0f };
+    GLfloat objeto_ambient[] = {.1, .1, .1, 1.0};
+    GLfloat objeto_difusa[] = {0.4, 0.4, 0.4, 1.0};
+    GLfloat objeto_especular[] = {1, 1, 1, 1.0};
+    GLfloat objeto_brilho[] = {90};
 
     // Define os parametros da superficie a ser iluminada
     glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
@@ -135,6 +153,10 @@ void display(void)
         glEnable(GL_CULL_FACE); // Habilita Backface-Culling
     else
         glDisable(GL_CULL_FACE); // Habilita Backface-Culling
+    if (flat)
+        glShadeModel(GL_FLAT);
+    else
+        glShadeModel(GL_SMOOTH);
 
     switch (modeloAtual)
     {
@@ -270,6 +292,13 @@ void keyboard(unsigned char key, int x, int y)
             cout << "Zbuffer culling ativado!" << endl;
         else
             cout << "Zbuffer culling desativado!" << endl;
+        break;
+     case 't':
+        flat = !flat;
+        if (flat)
+            cout << "Flat ativado!" << endl;
+        else
+            cout << "Smooth ativado!" << endl;
         break;
     case 27:
         exit(0);
