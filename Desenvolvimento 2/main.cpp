@@ -217,7 +217,7 @@ void desenhaFaces(Modelo *m)
     {
         qntTriangulos = m->getTamFaces();
         trocaModelo = false;
-    }    
+    }
     for (int i = 0; i < m->getTamFaces(); i++)
     {
         glFrontFace(GL_CCW);
