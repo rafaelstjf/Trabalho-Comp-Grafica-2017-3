@@ -65,7 +65,24 @@ Modelo::Modelo(string nomeArquivo)
                         }*/
                         break;
                     }
+                        if(vertices[i][0]<minx)minx=vertices[i][0];
+                        if(vertices[i][1]<miny)miny=vertices[i][1];
+                        if(vertices[i][2]<minz)minz=vertices[i][2];
+
+                        if(vertices[i][0]>maxx)maxx=vertices[i][0];
+                        if(vertices[i][1]>maxy)maxy=vertices[i][1];
+                        if(vertices[i][2]>maxz)maxz=vertices[i][2];
                     }
+                    maxx=(maxx-minx)/2;
+                    maxy=(maxy-miny)/2;
+                    maxz=(maxz-minz)/2;
+                    for (int i = 0; i < tamVertices; i++)
+                    {
+                        vertices[i][0]-=minx+maxx;
+                        vertices[i][1]-=miny+maxy;
+                        vertices[i][2]-=minz+maxz;
+                    }
+
                 faces = new int *[tamFaces]; //cria uma matriz de faces do tamanho informado
                 for (int i = 0; i < tamFaces; i++)
                 {

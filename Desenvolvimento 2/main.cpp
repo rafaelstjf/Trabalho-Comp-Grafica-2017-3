@@ -88,6 +88,7 @@ void init(void)
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
     glEnable(GL_CULL_FACE); // Habilita Backface-Culling
+    glEnable(GL_NORMALIZE);
 
 }
 
@@ -192,13 +193,13 @@ void desenhaFaces(Modelo *m)
     }
     for (int i = 0; i < m->getTamFaces(); i++)
     {
-        glFrontFace(GL_CCW);
-        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
+        glFrontFace(GL_CW);
         setMaterial();
         if (wireframe)
             glBegin(GL_LINE_LOOP);
         else
             glBegin(GL_POLYGON);
+        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
         for (int k = 1; k < 4; k++)
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
         glEnd();

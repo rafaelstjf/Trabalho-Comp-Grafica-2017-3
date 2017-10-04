@@ -34,6 +34,7 @@ public:
     int getTamFaces();
     double** getNormal();
     int** getCor();
+    float minx=999999,miny=999999,minz=999999,maxx=-999999,maxy=-999999,maxz=-999999;
     virtual ~Modelo();
 
 };
