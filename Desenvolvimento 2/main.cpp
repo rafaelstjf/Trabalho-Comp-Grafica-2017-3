@@ -114,12 +114,13 @@ void exibirEixos()
 }
 void setMaterial(void)
 {
-    // Material do objeto (neste caso, ruby). Parametros em RGBA
-    GLfloat objeto_ambient[] = {.1, .1, .1, 1.0};
-    GLfloat objeto_difusa[] = {0.4, 0.4, 0.4, 1.0};
-    GLfloat objeto_especular[] = {1, 1, 1, 1.0};
-    GLfloat objeto_brilho[] = {90};
+    //silver
+    GLfloat objeto_ambient[] = {0.19225, 0.19225, 0.19225, 1.0};
+    GLfloat objeto_difusa[] = {0.50754, 0.50754, 0.50754, 1.0};
+    GLfloat objeto_especular[] = {0.508273, 0.508273, 0.508273, 1.0};
+    GLfloat objeto_brilho[] = {0.4};
 
+    
     // Define os parametros da superficie a ser iluminada
     glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
