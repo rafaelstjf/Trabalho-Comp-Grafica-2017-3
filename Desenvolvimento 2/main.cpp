@@ -46,10 +46,11 @@ bool flat = false;
 int qntTriangulos;
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("big_dodge.ply");
+Modelo *ant = new Modelo("ant.ply");
 Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("cow.ply");
 Modelo *ketchup = new Modelo("ketchup.ply");
+Modelo *turbine = new Modelo("turbine.ply");
 Modelo *inputUsuario = nullptr;
 
 int main(int argc, char **argv)
@@ -134,7 +135,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 1.0, 20000000.0);
+    gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
     bufferTitulo = patch::to_string(qntTriangulos);
     glutSetWindowTitle(bufferTitulo.c_str());
     glMatrixMode(GL_MODELVIEW);
@@ -171,8 +172,7 @@ void display(void)
         desenhaFaces(cow);
         break;
     case 4:
-        setMaterial();
-        glutSolidTeapot(2);
+        desenhaFaces(turbine);
         break;
     case 5:
         desenhaFaces(ketchup);
@@ -217,10 +217,10 @@ void desenhaFaces(Modelo *m)
     {
         qntTriangulos = m->getTamFaces();
         trocaModelo = false;
-    }
+    }    
     for (int i = 0; i < m->getTamFaces(); i++)
     {
-        glFrontFace(GL_CW);
+        glFrontFace(GL_CCW);
         setMaterial();
         if (wireframe)
             glBegin(GL_LINE_LOOP);
