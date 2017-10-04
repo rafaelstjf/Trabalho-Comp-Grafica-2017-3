@@ -120,7 +120,7 @@ void setMaterial(void)
     GLfloat objeto_especular[] = {0.508273, 0.508273, 0.508273, 1.0};
     GLfloat objeto_brilho[] = {0.4};
 
-    
+
     // Define os parametros da superficie a ser iluminada
     glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
