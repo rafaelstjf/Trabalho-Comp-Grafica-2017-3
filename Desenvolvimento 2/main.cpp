@@ -44,6 +44,7 @@ bool trocaModelo = true;
 bool back_face = false;
 bool flat = false;
 int qntTriangulos;
+
 string bufferTitulo;
 //modelos
 Modelo *ant = new Modelo("ant.ply");
@@ -75,28 +76,20 @@ void init(void)
     glClearColor(0.4, 0.4, 0.4, 0.0);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_COLOR_MATERIAL); // Utiliza cor do objeto como material
-
     // Cor da fonte de luz (RGBA)
-    GLfloat cor_luz[] = {0.6, 0.6, 0.6, 1.0};
+    GLfloat cor_luz[] = {1.0, 1.0, 1.0, 1.0};
     // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
-    GLfloat posicao_luz[] = {120.0, 100.0, -50.0, 1.0};
-    GLfloat posicao_luz2[] = {-120.0, -100.0, 50.0, 1.0};
+    GLfloat posicao_luz[] = {0.0, 0.0, 30.0, 1.0};
     // Define parametros da luz
     glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
     glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
     glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, cor_luz);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, cor_luz);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, cor_luz);
-    glLightfv(GL_LIGHT1, GL_POSITION, posicao_luz2);
-
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
     glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
     glEnable(GL_NORMALIZE);
+    glShadeModel(GL_FLAT);
 }
 void exibirEixos()
 {
@@ -119,19 +112,20 @@ void setMaterial(void)
     GLfloat objeto_ambient[] = {0.19225, 0.19225, 0.19225, 1.0};
     GLfloat objeto_difusa[] = {0.50754, 0.50754, 0.50754, 1.0};
     GLfloat objeto_especular[] = {0.508273, 0.508273, 0.508273, 1.0};
-    GLfloat objeto_brilho[] = {0.4};
+    GLfloat objeto_brilho[] = {90.0f};
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 
 
-    // Define os parametros da superficie a ser iluminada
-    glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 }
 
 void display(void)
 {
 
+    glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -141,11 +135,6 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(0.0, 0.0, distOrigem, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-    glRotatef(rotationY, 0.0, 1.0, 0.0);
-    glRotatef(rotationX, 1.0, 0.0, 0.0);
-    glShadeModel(GL_SMOOTH);
-
     if (zbuffer)
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
     else
@@ -159,7 +148,9 @@ void display(void)
         glShadeModel(GL_FLAT);
     else
         glShadeModel(GL_SMOOTH);
-
+        glPushMatrix();
+    glRotatef(rotationY, 0.0, 1.0, 0.0);
+    glRotatef(rotationX, 1.0, 0.0, 0.0);
     switch (modeloAtual)
     {
     case 1:
@@ -182,6 +173,8 @@ void display(void)
             desenhaFaces(inputUsuario);
         break;
     }
+        glPopMatrix();
+
     glutSwapBuffers();
 }
 void idle(void)
@@ -227,6 +220,7 @@ void desenhaFaces(Modelo *m)
         else
             glBegin(GL_POLYGON);
         glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
+        //cout << "normais: " << normal[i][0] << " " << normal[i][1] << " " << normal[i][2] << endl;
         for (int k = 1; k < 4; k++)
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
         glEnd();

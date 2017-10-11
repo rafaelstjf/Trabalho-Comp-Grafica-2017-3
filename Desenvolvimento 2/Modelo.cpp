@@ -106,11 +106,11 @@ Modelo::Modelo(string nomeArquivo)
                 for (int i = 0; i < tamFaces; i++)
                 {
                     n1[0] = (vertices[faces[i][1]][0] - vertices[faces[i][2]][0]);
-                    n1[2] = (vertices[faces[i][1]][1] - vertices[faces[i][2]][1]);
-                    n1[1] = (vertices[faces[i][1]][2] - vertices[faces[i][2]][2]);
+                    n1[1] = (vertices[faces[i][1]][1] - vertices[faces[i][2]][1]);
+                    n1[2] = (vertices[faces[i][1]][2] - vertices[faces[i][2]][2]);
                     n2[0] = (vertices[faces[i][1]][0] - vertices[faces[i][3]][0]);
-                    n2[2] = (vertices[faces[i][1]][1] - vertices[faces[i][3]][1]);
-                    n2[1] = (vertices[faces[i][1]][2] - vertices[faces[i][3]][2]);
+                    n2[1] = (vertices[faces[i][1]][1] - vertices[faces[i][3]][1]);
+                    n2[2] = (vertices[faces[i][1]][2] - vertices[faces[i][3]][2]);
 
                     normal[i][0] = (n1[1] * n2[2] - n1[2] * n2[1]);
                     normal[i][1] = (n1[2] * n2[0] - n1[0] * n2[2]);
@@ -119,6 +119,7 @@ Modelo::Modelo(string nomeArquivo)
                     normal[i][0] = normal[i][0] / dist;
                     normal[i][1] = normal[i][1] / dist;
                     normal[i][2] = normal[i][2] / dist;
+
                 }
                 cout << "Modelo carregado!" << endl;
             }
