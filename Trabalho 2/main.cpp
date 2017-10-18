@@ -64,6 +64,7 @@ void startWindow(int argc, char **argv);//inicia o opengl
 void drawScore();//desenha o score
 menu inicio; //instancia um menu
 void desenhaFaces(Modelo *m);
+bool ortho=true;
 
 int main(int argc, char **argv)
 {
@@ -263,6 +264,9 @@ void display()
     int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
     if (!comecou && !emPlacar)
     {
 
@@ -274,9 +278,16 @@ void display()
     }
     else//roda o jogo normal
     {
+        glMatrixMode (GL_PROJECTION);
+        glLoadIdentity ();
+        if(ortho){
+        glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
         gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
-        explosoes.desenhos();//desenha nossos tiros
-        inimigos.desenhos();//desenha os tiros inimigos
+        }else
+        {
+            gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
+            gluLookAt(99, 0.0, -540, 99, 0.0, -541, 0.0, 1.0, 0.0);
+        }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
         glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
         glEnable(GL_LIGHTING);
@@ -336,29 +347,13 @@ void display()
         glScalef(0.1,0.1,0.1);
         desenhaFaces(cannon);
         glPopMatrix();
-
-        glBegin(GL_QUADS);
-        glVertex2f(110, -88.75);
-        glVertex2f(90, -88.75);
-        glVertex2f(90, -77.5);
-        glVertex2f(110, -77.5);
-        glEnd();
-        glBegin(GL_QUADS);
-        glVertex2f(-70, -88.75);
-        glVertex2f(-90, -88.75);
-        glVertex2f(-90, -77.5);
-        glVertex2f(-70, -77.5);
-        glEnd();
-        glBegin(GL_QUADS);
-        glVertex2f(290, -88.75);
-        glVertex2f(270, -88.75);
-        glVertex2f(270, -77.5);
-        glVertex2f(290, -77.5);
-        glEnd();
         /***** FIM CANHOES *****/
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
+        glMatrixMode (GL_PROJECTION);
+        glLoadIdentity ();
+        glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
         /*****    BALAS    *****/
         glColor3f(0, cor, 1);
         if (!inteira[2])
@@ -394,6 +389,8 @@ void display()
             glVertex2f(264 + 3 * bl, -92.125);
             glEnd();
         }
+        explosoes.desenhos();//desenha nossos tiros
+        inimigos.desenhos();//desenha os tiros inimigos
         inicio.drawf(fase, pontos);
         drawAim();
     }
@@ -457,6 +454,9 @@ void keyboardPress(unsigned char key, int x, int y)
             break;
         case 'c':
             cout<<pos<<endl;
+            break;
+        case'v':
+            ortho=!ortho;
             break;
         }
 
@@ -523,11 +523,8 @@ void init()
     glClearColor(0.0, 0.2, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
-    //gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
     glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
     glMatrixMode(GL_MODELVIEW);
-
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     // Cor da fonte de luz (RGBA)
