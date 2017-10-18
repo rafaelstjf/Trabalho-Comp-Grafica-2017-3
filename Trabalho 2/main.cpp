@@ -189,7 +189,7 @@ void startWindow(int argc, char **argv)
 
 void drawAim()
 {
-    glColor3f(0.0, 0.0, 1.0);
+    glColor3f(0.0, 1.0, 0.0);
     //quadrado
     glBegin(GL_LINE_LOOP);
     glVertex2f(jogadorx - 4, jogadory - 2.25);
@@ -274,6 +274,7 @@ void display()
     }
     else//roda o jogo normal
     {
+        gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
         explosoes.desenhos();//desenha nossos tiros
         inimigos.desenhos();//desenha os tiros inimigos
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
@@ -300,7 +301,7 @@ void display()
                 if (inteira[i])//se a cidade estiver inteira
                 {
                     glPushMatrix();
-                    glTranslatef(cd+5,-90,893);
+                    glTranslatef(cd+5,-94,-735);
                     desenhaFaces(cidade);
                     inteira[10]=true;//alguma cidade esta inteira
                     glPopMatrix();
@@ -522,7 +523,9 @@ void init()
     glClearColor(0.0, 0.2, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-100.0, 300, -100.0, 125, -900.0, 900.0);
+    //glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
+    //gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
+    glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
     glMatrixMode(GL_MODELVIEW);
 
     glEnable(GL_LIGHTING);
