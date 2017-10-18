@@ -49,9 +49,9 @@ string bufferTitulo;
 //modelos
 Modelo *ant = new Modelo("ant.ply");
 Modelo *apple = new Modelo("teapot.ply");
-Modelo *cow = new Modelo("cow.ply");
+Modelo *cow = new Modelo("house3d.ply");
 Modelo *ketchup = new Modelo("ketchup.ply");
-Modelo *turbine = new Modelo("turbine.ply");
+Modelo *turbine = new Modelo("batata.ply");
 Modelo *inputUsuario = nullptr;
 
 int main(int argc, char **argv)

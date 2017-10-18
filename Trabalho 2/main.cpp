@@ -6,11 +6,11 @@
 #include <math.h>
 #include <string>
 #include <sstream>
-#include "missile.h"
 #include "filaAnima.h"
 #include "Placar.h"
 #include "explosao.h"
 #include "menu.h"
+#include "Modelo.h"
 #ifdef __linux__
 #include <cstring>
 #endif
@@ -45,7 +45,11 @@ bool pause = false; // pausa o game
 filaAnima explosoes = filaAnima(10); //incializa a estrurura dos nossos tiros explosoes de duracao 10
 filaAnima inimigos = filaAnima(10); //incializa a estrurura dos tiros inimigos explosoes de duracao 10
 char nome[20];
-
+Modelo *fundo = new Modelo("batata.ply");
+Modelo *cidade= new Modelo("house3d.ply");
+Modelo *cannon= new Modelo("cannon.ply");
+float pos = 0;
+float rotationX = 0.0, rotationY = 0.0;
 //funcoes
 void idle();
 void display();
@@ -59,6 +63,7 @@ void specialKeysPress(int key, int x, int y);
 void startWindow(int argc, char **argv);//inicia o opengl
 void drawScore();//desenha o score
 menu inicio; //instancia um menu
+void desenhaFaces(Modelo *m);
 
 int main(int argc, char **argv)
 {
@@ -74,6 +79,30 @@ int main(int argc, char **argv)
     glutMainLoop();
     return 0;
 }
+
+void desenhaFaces(Modelo *m)
+{
+
+    glColor3f(1.0, 1.0, 1.0);
+    double **vertices = m->getVertices();
+    int **faces = m->getFaces();
+    double **normal = m->getNormal();
+    for (int i = 0; i < m->getTamFaces(); i++)
+    {
+        glFrontFace(GL_CCW);
+        //setMaterial();
+        glBegin(GL_POLYGON);
+        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
+        //cout << "normais: " << normal[i][0] << " " << normal[i][1] << " " << normal[i][2] << endl;
+        for (int k = 1; k < 4; k++)
+            glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+        glEnd();
+    }
+}
+
+
+
+
 void drawScore() //funcao para printar o placar na tela
 {
     glColor3f(0, 0, 0); //cor do texto
@@ -176,6 +205,53 @@ void drawAim()
     glVertex2f(jogadorx, jogadory + 2.25);
     glEnd();
 }
+void setMaterial_mont(void)
+{
+    //silver
+    GLfloat objeto_ambient[] = { 0.19125f, 0.0735f, 0.0225f, 1.0f };
+    GLfloat objeto_difusa[] = {0.7038f, 0.27048f, 0.0828f, 1.0f };
+    GLfloat objeto_especular[] = {0.256777f, 0.137622f, 0.086014f, 1.0f };
+    GLfloat objeto_brilho[] = {12.8f};
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+
+
+}
+
+void setMaterial_house(void)
+{
+    //silver
+    GLfloat objeto_ambient[] = { 0.0f,0.0f,0.0f,1.0f };
+    GLfloat objeto_difusa[] = { 0.55f,0.55f,0.55f,1.0f};
+    GLfloat objeto_especular[] = {0.70f,0.70f,0.70f,1.0f };
+    GLfloat objeto_brilho[] = {32.0f};
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+
+
+}
+
+void setMaterial_cannon(void)
+{
+    //silver
+    GLfloat objeto_ambient[] = { 0.23125f, 0.23125f, 0.23125f, 1.0f };
+    GLfloat objeto_difusa[] = {0.2775f, 0.2775f, 0.2775f, 1.0f };
+    GLfloat objeto_especular[] = {0.773911f, 0.773911f, 0.773911f, 1.0f };
+    GLfloat objeto_brilho[] = {89.6f};
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+
+
+}
 
 void display()
 {
@@ -183,6 +259,7 @@ void display()
     {
         return;//nao roda nada se estiver pausado
     }
+    glDisable(GL_LIGHTING);
     int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -199,9 +276,66 @@ void display()
     {
         explosoes.desenhos();//desenha nossos tiros
         inimigos.desenhos();//desenha os tiros inimigos
+        glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
+        glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
+        glEnable(GL_LIGHTING);
+        /****Fundo****/
+        glPushMatrix();
+        setMaterial_mont();
+        glTranslatef(-350,-24,-1500);
+        glScalef(100,100,100);
+        desenhaFaces(fundo);
+        glPopMatrix();
+        /************/
+
         //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
+        /*****   CIDADES   *****/
+        setMaterial_house();
+        int i = 3;
+        inteira[10]=false;//nem uma cidade esta inteira
+        for (int cd = -60; cd <= 240; cd += 50)
+        {
+            if (cd != 90)//nao desenha em baixo do canhao central
+            {
+                if (inteira[i])//se a cidade estiver inteira
+                {
+                    glPushMatrix();
+                    glTranslatef(cd+5,-90,893);
+                    desenhaFaces(cidade);
+                    inteira[10]=true;//alguma cidade esta inteira
+                    glPopMatrix();
+                }
+                i++;
+            }
+        }
+        /***** FIM CIDADES *****/
+
         /******   CANHOES  *******/
-        glColor3f(0, cor, 1);
+        setMaterial_cannon();
+
+        glPushMatrix();
+        glRotated(90,1,0,0);
+        glTranslatef(-81,-735,92);
+        glScalef(0.1,0.1,0.1);
+        desenhaFaces(cannon);
+        glPopMatrix();
+
+
+        glPushMatrix();
+        glRotated(90,1,0,0);
+        glTranslatef(97,-735,92);
+        glScalef(0.1,0.1,0.1);
+        desenhaFaces(cannon);
+        glPopMatrix();
+
+
+        glPushMatrix();
+        glRotated(90,1,0,0);
+        glTranslatef(276,-735,92);
+        glScalef(0.1,0.1,0.1);
+        desenhaFaces(cannon);
+        glPopMatrix();
+
         glBegin(GL_QUADS);
         glVertex2f(110, -88.75);
         glVertex2f(90, -88.75);
@@ -221,28 +355,9 @@ void display()
         glVertex2f(290, -77.5);
         glEnd();
         /***** FIM CANHOES *****/
-        /*****   CIDADES   *****/
-        glColor3f(cor, 1, 0);
-        int i = 3;
-        inteira[10]=false;//nem uma cidade esta inteira
-        for (int cd = -60; cd <= 240; cd += 50)
-        {
-            if (cd != 90)//nao desenha em baixo do canhao central
-            {
-                if (inteira[i])//se a cidade estiver inteira
-                {
-                    glBegin(GL_QUADS);
-                    glVertex2f(cd + 20, -94.375);
-                    glVertex2f(cd, -94.375);
-                    glVertex2f(cd, -88.75);
-                    glVertex2f(cd + 20, -88.75);
-                    glEnd();
-                    inteira[10]=true;//alguma cidade esta inteira
-                }
-                i++;
-            }
-        }
-        /***** FIM CIDADES *****/
+        glDisable(GL_LIGHTING);
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         /*****    BALAS    *****/
         glColor3f(0, cor, 1);
         if (!inteira[2])
@@ -333,6 +448,15 @@ void keyboardPress(unsigned char key, int x, int y)
             }
             comecou=false;
             break;
+        case 'z':
+            pos-=1;
+            break;
+        case 'x':
+            pos+=1;
+            break;
+        case 'c':
+            cout<<pos<<endl;
+            break;
         }
 
     }
@@ -395,11 +519,27 @@ void keyboardPress(unsigned char key, int x, int y)
 void init()
 {
     glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
-    glClearColor(0.7, 0.7, 0.7, 0.0);
+    glClearColor(0.0, 0.2, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-100.0, 300, -100.0, 125, -100.0, 100.0);
+    glOrtho(-100.0, 300, -100.0, 125, -900.0, 900.0);
     glMatrixMode(GL_MODELVIEW);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    // Cor da fonte de luz (RGBA)
+    GLfloat cor_luz[] = {1.0, 1.0, 1.0, 1.0};
+    // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
+    GLfloat posicao_luz[] = {200.0, 200, 2000.0, 1.0};
+    // Define parametros da luz
+    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+    glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    glEnable(GL_NORMALIZE);
+    glShadeModel(GL_FLAT);
+
     glLoadIdentity();
 }
 void mouse(int button, int state, int x, int y)
@@ -453,6 +593,8 @@ void mouse(int button, int state, int x, int y)
 }
 void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 {
+    //rotationX += (float)(y - mousey);
+    //rotationY += (float)(x - mousex);
     mousex = x;
     mousey = y;
 }
