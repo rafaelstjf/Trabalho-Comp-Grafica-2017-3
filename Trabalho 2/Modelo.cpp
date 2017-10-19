@@ -121,7 +121,7 @@ Modelo::Modelo(string nomeArquivo)
                     normal[i][2] = normal[i][2] / dist;
 
                 }
-                cout << "Modelo carregado!" << endl;
+                //cout << "Modelo carregado!" << endl;
             }
             else
                 cout << "Arquivo nao esta no formato ascii 1.0!" << endl;
