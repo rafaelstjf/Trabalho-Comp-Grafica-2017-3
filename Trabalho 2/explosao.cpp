@@ -1,5 +1,6 @@
 #include "explosao.h"
 #include <GL/glut.h>
+#include <GL/glut.h>
 #include <iostream>
 #include <math.h>
 
@@ -31,6 +32,20 @@ void explosao::desenhar()
             glVertex2f(linex, liney);
             glVertex2f(initx, inity);
         glEnd();
+        float m = (inity-liney)/(initx-linex);
+        m=atan(m)*180/3.14;
+        int inv = m/fabs(m);
+        int um=1;
+        if(liney<inity)
+            um*=-1;
+        inv*=um;
+        glPushMatrix();
+        glTranslatef(linex,liney,-735);
+        glRotatef(90,1,0,0);
+        glRotatef(m+(90*inv),0,1,0);
+        glScalef(0.1,0.1,0.1);
+        desenhaFace(missile);
+        glPopMatrix();
         cont++;
         tempo=0;
         }else{
@@ -45,4 +60,24 @@ void explosao::desenhar()
         }
         }
         glPopMatrix();
+}
+
+void explosao::desenhaFace(Modelo *m)
+{
+
+    glColor3f(1.0, 1.0, 1.0);
+    double **vertices = m->getVertices();
+    int **faces = m->getFaces();
+    double **normal = m->getNormal();
+    for (int i = 0; i < m->getTamFaces(); i++)
+    {
+        glFrontFace(GL_CCW);
+        //setMaterial();
+        glBegin(GL_POLYGON);
+        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
+        //cout << "normais: " << normal[i][0] << " " << normal[i][1] << " " << normal[i][2] << endl;
+        for (int k = 1; k < 4; k++)
+            glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+        glEnd();
+    }
 }

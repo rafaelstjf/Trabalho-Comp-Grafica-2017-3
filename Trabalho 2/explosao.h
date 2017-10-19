@@ -1,6 +1,9 @@
 #ifndef EXPLOSAO_H_INCLUDED
 #define EXPLOSAO_H_INCLUDED
 
+#include "Modelo.h"
+
+
 class explosao
 {
     public:
@@ -11,7 +14,9 @@ class explosao
         int vel=4000,cont=0, alvo;
         bool colide=0,falha=0,destruiu=0;
     private:
+        void desenhaFace(Modelo *m);
         float dy,dx,cor=1,initx,inity;
+        Modelo *missile= new Modelo("missile.ply");
 
 };
 

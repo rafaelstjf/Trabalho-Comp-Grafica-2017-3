@@ -50,7 +50,7 @@ string bufferTitulo;
 Modelo *ant = new Modelo("ant.ply");
 Modelo *apple = new Modelo("teapot.ply");
 Modelo *cow = new Modelo("house3d.ply");
-Modelo *ketchup = new Modelo("ketchup.ply");
+Modelo *ketchup = new Modelo("missile.ply");
 Modelo *turbine = new Modelo("batata.ply");
 Modelo *inputUsuario = nullptr;
 

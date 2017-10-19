@@ -6,7 +6,7 @@ class filaAnima
 {
 public:
     filaAnima(int temp);
-    void addObjeto(float x, float y, float initx, float inity,float vel = 1000,int alvo = 10);//intancia explosoes
+    void addObjeto(float x, float y, float initx, float inity,float vel = 100,int alvo = 10);//intancia explosoes
     void atualizaTempo(float dt);
     void desenhos();//desenha na tela
     int bala[3]={10,10,10};//inicia com 10 tiros
