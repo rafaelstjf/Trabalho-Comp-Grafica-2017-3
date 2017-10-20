@@ -27,13 +27,6 @@ void explosao::desenhar()
         if(linex>x)linex-=dx;//*dt*1000;
         if(liney<y)liney+=dy;//*dt*1000;
         if(liney>y)liney-=dy;//*dt*1000;
-        glColor3f(0.0, 0.0,1.0);
-        glDisable(GL_LIGHTING);
-        glBegin(GL_LINES);//desenha o rastro (linha)
-            glVertex2f(linex, liney);
-            glVertex2f(initx, inity);
-        glEnd();
-        glEnable(GL_LIGHTING);
         float m = (inity-liney)/(initx-linex);
         m=atan(m)*180/3.14;
         int inv = m/fabs(m);
@@ -49,6 +42,13 @@ void explosao::desenhar()
         glScalef(0.1,0.1,0.1);
         desenhaFace(missile);
         glPopMatrix();
+        glColor3f(0.0, 0.0,1.0);
+        glDisable(GL_LIGHTING);
+        glBegin(GL_LINES);//desenha o rastro (linha)
+            glVertex3f(linex, liney,-735);
+            glVertex3f(initx, inity,-735);
+        glEnd();
+        glEnable(GL_LIGHTING);
         cont++;
         tempo=0;
         }else{

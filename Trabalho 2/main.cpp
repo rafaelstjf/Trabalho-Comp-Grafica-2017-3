@@ -266,6 +266,15 @@ void display()
     glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    // Cor da fonte de luz (RGBA)
+    GLfloat cor_luz[] = {1.0, 1.0, cor, 1.0};
+    // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
+    GLfloat posicao_luz[] = {200.0, 200, 2000.0, 1.0};
+    // Define parametros da luz
+    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
     glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
     if (!comecou && !emPlacar)
     {
@@ -286,7 +295,7 @@ void display()
         }else
         {
             gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
-            gluLookAt(99, 0.0, -540, 99, 0.0, -541, 0.0, 1.0, 0.0);
+            gluLookAt(99, 11, -540-pos, 99, 11, -541-pos, 0.0, 1.0, 0.0);
         }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
         glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
@@ -527,15 +536,6 @@ void init()
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    // Cor da fonte de luz (RGBA)
-    GLfloat cor_luz[] = {1.0, 1.0, 1.0, 1.0};
-    // Posicao da fonte de luz. Ultimo parametro define se a luz sera direcional (0.0) ou tera uma posicional (1.0)
-    GLfloat posicao_luz[] = {200.0, 200, 2000.0, 1.0};
-    // Define parametros da luz
-    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
-    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_NORMALIZE);
     glShadeModel(GL_FLAT);
@@ -716,19 +716,19 @@ void idle()
                         }
                         else if (cit == 5)
                         {
-                            inimigos.addObjeto(50, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
+                            inimigos.addObjeto(50, -88.75, random_x, 125, 2200 - (fase * 200), cit);
                         }
                         else if (cit == 6)
                         {
-                            inimigos.addObjeto(150, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
+                            inimigos.addObjeto(150, -88.75, random_x, 125, 2200 - (fase * 200), cit);
                         }
                         else if (cit == 7)
                         {
-                            inimigos.addObjeto(200, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
+                            inimigos.addObjeto(200, -88.75, random_x, 125, 2200 - (fase * 200), cit);
                         }
                         else if (cit == 8)
                         {
-                            inimigos.addObjeto(250, -88.75, random_x, 125, 22000 - (fase * 2000), cit);
+                            inimigos.addObjeto(250, -88.75, random_x, 125, 2200 - (fase * 200), cit);
                         }
                     }
                     else

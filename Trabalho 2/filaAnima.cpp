@@ -65,7 +65,7 @@ void filaAnima::dividir(bool inteira[]){
         std::mt19937 rng(rand());
         std::uniform_int_distribution<int> uni(0, 100);
         auto percent = uni(rng);
-        if(percent>99){
+        if(percent>80){
         for(int j=0;j<2;j++){
         std::uniform_int_distribution<int> duni(0, 8);
         auto cit = duni(rng);
