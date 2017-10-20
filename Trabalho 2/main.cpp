@@ -348,6 +348,8 @@ void display()
         desenhaFaces(cannon);
         glPopMatrix();
         /***** FIM CANHOES *****/
+        explosoes.desenhos();//desenha nossos tiros
+        inimigos.desenhos();//desenha os tiros inimigos
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
@@ -389,8 +391,6 @@ void display()
             glVertex2f(264 + 3 * bl, -92.125);
             glEnd();
         }
-        explosoes.desenhos();//desenha nossos tiros
-        inimigos.desenhos();//desenha os tiros inimigos
         inicio.drawf(fase, pontos);
         drawAim();
     }

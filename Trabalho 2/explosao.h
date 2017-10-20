@@ -15,6 +15,8 @@ class explosao
         bool colide=0,falha=0,destruiu=0;
     private:
         void desenhaFace(Modelo *m);
+        void setMaterial_missil();
+        void setMaterial_explosao();
         float dy,dx,cor=1,initx,inity;
         Modelo *missile= new Modelo("missile.ply");
 
