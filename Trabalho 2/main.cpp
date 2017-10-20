@@ -295,7 +295,7 @@ void display()
         }else
         {
             gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
-            gluLookAt(99, 11, -540-pos, 99, 11, -541-pos, 0.0, 1.0, 0.0);
+            gluLookAt(99, 11, -540, 99, 11, -541, 0.0, 1.0, 0.0);
         }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
         glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
