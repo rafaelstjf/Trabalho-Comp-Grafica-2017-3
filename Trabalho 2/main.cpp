@@ -10,6 +10,7 @@
 #include "Placar.h"
 #include "explosao.h"
 #include "menu.h"
+#include "Camera.h"
 #include "Modelo.h"
 #ifdef __linux__
 #include <cstring>
@@ -46,10 +47,16 @@ filaAnima explosoes = filaAnima(10); //incializa a estrurura dos nossos tiros ex
 filaAnima inimigos = filaAnima(10); //incializa a estrurura dos tiros inimigos explosoes de duracao 10
 char nome[20];
 Modelo *fundo = new Modelo("batata.ply");
-Modelo *cidade= new Modelo("house3d.ply");
+Modelo *cidade= new Modelo("ketchup.ply");
 Modelo *cannon= new Modelo("cannon.ply");
 float pos = 0;
 float rotationX = 0.0, rotationY = 0.0;
+Camera cam;
+bool flyMode = false;
+bool tecla[256];
+menu inicio; //instancia um menu
+bool ortho=true;
+
 //funcoes
 void idle();
 void display();
@@ -62,9 +69,9 @@ void keyboardPress(unsigned char key, int x, int y);
 void specialKeysPress(int key, int x, int y);
 void startWindow(int argc, char **argv);//inicia o opengl
 void drawScore();//desenha o score
-menu inicio; //instancia um menu
+void KeyboardUp(unsigned char key, int x, int y);
 void desenhaFaces(Modelo *m);
-bool ortho=true;
+void Timer(int value);
 
 int main(int argc, char **argv)
 {
@@ -173,6 +180,7 @@ void drawScore() //funcao para printar o placar na tela
 
 void startWindow(int argc, char **argv)
 {
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(width, height);
@@ -181,11 +189,13 @@ void startWindow(int argc, char **argv)
     glutMouseFunc(mouse);
     //glutReshapeFunc(reshape);
     glutPassiveMotionFunc(motion);
+    glutKeyboardUpFunc(KeyboardUp);
     glutKeyboardFunc(keyboardPress);
     glutSpecialFunc(specialKeysPress);
     init();
     glutDisplayFunc(display);
     glutIdleFunc(idle);
+    	glutTimerFunc(1, Timer, 0);
 }
 
 void drawAim()
@@ -214,10 +224,10 @@ void setMaterial_mont(void)
     GLfloat objeto_especular[] = {0.256777f, 0.137622f, 0.086014f, 1.0f };
     GLfloat objeto_brilho[] = {12.8f};
 
-   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
-   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 
 
 }
@@ -230,10 +240,10 @@ void setMaterial_house(void)
     GLfloat objeto_especular[] = {0.70f,0.70f,0.70f,1.0f };
     GLfloat objeto_brilho[] = {32.0f};
 
-   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
-   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 
 
 }
@@ -246,10 +256,10 @@ void setMaterial_cannon(void)
     GLfloat objeto_especular[] = {0.773911f, 0.773911f, 0.773911f, 1.0f };
     GLfloat objeto_brilho[] = {89.6f};
 
-   glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
-   glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 
 
 }
@@ -289,13 +299,18 @@ void display()
     {
         glMatrixMode (GL_PROJECTION);
         glLoadIdentity ();
-        if(ortho){
-        glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
-        gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
-        }else
+        if(ortho)
+        {
+            glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
+            gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
+        }
+        else
         {
             gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
+            if(!pause)
             gluLookAt(99, 11, -540, 99, 11, -541, 0.0, 1.0, 0.0);
+            else
+            cam.Refresh();
         }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
         glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
@@ -405,7 +420,10 @@ void display()
     }
     glutSwapBuffers();
 }
-
+void KeyboardUp(unsigned char key, int x, int y)
+{
+	tecla[key] = false;
+}
 void keyboardPress(unsigned char key, int x, int y)
 {
     if (!emPlacar)
@@ -416,23 +434,24 @@ void keyboardPress(unsigned char key, int x, int y)
             exit(0);
             break;
         case 'f':
-        if (fullscreen)
-        {
-            glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
-            glutReshapeWindow(800, 450);
-            glutPositionWindow(50, 50);
-        }
-        else
-        {
-            glutSetCursor(GLUT_CURSOR_NONE);
-            glutFullScreen();
-        }
-        fullscreen = !fullscreen;
-        break;
+            if (fullscreen)
+            {
+                glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
+                glutReshapeWindow(800, 450);
+                glutPositionWindow(50, 50);
+            }
+            else
+            {
+                glutSetCursor(GLUT_CURSOR_NONE);
+                glutFullScreen();
+            }
+            fullscreen = !fullscreen;
+            break;
         case 13:
-            if (!comecou && !opcao){
+            if (!comecou && !opcao)
+            {
                 comecou = true;
-                }
+            }
             else if (!comecou && opcao)
                 emPlacar = true;
             break;
@@ -467,6 +486,10 @@ void keyboardPress(unsigned char key, int x, int y)
         case'v':
             ortho=!ortho;
             break;
+        case 'm':
+            flyMode = !flyMode;
+            cam.InitialPos();
+            break;
         }
 
     }
@@ -475,19 +498,19 @@ void keyboardPress(unsigned char key, int x, int y)
         switch (key)
         {
         case 'f':
-        if (fullscreen)
-        {
-            glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
-            glutReshapeWindow(800, 450);
-            glutPositionWindow(50, 50);
-        }
-        else
-        {
-            glutSetCursor(GLUT_CURSOR_NONE);
-            glutFullScreen();
-        }
-        fullscreen = !fullscreen;
-        break;
+            if (fullscreen)
+            {
+                glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
+                glutReshapeWindow(800, 450);
+                glutPositionWindow(50, 50);
+            }
+            else
+            {
+                glutSetCursor(GLUT_CURSOR_NONE);
+                glutFullScreen();
+            }
+            fullscreen = !fullscreen;
+            break;
         case 27 :
             exit(0);
             break;
@@ -524,10 +547,12 @@ void keyboardPress(unsigned char key, int x, int y)
                 indPlacar--;
         }
     }
+    tecla[key] = true;
 }
 
 void init()
 {
+    float camPosition[3] = {99.0, 11.0, -540.0};
     glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
     glClearColor(0.0, 0.2, 0.7, 0.0);
     glMatrixMode(GL_PROJECTION);
@@ -539,8 +564,8 @@ void init()
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_NORMALIZE);
     glShadeModel(GL_FLAT);
-
     glLoadIdentity();
+    cam.Init();
 }
 void mouse(int button, int state, int x, int y)
 {
@@ -654,6 +679,29 @@ void specialKeysPress(int key, int x, int y)
     }
     glutPostRedisplay();
 }
+void Timer(int value)
+{
+	float speed = 0.5;
+
+	if(tecla['w'] || tecla['W'])
+	{
+		cam.Move(speed, flyMode);
+	}
+	else if(tecla['s'] || tecla['S'])
+	{
+		cam.Move(-speed, flyMode);
+	}
+	else if(tecla['a'] || tecla['A'])
+	{
+		cam.Strafe(speed);
+	}
+	else if(tecla['d'] || tecla['D'])
+	{
+		cam.Strafe(-speed);
+	}
+
+	glutTimerFunc(1, Timer, 0);
+}
 void idle()
 {
     float t, dt;
@@ -673,7 +721,8 @@ void idle()
     inimigos.atualizaTempo(dt);
     //funcoes do professor para variacao de tempo a cima
     if (!comecou)
-    {//idle no menu se precisar
+    {
+        //idle no menu se precisar
     }
     else
     {
@@ -765,13 +814,15 @@ void idle()
             inteira[2] = true;
             clok = 1;
             for (int i = 0; i < 9; i++)
-            {//conta ponto
+            {
+                //conta ponto
                 if (inteira[i])
                     pontos += 100;
             }
         }
     }
-    if(!inteira[10]){//fim do jogo
+    if(!inteira[10]) //fim do jogo
+    {
         emPlacar=true;
         confirmaInsercao=false;
         comecou=false;
