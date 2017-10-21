@@ -47,7 +47,7 @@ filaAnima explosoes = filaAnima(10); //incializa a estrurura dos nossos tiros ex
 filaAnima inimigos = filaAnima(10); //incializa a estrurura dos tiros inimigos explosoes de duracao 10
 char nome[20];
 Modelo *fundo = new Modelo("batata.ply");
-Modelo *cidade= new Modelo("ketchup.ply");
+Modelo *cidade= new Modelo("house3d.ply");
 Modelo *cannon= new Modelo("cannon.ply");
 float pos = 0;
 float rotationX = 0.0, rotationY = 0.0;
@@ -307,9 +307,9 @@ void display()
         else
         {
             gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
-            if(!pause)
+            /*if(!pause)
             gluLookAt(99, 11, -540, 99, 11, -541, 0.0, 1.0, 0.0);
-            else
+            else*/
             cam.Refresh();
         }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
@@ -488,6 +488,16 @@ void keyboardPress(unsigned char key, int x, int y)
             break;
         case 'm':
             flyMode = !flyMode;
+            if(flyMode)
+			{
+				cout << "FlyMode ON" << endl;
+			}
+			else
+			{
+				float x, y, z;
+				cout << "FlyMode OFF" << endl;
+				cam.InitialPos();
+			}
             cam.InitialPos();
             break;
         }
@@ -622,6 +632,23 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
     //rotationY += (float)(x - mousex);
     mousex = x;
     mousey = y;
+    static bool just_warped = false;
+
+	if(just_warped)
+	{
+		just_warped = false;
+		return;
+	}
+
+	int dx = x - width/6;
+	int dy = height/6-y;
+
+	if(dx) cam.RotateYaw(((3.14/180)*0.2)*dx);
+	if(dy) cam.RotatePitch(((3.14/180)*0.2)*dy);
+
+	//if(!releaseMouse)	glutWarpPointer(g_viewport_width/2, g_viewport_height/2);
+
+	just_warped = true;
 }
 
 void specialKeysPress(int key, int x, int y)
@@ -681,7 +708,7 @@ void specialKeysPress(int key, int x, int y)
 }
 void Timer(int value)
 {
-	float speed = 0.5;
+	float speed = 5;
 
 	if(tecla['w'] || tecla['W'])
 	{
