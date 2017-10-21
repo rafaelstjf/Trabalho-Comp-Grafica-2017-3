@@ -695,40 +695,40 @@ void idle()
                     {
                         if (cit == 2)
                         {
-                            inimigos.addObjeto(100, -77.5, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(100, -77.5, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 0)
                         {
 
-                            inimigos.addObjeto(-80, -77.5, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(-80, -77.5, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 1)
                         {
-                            inimigos.addObjeto(280, -77.5, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(280, -77.5, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 3)
                         {
-                            inimigos.addObjeto(-50, -88.75, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(-50, -88.75, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 4)
                         {
-                            inimigos.addObjeto(0, -88.75, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(0, -88.75, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 5)
                         {
-                            inimigos.addObjeto(50, -88.75, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(50, -88.75, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 6)
                         {
-                            inimigos.addObjeto(150, -88.75, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(150, -88.75, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 7)
                         {
-                            inimigos.addObjeto(200, -88.75, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(200, -88.75, random_x, 125, 2000 - (fase * 200), cit);
                         }
                         else if (cit == 8)
                         {
-                            inimigos.addObjeto(250, -88.75, random_x, 125, 2200 - (fase * 200), cit);
+                            inimigos.addObjeto(250, -88.75, random_x, 125, 2000 - (fase * 200), cit);
                         }
                     }
                     else

@@ -46,7 +46,7 @@ int filaAnima::colisao(filaAnima ex){
         if(ex.explo[j].colide){
             float x2 =ex.explo[j].linex;
             float y2 =ex.explo[j].liney;
-            if(sqrt(pow(x-x2,2)+pow(y-y2,2))<ex.explo[j].raio+2){
+            if((sqrt(pow(x-x2,2)+pow(y-y2,2))+3<ex.explo[j].raio+2)||(sqrt(pow(x-x2,2)+pow(y-y2,2))-3<ex.explo[j].raio+2)){
                 explo[i].x=x;
                 explo[i].y=y;
                 explo[i].cont+=explo[i].vel;
