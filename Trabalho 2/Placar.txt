@@ -1,10 +1,10 @@
-QD                  h1	1520
-DEV	1
-DEV	0
-DEV	0
-DEV	0
-DEV	0
-DEV	0
-DEV	0
-DEV	0
-DEV	0
+A                   P`aרל	120
+QD	0
+	0
+	0
+	0
+	0
+	0
+	0
+	0
+	0

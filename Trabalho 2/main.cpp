@@ -26,6 +26,7 @@ std::string to_string(const T &n)
     return stm.str();
 }
 }
+#define M_PI 3.14
 //Variaveis globais
 int width = 800;
 int height = 450;
@@ -52,10 +53,11 @@ Modelo *cannon= new Modelo("cannon.ply");
 float pos = 0;
 float rotationX = 0.0, rotationY = 0.0;
 Camera cam;
-bool flyMode = false;
+bool flyMode = false, inview = false;
 bool tecla[256];
 menu inicio; //instancia um menu
 bool ortho=true;
+float g_rotation_speed = M_PI/180*0.2;
 
 //funcoes
 void idle();
@@ -72,6 +74,7 @@ void drawScore();//desenha o score
 void KeyboardUp(unsigned char key, int x, int y);
 void desenhaFaces(Modelo *m);
 void Timer(int value);
+bool	releaseMouse = false;
 
 int main(int argc, char **argv)
 {
@@ -195,7 +198,7 @@ void startWindow(int argc, char **argv)
     init();
     glutDisplayFunc(display);
     glutIdleFunc(idle);
-    	glutTimerFunc(1, Timer, 0);
+    glutTimerFunc(1, Timer, 0);
 }
 
 void drawAim()
@@ -266,10 +269,6 @@ void setMaterial_cannon(void)
 
 void display()
 {
-    if (pause)
-    {
-        return;//nao roda nada se estiver pausado
-    }
     glDisable(GL_LIGHTING);
     int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -297,6 +296,7 @@ void display()
     }
     else//roda o jogo normal
     {
+
         glMatrixMode (GL_PROJECTION);
         glLoadIdentity ();
         if(ortho)
@@ -307,122 +307,128 @@ void display()
         else
         {
             gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
-            /*if(!pause)
-            gluLookAt(99, 11, -540, 99, 11, -541, 0.0, 1.0, 0.0);
-            else*/
-            cam.Refresh();
+            if(pause)
+                cam.Refresh();
+            else
+                cam.InitialPos();
         }
-        glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
-        glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
-        glEnable(GL_LIGHTING);
-        /****Fundo****/
-        glPushMatrix();
-        setMaterial_mont();
-        glTranslatef(-350,-24,-1500);
-        glScalef(100,100,100);
-        desenhaFaces(fundo);
-        glPopMatrix();
-        /************/
-
-        //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
-        /*****   CIDADES   *****/
-        setMaterial_house();
-        int i = 3;
-        inteira[10]=false;//nem uma cidade esta inteira
-        for (int cd = -60; cd <= 240; cd += 50)
+        if(!pause)
         {
-            if (cd != 90)//nao desenha em baixo do canhao central
+            glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
+            glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
+            glEnable(GL_LIGHTING);
+            /****Fundo****/
+            glPushMatrix();
+            setMaterial_mont();
+            glTranslatef(-350,-24,-1500);
+            glScalef(100,100,100);
+            desenhaFaces(fundo);
+            glPopMatrix();
+            /************/
+
+            //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
+            /*****   CIDADES   *****/
+            setMaterial_house();
+            int i = 3;
+            inteira[10]=false;//nem uma cidade esta inteira
+            for (int cd = -60; cd <= 240; cd += 50)
             {
-                if (inteira[i])//se a cidade estiver inteira
+                if (cd != 90)//nao desenha em baixo do canhao central
                 {
-                    glPushMatrix();
-                    glTranslatef(cd+5,-94,-735);
-                    desenhaFaces(cidade);
-                    inteira[10]=true;//alguma cidade esta inteira
-                    glPopMatrix();
+                    if (inteira[i])//se a cidade estiver inteira
+                    {
+                        glPushMatrix();
+                        glTranslatef(cd+5,-94,-735);
+                        desenhaFaces(cidade);
+                        inteira[10]=true;//alguma cidade esta inteira
+                        glPopMatrix();
+                    }
+                    i++;
                 }
-                i++;
             }
+            /***** FIM CIDADES *****/
+
+            /******   CANHOES  *******/
+            setMaterial_cannon();
+
+            glPushMatrix();
+            glRotated(90,1,0,0);
+            glTranslatef(-81,-735,92);
+            glScalef(0.1,0.1,0.1);
+            desenhaFaces(cannon);
+            glPopMatrix();
+
+
+            glPushMatrix();
+            glRotated(90,1,0,0);
+            glTranslatef(97,-735,92);
+            glScalef(0.1,0.1,0.1);
+            desenhaFaces(cannon);
+            glPopMatrix();
+
+
+            glPushMatrix();
+            glRotated(90,1,0,0);
+            glTranslatef(276,-735,92);
+            glScalef(0.1,0.1,0.1);
+            desenhaFaces(cannon);
+            glPopMatrix();
+            /***** FIM CANHOES *****/
+            explosoes.desenhos();//desenha nossos tiros
+            inimigos.desenhos();//desenha os tiros inimigos
+            glDisable(GL_LIGHTING);
+            glDisable(GL_DEPTH_TEST);
+            glDisable(GL_CULL_FACE);
+            glMatrixMode (GL_PROJECTION);
+            glLoadIdentity ();
+            glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
+            /*****    BALAS    *****/
+            glColor3f(0, cor, 1);
+            if (!inteira[2])
+                explosoes.bala[2] = 0;
+            for (int bl = 0; bl < explosoes.bala[2]; bl++)
+            {
+                glBegin(GL_QUADS);
+                glVertex2f(86 + 3 * bl, -96.625);
+                glVertex2f(84 + 3 * bl, -96.625);
+                glVertex2f(84 + 3 * bl, -92.125);
+                glVertex2f(86 + 3 * bl, -92.125);
+                glEnd();
+            }
+            if (!inteira[0])
+                explosoes.bala[0] = 0;
+            for (int bl = 0; bl < explosoes.bala[0]; bl++)
+            {
+                glBegin(GL_QUADS);
+                glVertex2f(-94 + 3 * bl, -96.625);
+                glVertex2f(-96 + 3 * bl, -96.625);
+                glVertex2f(-96 + 3 * bl, -92.125);
+                glVertex2f(-94 + 3 * bl, -92.125);
+                glEnd();
+            }
+            if (!inteira[1])
+                explosoes.bala[1] = 0;
+            for (int bl = 0; bl < explosoes.bala[1]; bl++)
+            {
+                glBegin(GL_QUADS);
+                glVertex2f(264 + 3 * bl, -96.625);
+                glVertex2f(262 + 3 * bl, -96.625);
+                glVertex2f(262 + 3 * bl, -92.125);
+                glVertex2f(264 + 3 * bl, -92.125);
+                glEnd();
+            }
+            inicio.drawf(fase, pontos);
+            drawAim();
+
         }
-        /***** FIM CIDADES *****/
-
-        /******   CANHOES  *******/
-        setMaterial_cannon();
-
-        glPushMatrix();
-        glRotated(90,1,0,0);
-        glTranslatef(-81,-735,92);
-        glScalef(0.1,0.1,0.1);
-        desenhaFaces(cannon);
-        glPopMatrix();
-
-
-        glPushMatrix();
-        glRotated(90,1,0,0);
-        glTranslatef(97,-735,92);
-        glScalef(0.1,0.1,0.1);
-        desenhaFaces(cannon);
-        glPopMatrix();
-
-
-        glPushMatrix();
-        glRotated(90,1,0,0);
-        glTranslatef(276,-735,92);
-        glScalef(0.1,0.1,0.1);
-        desenhaFaces(cannon);
-        glPopMatrix();
-        /***** FIM CANHOES *****/
-        explosoes.desenhos();//desenha nossos tiros
-        inimigos.desenhos();//desenha os tiros inimigos
-        glDisable(GL_LIGHTING);
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity ();
-        glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
-        /*****    BALAS    *****/
-        glColor3f(0, cor, 1);
-        if (!inteira[2])
-            explosoes.bala[2] = 0;
-        for (int bl = 0; bl < explosoes.bala[2]; bl++)
-        {
-            glBegin(GL_QUADS);
-            glVertex2f(86 + 3 * bl, -96.625);
-            glVertex2f(84 + 3 * bl, -96.625);
-            glVertex2f(84 + 3 * bl, -92.125);
-            glVertex2f(86 + 3 * bl, -92.125);
-            glEnd();
-        }
-        if (!inteira[0])
-            explosoes.bala[0] = 0;
-        for (int bl = 0; bl < explosoes.bala[0]; bl++)
-        {
-            glBegin(GL_QUADS);
-            glVertex2f(-94 + 3 * bl, -96.625);
-            glVertex2f(-96 + 3 * bl, -96.625);
-            glVertex2f(-96 + 3 * bl, -92.125);
-            glVertex2f(-94 + 3 * bl, -92.125);
-            glEnd();
-        }
-        if (!inteira[1])
-            explosoes.bala[1] = 0;
-        for (int bl = 0; bl < explosoes.bala[1]; bl++)
-        {
-            glBegin(GL_QUADS);
-            glVertex2f(264 + 3 * bl, -96.625);
-            glVertex2f(262 + 3 * bl, -96.625);
-            glVertex2f(262 + 3 * bl, -92.125);
-            glVertex2f(264 + 3 * bl, -92.125);
-            glEnd();
-        }
-        inicio.drawf(fase, pontos);
-        drawAim();
+        else
+            glutSwapBuffers();
     }
     glutSwapBuffers();
 }
 void KeyboardUp(unsigned char key, int x, int y)
 {
-	tecla[key] = false;
+    tecla[key] = false;
 }
 void keyboardPress(unsigned char key, int x, int y)
 {
@@ -489,16 +495,19 @@ void keyboardPress(unsigned char key, int x, int y)
         case 'm':
             flyMode = !flyMode;
             if(flyMode)
-			{
-				cout << "FlyMode ON" << endl;
-			}
-			else
-			{
-				float x, y, z;
-				cout << "FlyMode OFF" << endl;
-				cam.InitialPos();
-			}
-            cam.InitialPos();
+            {
+                cout << "FlyMode ON" << endl;
+            }
+            else
+            {
+                float x, y, z;
+                cout << "FlyMode OFF" << endl;
+                cam.InitialPos();
+            }
+            break;
+        case '=':
+            releaseMouse = !releaseMouse;
+            releaseMouse ? cout << "Mouse released" << endl: cout << "Mouse Attached" << endl;
             break;
         }
 
@@ -575,6 +584,7 @@ void init()
     glEnable(GL_NORMALIZE);
     glShadeModel(GL_FLAT);
     glLoadIdentity();
+    glutIgnoreKeyRepeat(1);
     cam.Init();
 }
 void mouse(int button, int state, int x, int y)
@@ -634,21 +644,21 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
     mousey = y;
     static bool just_warped = false;
 
-	if(just_warped)
-	{
-		just_warped = false;
-		return;
-	}
+    if(just_warped)
+    {
+        just_warped = false;
+        return;
+    }
 
-	int dx = x - width/6;
-	int dy = height/6-y;
+    int dx = x - width/2 ;
+    int dy = -1*y + height/2;
 
-	if(dx) cam.RotateYaw(((3.14/180)*0.2)*dx);
-	if(dy) cam.RotatePitch(((3.14/180)*0.2)*dy);
+    if(dx) cam.RotateYaw(g_rotation_speed*dx);
+    if(dy) cam.RotatePitch(g_rotation_speed*dy);
 
-	//if(!releaseMouse)	glutWarpPointer(g_viewport_width/2, g_viewport_height/2);
+    if(!releaseMouse)	glutWarpPointer(width/2, height/2);
 
-	just_warped = true;
+    just_warped = true;
 }
 
 void specialKeysPress(int key, int x, int y)
@@ -708,26 +718,25 @@ void specialKeysPress(int key, int x, int y)
 }
 void Timer(int value)
 {
-	float speed = 5;
+    float speed = 20;
 
-	if(tecla['w'] || tecla['W'])
-	{
-		cam.Move(speed, flyMode);
-	}
-	else if(tecla['s'] || tecla['S'])
-	{
-		cam.Move(-speed, flyMode);
-	}
-	else if(tecla['a'] || tecla['A'])
-	{
-		cam.Strafe(speed);
-	}
-	else if(tecla['d'] || tecla['D'])
-	{
-		cam.Strafe(-speed);
-	}
-
-	glutTimerFunc(1, Timer, 0);
+    if(tecla['w'] || tecla['W'])
+    {
+        cam.Move(speed, flyMode);
+    }
+    else if(tecla['s'] || tecla['S'])
+    {
+        cam.Move(-speed, flyMode);
+    }
+    else if(tecla['a'] || tecla['A'])
+    {
+        cam.Strafe(speed);
+    }
+    else if(tecla['d'] || tecla['D'])
+    {
+        cam.Strafe(-speed);
+    }
+    glutTimerFunc(1, Timer, 0);
 }
 void idle()
 {

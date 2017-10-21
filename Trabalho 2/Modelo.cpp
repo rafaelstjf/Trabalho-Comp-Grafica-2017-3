@@ -5,7 +5,7 @@ Modelo::Modelo(string nomeArquivo)
     string linha;
     double n1[3];
     double n2[3];
-    cout << "Abrindo arquivo: " << nomeArquivo << endl;
+    //cout << "Abrindo arquivo: " << nomeArquivo << endl;
     arquivo.open(nomeArquivo, fstream::in); //Abre o arquivo
     if (arquivo.is_open())                  //Se o arquivo estiver aberto comeca a leitura
     {
@@ -121,7 +121,7 @@ Modelo::Modelo(string nomeArquivo)
                     normal[i][2] = normal[i][2] / dist;
 
                 }
-                //cout << "Modelo carregado!" << endl;
+                cout << "Modelo carregado!" << endl;
             }
             else
                 cout << "Arquivo nao esta no formato ascii 1.0!" << endl;

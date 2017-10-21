@@ -30,7 +30,7 @@ void Camera::Refresh()
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(m_x, m_y, m_z, m_x + m_lx, m_y + m_ly, m_z + m_lz, 0.0,1.0,0.0);
+    gluLookAt(m_x, m_y, m_z, m_x+m_lx, m_y+m_ly, m_z+m_lz, 0.0,1.0,0.0);
 
     //printf("Camera: %f %f %f Direction vector: %f %f %f\n", m_x, m_y, m_z, m_lx, m_ly, m_lz);
 }
