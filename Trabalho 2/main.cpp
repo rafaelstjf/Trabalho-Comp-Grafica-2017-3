@@ -286,6 +286,7 @@ void display()
         if(ortho)
         {
             glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
+            gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
         }
         else
         {
@@ -293,7 +294,7 @@ void display()
             if(pause)
                 cam.Refresh();
             else
-                cam.InitialPos();
+                gluLookAt(99, 11, -540, 99, 11, -541, 0.0, 1.0, 0.0);
         }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
         glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
@@ -399,6 +400,7 @@ void display()
             glEnd();
         }
         inicio.drawf(fase, pontos);
+        glutSetCursor(GLUT_CURSOR_NONE);
         drawAim();
     }
     glutSwapBuffers();
