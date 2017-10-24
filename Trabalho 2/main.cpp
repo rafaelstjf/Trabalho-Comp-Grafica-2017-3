@@ -37,7 +37,7 @@ int dificuldade = 1;                              //variavel para controle de di
 int indPlacar = 0;                                //variavel para controlar o indice do vetor do placar
 bool mouseDown = false;
 bool fullscreen = false;
-bool inteira[11];//sabe se cada cidade ta inteira e na ultima posiçao se alguma ainda existe
+bool inteira[11];//sabe se cada cidade ta inteira e na ultima posiï¿½ao se alguma ainda existe
 float clok = 1;  //tempo entre os misseis
 Placar *pl = new Placar();
 bool comecou = false, emPlacar = false, confirmaInsercao = true;
@@ -56,7 +56,7 @@ Camera cam;
 bool flyMode = false, inview = false;
 bool tecla[256];
 menu inicio; //instancia um menu
-bool ortho=false;
+bool ortho=true;
 float g_rotation_speed = (M_PI/180)*0.01;
 
 //funcoes
@@ -187,7 +187,7 @@ void startWindow(int argc, char **argv)
 
 void drawAim()
 {
-    glColor3f(0.0, 1.0, 0.0);
+    glColor3f(0.0, 0.0, 1.0);
     //quadrado
     glBegin(GL_LINE_LOOP);
     glVertex2f(jogadorx - 4, jogadory - 2.25);
@@ -253,7 +253,6 @@ void setMaterial_cannon(void)
 
 void display()
 {
-    if(pause)return;
     glDisable(GL_LIGHTING);
     int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -415,7 +414,6 @@ void keyboardPress(unsigned char key, int x, int y)
     switch(key)
     {
     case 27:
-        pl->salvarPontuacao();
         exit(0);
         break;
     case 'f':
@@ -434,7 +432,6 @@ void keyboardPress(unsigned char key, int x, int y)
         break;
     case 'r': //reseta todas variaveis
         fase = 1;
-        pl->salvarPontuacao();
         pontos = 0;
         f = 0;
         inimigos.explo.clear();
@@ -465,6 +462,7 @@ void keyboardPress(unsigned char key, int x, int y)
             break;
         case 'p':
             pause = !pause;
+            if(!pause) cam.InitialPos();
             break;
         case 'z':
             pos-=1;
@@ -521,7 +519,7 @@ void init()
 {
     float camPosition[3] = {99.0, 11.0, -540.0};
     glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
-    glClearColor(0.0, 0.2, 0.7, 0.0);
+    glClearColor(0.0, 1.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
@@ -537,7 +535,6 @@ void init()
 }
 void mouse(int button, int state, int x, int y)
 {
-    if(pause)return;
     if (comecou)
     {
         if (button == GLUT_LEFT_BUTTON)
@@ -602,8 +599,7 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
 
         if(dx) cam.RotateYaw(g_rotation_speed*dx);
         if(dy) cam.RotatePitch(g_rotation_speed*dy);
-        glutPostRedisplay();
-        if(!releaseMouse)	glutWarpPointer(width/2, height/2);
+        if(!releaseMouse)	glutWarpPointer(width/2, height/2);        
     }
 
 
@@ -685,7 +681,6 @@ void Timer(int value)
         cam.Strafe(-speed);
     }
     glutTimerFunc(1, Timer, 0);
-    if(pause)glutPostRedisplay();
 }
 void idle()
 {
@@ -700,7 +695,6 @@ void idle()
         tLast = t;
         return;
     }
-    glutPostRedisplay();
     dt = t - tLast;
     explosoes.atualizaTempo(dt);
     inimigos.atualizaTempo(dt);
@@ -815,4 +809,6 @@ void idle()
     }
 
     tLast = t; //atualiza o tempo, deixar no fim da idle
+    glutPostRedisplay();
+    
 }
