@@ -56,7 +56,7 @@ Camera cam;
 bool flyMode = false, inview = false;
 bool tecla[256];
 menu inicio; //instancia um menu
-bool ortho=true;
+bool ortho=false;
 float g_rotation_speed = (M_PI/180)*0.01;
 
 //funcoes
@@ -253,6 +253,7 @@ void setMaterial_cannon(void)
 
 void display()
 {
+    if(pause)return;
     glDisable(GL_LIGHTING);
     int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -414,6 +415,7 @@ void keyboardPress(unsigned char key, int x, int y)
     switch(key)
     {
     case 27:
+        pl->salvarPontuacao();
         exit(0);
         break;
     case 'f':
@@ -432,6 +434,7 @@ void keyboardPress(unsigned char key, int x, int y)
         break;
     case 'r': //reseta todas variaveis
         fase = 1;
+        pl->salvarPontuacao();
         pontos = 0;
         f = 0;
         inimigos.explo.clear();
@@ -534,6 +537,7 @@ void init()
 }
 void mouse(int button, int state, int x, int y)
 {
+    if(pause)return;
     if (comecou)
     {
         if (button == GLUT_LEFT_BUTTON)
