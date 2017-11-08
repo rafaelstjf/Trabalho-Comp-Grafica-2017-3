@@ -23,7 +23,7 @@ void filaAnima::atualizaTempo(float dt)
     }
 }
 
-void filaAnima::desenhos()
+void filaAnima::desenhos(bool state)
 {
     for(int i =0;i<tam;i++)
     {
@@ -32,7 +32,7 @@ void filaAnima::desenhos()
             explo.erase(explo.begin()+i);
             tam--;
         }
-        explo[i].desenhar();
+        explo[i].desenhar(state);
     }
 }
 int filaAnima::colisao(filaAnima ex){

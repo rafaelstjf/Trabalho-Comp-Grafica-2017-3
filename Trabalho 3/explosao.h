@@ -8,7 +8,7 @@ class explosao
 {
     public:
         explosao(float x, float y, float initx, float inity,int vel=1000, int alvo = 10);
-        void desenhar();//desenha as explosoes
+        void desenhar(bool state);//desenha as explosoes
         float tempo = 0,dt;
         float raio,linex,liney,x,y;
         int vel=4000,cont=0, alvo;

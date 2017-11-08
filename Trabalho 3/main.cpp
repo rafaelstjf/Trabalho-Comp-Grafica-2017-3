@@ -112,7 +112,7 @@ void drawModel(Modelo *m)
         for (int k = 1; k < 4; k++)
         {
             if (gouraud)
-            glNormal3f(normalGouraud[faces[i][k]][0], normalGouraud[faces[i][k]][1], normalGouraud[faces[i][k]][2]);
+                glNormal3f(normalGouraud[faces[i][k]][0], normalGouraud[faces[i][k]][1], normalGouraud[faces[i][k]][2]);
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
         }
         glEnd();
@@ -355,50 +355,53 @@ void display()
         drawModel(cannon);
         glPopMatrix();
         /***** FIM CANHOES *****/
-        explosoes.desenhos(); //desenha nossos tiros
-        inimigos.desenhos();  //desenha os tiros inimigos
+        explosoes.desenhos(pause); //desenha nossos tiros
+        inimigos.desenhos(pause);  //desenha os tiros inimigos
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
-        /*****    BALAS    *****/
-        glColor3f(0, cor, 1);
-        if (!inteira[2])
-            explosoes.bala[2] = 0;
-        for (int bl = 0; bl < explosoes.bala[2]; bl++)
+        if(!pause)
         {
-            glBegin(GL_QUADS);
-            glVertex2f(86 + 3 * bl, -96.625);
-            glVertex2f(84 + 3 * bl, -96.625);
-            glVertex2f(84 + 3 * bl, -92.125);
-            glVertex2f(86 + 3 * bl, -92.125);
-            glEnd();
+            glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
+            /*****    BALAS    *****/
+            glColor3f(0, cor, 1);
+            if (!inteira[2])
+                explosoes.bala[2] = 0;
+            for (int bl = 0; bl < explosoes.bala[2]; bl++)
+            {
+                glBegin(GL_QUADS);
+                glVertex2f(86 + 3 * bl, -96.625);
+                glVertex2f(84 + 3 * bl, -96.625);
+                glVertex2f(84 + 3 * bl, -92.125);
+                glVertex2f(86 + 3 * bl, -92.125);
+                glEnd();
+            }
+            if (!inteira[0])
+                explosoes.bala[0] = 0;
+            for (int bl = 0; bl < explosoes.bala[0]; bl++)
+            {
+                glBegin(GL_QUADS);
+                glVertex2f(-94 + 3 * bl, -96.625);
+                glVertex2f(-96 + 3 * bl, -96.625);
+                glVertex2f(-96 + 3 * bl, -92.125);
+                glVertex2f(-94 + 3 * bl, -92.125);
+                glEnd();
+            }
+            if (!inteira[1])
+                explosoes.bala[1] = 0;
+            for (int bl = 0; bl < explosoes.bala[1]; bl++)
+            {
+                glBegin(GL_QUADS);
+                glVertex2f(264 + 3 * bl, -96.625);
+                glVertex2f(262 + 3 * bl, -96.625);
+                glVertex2f(262 + 3 * bl, -92.125);
+                glVertex2f(264 + 3 * bl, -92.125);
+                glEnd();
+            }
+            inicio.drawf(fase, pontos);
         }
-        if (!inteira[0])
-            explosoes.bala[0] = 0;
-        for (int bl = 0; bl < explosoes.bala[0]; bl++)
-        {
-            glBegin(GL_QUADS);
-            glVertex2f(-94 + 3 * bl, -96.625);
-            glVertex2f(-96 + 3 * bl, -96.625);
-            glVertex2f(-96 + 3 * bl, -92.125);
-            glVertex2f(-94 + 3 * bl, -92.125);
-            glEnd();
-        }
-        if (!inteira[1])
-            explosoes.bala[1] = 0;
-        for (int bl = 0; bl < explosoes.bala[1]; bl++)
-        {
-            glBegin(GL_QUADS);
-            glVertex2f(264 + 3 * bl, -96.625);
-            glVertex2f(262 + 3 * bl, -96.625);
-            glVertex2f(262 + 3 * bl, -92.125);
-            glVertex2f(264 + 3 * bl, -92.125);
-            glEnd();
-        }
-        inicio.drawf(fase, pontos);
         glutSetCursor(GLUT_CURSOR_NONE);
         drawAim();
     }
@@ -584,9 +587,10 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
     //rotationY += (float)(x - mousex);
     mousex = x;
     mousey = y;
+    static bool just_warped = false;
+
     if (pause)
     {
-        static bool just_warped = false;
 
         if (just_warped)
         {
@@ -597,15 +601,21 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
         int dx = x - width / 2;
         int dy = -1 * y + height / 2;
 
-        if (dx)
+        if (dx){
             cam.RotateYaw(g_rotation_speed * dx);
-        if (dy)
+            glutPostRedisplay();
+        }
+
+        if (dy){
             cam.RotatePitch(g_rotation_speed * dy);
+            glutPostRedisplay();
+
+        }
         if (!releaseMouse)
             glutWarpPointer(width / 2, height / 2);
+        just_warped = true;
     }
 
-    //just_warped = true;
 }
 
 void specialKeysPress(int key, int x, int y)
@@ -683,6 +693,8 @@ void Timer(int value)
         cam.Strafe(-speed);
     }
     glutTimerFunc(1, Timer, 0);
+    if(pause)
+        glutPostRedisplay();
 }
 void idle()
 {
