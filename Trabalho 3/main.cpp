@@ -37,27 +37,27 @@ int dificuldade = 1;                              //variavel para controle de di
 int indPlacar = 0;                                //variavel para controlar o indice do vetor do placar
 bool mouseDown = false;
 bool fullscreen = false;
-bool inteira[11];//sabe se cada cidade ta inteira e na ultima posi�ao se alguma ainda existe
-float clok = 1;  //tempo entre os misseis
+bool inteira[11]; //sabe se cada cidade ta inteira e na ultima posi�ao se alguma ainda existe
+float clok = 1;   //tempo entre os misseis
 Placar *pl = new Placar();
 bool comecou = false, emPlacar = false, confirmaInsercao = true;
-bool opcao = 0; //posicao no menu
-int fase = 1, f = 0; //fase e controle da mesma
-bool pause = false; // pausa o game
+bool opcao = 0;                      //posicao no menu
+int fase = 1, f = 0;                 //fase e controle da mesma
+bool pause = false;                  // pausa o game
 filaAnima explosoes = filaAnima(10); //incializa a estrurura dos nossos tiros explosoes de duracao 10
-filaAnima inimigos = filaAnima(10); //incializa a estrurura dos tiros inimigos explosoes de duracao 10
+filaAnima inimigos = filaAnima(10);  //incializa a estrurura dos tiros inimigos explosoes de duracao 10
 char nome[20];
-Modelo *fundo = new Modelo("batata.ply");
-Modelo *cidade= new Modelo("house3d.ply");
-Modelo *cannon= new Modelo("cannon.ply");
+Modelo *fundo = new Modelo("terreno.ply", true);
+Modelo *cidade = new Modelo("house3d.ply", false);
+Modelo *cannon = new Modelo("cannon.ply", false);
 float pos = 0;
 float rotationX = 0.0, rotationY = 0.0;
 Camera cam;
 bool flyMode = false, inview = false;
 bool tecla[256];
 menu inicio; //instancia um menu
-bool ortho=true;
-float g_rotation_speed = (M_PI/180)*0.01;
+bool ortho = true;
+float g_rotation_speed = (M_PI / 180) * 0.01;
 
 //funcoes
 void idle();
@@ -69,12 +69,12 @@ void motion(int x, int y);
 void reshape(int w, int h);
 void keyboardPress(unsigned char key, int x, int y);
 void specialKeysPress(int key, int x, int y);
-void startWindow(int argc, char **argv);//inicia o opengl
-void drawScore();//desenha o score
+void startWindow(int argc, char **argv); //inicia o opengl
+void drawScore();                        //desenha o score
 void KeyboardUp(unsigned char key, int x, int y);
-void desenhaFaces(Modelo *m);
+void drawModel(Modelo *m);
 void Timer(int value);
-bool	releaseMouse = false;
+bool releaseMouse = false;
 
 int main(int argc, char **argv)
 {
@@ -85,32 +85,39 @@ int main(int argc, char **argv)
     }
     for (int i = 0; i < 11; i++)
         inteira[i] = true; //inicia as cidades inteiras
-    srand(time(NULL)); //pega o tempo do sistema para randomizar a funcao rand
+    srand(time(NULL));     //pega o tempo do sistema para randomizar a funcao rand
     startWindow(argc, argv);
     glutMainLoop();
     return 0;
 }
 
-void desenhaFaces(Modelo *m)
+void drawModel(Modelo *m)
 {
 
     glColor3f(1.0, 1.0, 1.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
-    double **normal = m->getNormal();
+    bool gouraud = m->getGouraud();
+    double **normalFlat;
+    double **normalGouraud;
+    normalGouraud = m->getNormalGouraud();
+    normalFlat = m->getNormalFlat();
     for (int i = 0; i < m->getTamFaces(); i++)
     {
         glFrontFace(GL_CCW);
         //setMaterial();
         glBegin(GL_POLYGON);
-        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
-        //cout << "normais: " << normal[i][0] << " " << normal[i][1] << " " << normal[i][2] << endl;
+        if (!gouraud)
+            glNormal3f(normalFlat[i][0], normalFlat[i][1], normalFlat[i][2]);
         for (int k = 1; k < 4; k++)
+        {
+            if (gouraud)
+            glNormal3f(normalGouraud[faces[i][k]][0], normalGouraud[faces[i][k]][1], normalGouraud[faces[i][k]][2]);
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+        }
         glEnd();
     }
 }
-
 void drawScore() //funcao para printar o placar na tela
 {
     glColor3f(0, 0, 0); //cor do texto
@@ -206,49 +213,43 @@ void drawAim()
 void setMaterial_mont(void)
 {
     //silver
-    GLfloat objeto_ambient[] = { 0.19125f, 0.0735f, 0.0225f, 1.0f };
-    GLfloat objeto_difusa[] = {0.7038f, 0.27048f, 0.0828f, 1.0f };
-    GLfloat objeto_especular[] = {0.256777f, 0.137622f, 0.086014f, 1.0f };
+    GLfloat objeto_ambient[] = {0.19125f, 0.0735f, 0.0225f, 1.0f};
+    GLfloat objeto_difusa[] = {0.7038f, 0.27048f, 0.0828f, 1.0f};
+    GLfloat objeto_especular[] = {0.256777f, 0.137622f, 0.086014f, 1.0f};
     GLfloat objeto_brilho[] = {12.8f};
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
     glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
     glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
-
-
 }
 
 void setMaterial_house(void)
 {
     //silver
-    GLfloat objeto_ambient[] = { 0.0f,0.0f,0.0f,1.0f };
-    GLfloat objeto_difusa[] = { 0.55f,0.55f,0.55f,1.0f};
-    GLfloat objeto_especular[] = {0.70f,0.70f,0.70f,1.0f };
+    GLfloat objeto_ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
+    GLfloat objeto_difusa[] = {0.55f, 0.55f, 0.55f, 1.0f};
+    GLfloat objeto_especular[] = {0.70f, 0.70f, 0.70f, 1.0f};
     GLfloat objeto_brilho[] = {32.0f};
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
     glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
     glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
-
-
 }
 
 void setMaterial_cannon(void)
 {
     //silver
-    GLfloat objeto_ambient[] = { 0.23125f, 0.23125f, 0.23125f, 1.0f };
-    GLfloat objeto_difusa[] = {0.2775f, 0.2775f, 0.2775f, 1.0f };
-    GLfloat objeto_especular[] = {0.773911f, 0.773911f, 0.773911f, 1.0f };
+    GLfloat objeto_ambient[] = {0.23125f, 0.23125f, 0.23125f, 1.0f};
+    GLfloat objeto_difusa[] = {0.2775f, 0.2775f, 0.2775f, 1.0f};
+    GLfloat objeto_especular[] = {0.773911f, 0.773911f, 0.773911f, 1.0f};
     GLfloat objeto_brilho[] = {89.6f};
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
     glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
     glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
-
-
 }
 
 void display()
@@ -272,18 +273,18 @@ void display()
     if (!comecou && !emPlacar)
     {
 
-        inicio.draw((int)opcao);//faz o menu
+        inicio.draw((int)opcao); //faz o menu
     }
     else if (!comecou && emPlacar)
     {
-        drawScore();//faz o score
+        drawScore(); //faz o score
     }
-    else if(comecou)//roda o jogo normal
+    else if (comecou) //roda o jogo normal
     {
 
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity ();
-        if(ortho)
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        if (ortho)
         {
             glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
             gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
@@ -291,7 +292,7 @@ void display()
         else
         {
             gluPerspective(60.0, (GLfloat)width / (GLfloat)height, 0.01, 20000000.0);
-            if(pause)
+            if (pause)
                 cam.Refresh();
             else
                 gluLookAt(99, 11, -540, 99, 11, -541, 0.0, 1.0, 0.0);
@@ -302,9 +303,9 @@ void display()
         /****Fundo****/
         glPushMatrix();
         setMaterial_mont();
-        glTranslatef(-350,-24,-1500);
-        glScalef(100,100,100);
-        desenhaFaces(fundo);
+        glTranslatef(-350, -24, -1500);
+        glScalef(100, 100, 100);
+        drawModel(fundo);
         glPopMatrix();
         /************/
 
@@ -312,17 +313,17 @@ void display()
         /*****   CIDADES   *****/
         setMaterial_house();
         int i = 3;
-        inteira[10]=false;//nem uma cidade esta inteira
+        inteira[10] = false; //nem uma cidade esta inteira
         for (int cd = -60; cd <= 240; cd += 50)
         {
-            if (cd != 90)//nao desenha em baixo do canhao central
+            if (cd != 90) //nao desenha em baixo do canhao central
             {
-                if (inteira[i])//se a cidade estiver inteira
+                if (inteira[i]) //se a cidade estiver inteira
                 {
                     glPushMatrix();
-                    glTranslatef(cd+5,-94,-735);
-                    desenhaFaces(cidade);
-                    inteira[10]=true;//alguma cidade esta inteira
+                    glTranslatef(cd + 5, -94, -735);
+                    drawModel(cidade);
+                    inteira[10] = true; //alguma cidade esta inteira
                     glPopMatrix();
                 }
                 i++;
@@ -334,35 +335,33 @@ void display()
         setMaterial_cannon();
 
         glPushMatrix();
-        glRotated(90,1,0,0);
-        glTranslatef(-81,-735,92);
-        glScalef(0.1,0.1,0.1);
-        desenhaFaces(cannon);
+        glRotated(90, 1, 0, 0);
+        glTranslatef(-81, -735, 92);
+        glScalef(0.1, 0.1, 0.1);
+        drawModel(cannon);
         glPopMatrix();
 
-
         glPushMatrix();
-        glRotated(90,1,0,0);
-        glTranslatef(97,-735,92);
-        glScalef(0.1,0.1,0.1);
-        desenhaFaces(cannon);
+        glRotated(90, 1, 0, 0);
+        glTranslatef(97, -735, 92);
+        glScalef(0.1, 0.1, 0.1);
+        drawModel(cannon);
         glPopMatrix();
 
-
         glPushMatrix();
-        glRotated(90,1,0,0);
-        glTranslatef(276,-735,92);
-        glScalef(0.1,0.1,0.1);
-        desenhaFaces(cannon);
+        glRotated(90, 1, 0, 0);
+        glTranslatef(276, -735, 92);
+        glScalef(0.1, 0.1, 0.1);
+        drawModel(cannon);
         glPopMatrix();
         /***** FIM CANHOES *****/
-        explosoes.desenhos();//desenha nossos tiros
-        inimigos.desenhos();//desenha os tiros inimigos
+        explosoes.desenhos(); //desenha nossos tiros
+        inimigos.desenhos();  //desenha os tiros inimigos
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity ();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
         glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
         /*****    BALAS    *****/
         glColor3f(0, cor, 1);
@@ -411,13 +410,13 @@ void KeyboardUp(unsigned char key, int x, int y)
 }
 void keyboardPress(unsigned char key, int x, int y)
 {
-    switch(key)
+    switch (key)
     {
     case 27:
         exit(0);
         break;
     case 'f':
-        if(fullscreen)
+        if (fullscreen)
         {
             glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
             glutReshapeWindow(800, 450);
@@ -445,7 +444,7 @@ void keyboardPress(unsigned char key, int x, int y)
                 explosoes.bala[i] = 10;
             inteira[i] = true;
         }
-        comecou=false;
+        comecou = false;
         break;
     }
     if (!emPlacar)
@@ -462,25 +461,26 @@ void keyboardPress(unsigned char key, int x, int y)
             break;
         case 'p':
             pause = !pause;
-            if(!pause) cam.InitialPos();
+            if (!pause)
+                cam.InitialPos();
             break;
         case 'z':
-            pos-=1;
+            pos -= 1;
             break;
         case 'x':
-            pos+=1;
+            pos += 1;
             break;
         case 'c':
-            cout<<pos<<endl;
+            cout << pos << endl;
             break;
-        case'v':
-            ortho=!ortho;
+        case 'v':
+            ortho = !ortho;
             cam.InitialPos();
             glutPostRedisplay();
             break;
         case 'm':
             flyMode = !flyMode;
-            if(flyMode)
+            if (flyMode)
                 cout << "FlyMode ON" << endl;
             else
             {
@@ -490,7 +490,7 @@ void keyboardPress(unsigned char key, int x, int y)
             break;
         case '=':
             releaseMouse = !releaseMouse;
-            releaseMouse ? cout << "Mouse released" << endl: cout << "Mouse Attached" << endl;
+            releaseMouse ? cout << "Mouse released" << endl : cout << "Mouse Attached" << endl;
             break;
         }
     }
@@ -508,7 +508,7 @@ void keyboardPress(unsigned char key, int x, int y)
             }
             else if (key == 8)
                 nome[indPlacar] = ' ';
-            if(indPlacar>0)
+            if (indPlacar > 0)
                 indPlacar--;
         }
     }
@@ -528,7 +528,7 @@ void init()
     glEnable(GL_LIGHT0);
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_NORMALIZE);
-    glShadeModel(GL_FLAT);
+    glShadeModel(GL_SMOOTH);
     glLoadIdentity();
     glutIgnoreKeyRepeat(1);
     cam.Init();
@@ -544,7 +544,7 @@ void mouse(int button, int state, int x, int y)
                 mouseDown = true;
                 float xreal = (float)(mousex / 2 - 100);
                 float yreal = (float)(-1 * mousey / 2 + 125);
-                if (xreal < 20 && explosoes.bala[0] > 0)//faz o canhao mais proximo atirar
+                if (xreal < 20 && explosoes.bala[0] > 0) //faz o canhao mais proximo atirar
                 {
                     explosoes.addObjeto(xreal, yreal, -80, -83.125);
                     explosoes.bala[0]--;
@@ -584,24 +584,26 @@ void motion(int x, int y) //funcao que pega os valores do mouse em tempo real
     //rotationY += (float)(x - mousex);
     mousex = x;
     mousey = y;
-    if(pause)
+    if (pause)
     {
         static bool just_warped = false;
 
-        if(just_warped)
+        if (just_warped)
         {
             just_warped = false;
             return;
         }
 
-        int dx = x - width/2 ;
-        int dy = -1*y + height/2;
+        int dx = x - width / 2;
+        int dy = -1 * y + height / 2;
 
-        if(dx) cam.RotateYaw(g_rotation_speed*dx);
-        if(dy) cam.RotatePitch(g_rotation_speed*dy);
-        if(!releaseMouse)	glutWarpPointer(width/2, height/2);
+        if (dx)
+            cam.RotateYaw(g_rotation_speed * dx);
+        if (dy)
+            cam.RotatePitch(g_rotation_speed * dy);
+        if (!releaseMouse)
+            glutWarpPointer(width / 2, height / 2);
     }
-
 
     //just_warped = true;
 }
@@ -664,19 +666,19 @@ void specialKeysPress(int key, int x, int y)
 void Timer(int value)
 {
     float speed = 20;
-    if(tecla['w'] || tecla['W'])
+    if (tecla['w'] || tecla['W'])
     {
         cam.Move(speed, flyMode);
     }
-    else if(tecla['s'] || tecla['S'])
+    else if (tecla['s'] || tecla['S'])
     {
         cam.Move(-speed, flyMode);
     }
-    else if(tecla['a'] || tecla['A'])
+    else if (tecla['a'] || tecla['A'])
     {
         cam.Strafe(speed);
     }
-    else if(tecla['d'] || tecla['D'])
+    else if (tecla['d'] || tecla['D'])
     {
         cam.Strafe(-speed);
     }
@@ -716,10 +718,10 @@ void idle()
                 {
                     std::mt19937 rng(rand());
                     std::uniform_int_distribution<int> uni(-100, 300);
-                    auto random_x = uni(rng);//x randomico
+                    auto random_x = uni(rng); //x randomico
                     std::uniform_int_distribution<int> duni(0, 8);
-                    auto cit = duni(rng);//cidade randomica
-                    if (inteira[cit])//se a cidade ainda existir
+                    auto cit = duni(rng); //cidade randomica
+                    if (inteira[cit])     //se a cidade ainda existir
                     {
                         if (cit == 2)
                         {
@@ -764,13 +766,13 @@ void idle()
                 }
                 clok = 0;
             }
-        pontos += inimigos.colisao(explosoes);//colide os inimigos com nossas explosoes
-        pontos += inimigos.colisao(inimigos);//colide os inimigos com suas explosoes
+        pontos += inimigos.colisao(explosoes); //colide os inimigos com nossas explosoes
+        pontos += inimigos.colisao(inimigos);  //colide os inimigos com suas explosoes
         if (inteira[10])
-            inimigos.dividir(inteira);//divide os misseis inimigos
+            inimigos.dividir(inteira); //divide os misseis inimigos
         clok += dt;
         //std::cout<<inimigos.explo.size()<<std::endl;
-        for (unsigned int i = 0; i < inimigos.explo.size(); i++)//verifica se a cidade esta sendo destruida
+        for (unsigned int i = 0; i < inimigos.explo.size(); i++) //verifica se a cidade esta sendo destruida
         {
             if (inimigos.explo[i].destruiu)
                 if (inimigos.explo[i].alvo < 9)
@@ -778,7 +780,7 @@ void idle()
                     inteira[inimigos.explo[i].alvo] = false;
                 }
         }
-        if (fase == f && inimigos.explo.size() == 0)//passa de fase
+        if (fase == f && inimigos.explo.size() == 0) //passa de fase
         {
             fase++;
             f = 0;
@@ -800,15 +802,14 @@ void idle()
             }
         }
     }
-    if(!inteira[10]) //fim do jogo
+    if (!inteira[10]) //fim do jogo
     {
-        emPlacar=true;
-        confirmaInsercao=false;
-        comecou=false;
-        inteira[10]=true;
+        emPlacar = true;
+        confirmaInsercao = false;
+        comecou = false;
+        inteira[10] = true;
     }
 
     tLast = t; //atualiza o tempo, deixar no fim da idle
     glutPostRedisplay();
-
 }

@@ -1,11 +1,12 @@
 #include "Modelo.h"
 #include <math.h>
-Modelo::Modelo(string nomeArquivo)
+Modelo::Modelo(string nomeArquivo, bool gouraud)
 {
+    this->gouraud = gouraud;
     string linha;
     double n1[3];
     double n2[3];
-    cout << "Abrindo arquivo: " << nomeArquivo << endl;
+    //cout << "Abrindo arquivo: " << nomeArquivo << endl;
     arquivo.open(nomeArquivo, fstream::in); //Abre o arquivo
     if (arquivo.is_open())                  //Se o arquivo estiver aberto comeca a leitura
     {
@@ -98,10 +99,10 @@ Modelo::Modelo(string nomeArquivo)
                     arquivo >> faces[i][0] >> faces[i][1] >> faces[i][2] >> faces[i][3];
                 }
 
-                normal = new double *[tamFaces];
+                normalFlat = new double *[tamFaces];
                 for (int i = 0; i < tamFaces; i++)
                 {
-                    normal[i] = new double[3];
+                    normalFlat[i] = new double[3];
                 }
                 for (int i = 0; i < tamFaces; i++)
                 {
@@ -112,15 +113,59 @@ Modelo::Modelo(string nomeArquivo)
                     n2[1] = (vertices[faces[i][1]][1] - vertices[faces[i][3]][1]);
                     n2[2] = (vertices[faces[i][1]][2] - vertices[faces[i][3]][2]);
 
-                    normal[i][0] = (n1[1] * n2[2] - n1[2] * n2[1]);
-                    normal[i][1] = (n1[2] * n2[0] - n1[0] * n2[2]);
-                    normal[i][2] = (n1[0] * n2[1] - n1[1] * n2[0]);
-                    float dist = sqrt(pow(normal[i][0], 2) + pow(normal[i][1], 2) + pow(normal[i][2], 2));
-                    normal[i][0] = normal[i][0] / dist;
-                    normal[i][1] = normal[i][1] / dist;
-                    normal[i][2] = normal[i][2] / dist;
-
+                    normalFlat[i][0] = (n1[1] * n2[2] - n1[2] * n2[1]);
+                    normalFlat[i][1] = (n1[2] * n2[0] - n1[0] * n2[2]);
+                    normalFlat[i][2] = (n1[0] * n2[1] - n1[1] * n2[0]);
+                    float dist = sqrt(pow(normalFlat[i][0], 2) + pow(normalFlat[i][1], 2) + pow(normalFlat[i][2], 2));
+                    normalFlat[i][0] = normalFlat[i][0] / dist;
+                    normalFlat[i][1] = normalFlat[i][1] / dist;
+                    normalFlat[i][2] = normalFlat[i][2] / dist;
                 }
+                if(gouraud)
+                {
+                    normalGouraud = new double*[tamVertices];
+                    for(int i = 0; i<tamVertices; i++)
+                        normalGouraud[i] = new double[3];
+                    double nv1[3], nv2[3], nv3[3];
+                    int numOcorrencias = 0;
+                    for(int i = 0; i < tamVertices; i++)
+                    {
+                        for(int j = 0; j<tamFaces; j++)
+                        {
+                            for(int k = 0; k<3; k++)
+                            {
+                                if(i == faces[j][k])
+                                {
+                                    numOcorrencias++;
+                                    if(numOcorrencias==1)
+                                    {
+                                        nv1[0] = normalFlat[j][0];
+                                        nv1[1] = normalFlat[j][1];
+                                        nv1[2] = normalFlat[j][2];
+                                    }
+                                    if(numOcorrencias==2)
+                                    {
+                                        nv2[0] = normalFlat[j][0];
+                                        nv2[1] = normalFlat[j][1];
+                                        nv2[2] = normalFlat[j][2];
+                                    }
+                                    if(numOcorrencias==3)
+                                    {
+                                        nv3[0] = normalFlat[j][0];
+                                        nv3[1] = normalFlat[j][1];
+                                        nv3[2] = normalFlat[j][2];
+                                    }
+                                }
+                            }
+                        }
+                        normalGouraud[i][0] = ((nv1[0]+nv2[0]+nv3[0])/3);
+                        normalGouraud[i][1] = ((nv1[1]+nv2[1]+nv3[1])/3);
+                        normalGouraud[i][2] = ((nv1[2]+nv2[2]+nv3[2])/3);
+                        numOcorrencias = 0;
+
+                    }
+                }
+
                 cout << "Modelo carregado!" << endl;
             }
             else
@@ -169,13 +214,21 @@ int Modelo::getTamVertices()
 {
     return tamVertices;
 }
-double **Modelo::getNormal()
+double** Modelo::getNormalFlat()
 {
-    return normal;
+    return normalFlat;
+}
+double** Modelo::getNormalGouraud()
+{
+    return normalGouraud;
 }
 int **Modelo::getCor()
 {
     return rgb;
+}
+bool Modelo::getGouraud()
+{
+    return gouraud;
 }
 Modelo::~Modelo()
 {

@@ -47,11 +47,11 @@ int qntTriangulos;
 
 string bufferTitulo;
 //modelos
-Modelo *ant = new Modelo("ant.ply");
-Modelo *apple = new Modelo("teapot.ply");
-Modelo *cow = new Modelo("house3d.ply");
-Modelo *ketchup = new Modelo("missile.ply");
-Modelo *turbine = new Modelo("batata.ply");
+Modelo *ant = new Modelo("cannon.ply", true);
+Modelo *apple = new Modelo("mug.ply", true);
+Modelo *cow = new Modelo("house3d.ply", true);
+Modelo *ketchup = new Modelo("missile.ply", true);
+Modelo *turbine = new Modelo("teapot.ply", true);
 Modelo *inputUsuario = nullptr;
 
 int main(int argc, char **argv)
@@ -205,7 +205,11 @@ void desenhaFaces(Modelo *m)
     glColor3f(1.0, 1.0, 1.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
-    double **normal = m->getNormal();
+     bool gouraud = m->getGouraud();
+    double **normalFlat;
+    double **normalGouraud;
+    normalGouraud = m->getNormalGouraud();
+    normalFlat = m->getNormalFlat();
     if (trocaModelo)
     {
         qntTriangulos = m->getTamFaces();
@@ -219,10 +223,17 @@ void desenhaFaces(Modelo *m)
             glBegin(GL_LINE_LOOP);
         else
             glBegin(GL_POLYGON);
-        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
-        //cout << "normais: " << normal[i][0] << " " << normal[i][1] << " " << normal[i][2] << endl;
+       if(!gouraud || flat)
+            glNormal3f(normalFlat[i][0], normalFlat[i][1], normalFlat[i][2]);
         for (int k = 1; k < 4; k++)
+        {
+            if(gouraud && !flat)
+                glNormal3f(normalGouraud[faces[i][k]][0], normalGouraud[faces[i][k]][1], normalGouraud[faces[i][k]][2]);
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+
+
+
+        }
         glEnd();
     }
 }
@@ -259,7 +270,7 @@ void keyboard(unsigned char key, int x, int y)
         cout << "Carregando modelo do arquivo" << endl;
         cout << "Digite o nome+extensao do modelo" << endl;
         cin >> nomeModelo;
-        inputUsuario = new Modelo(nomeModelo);
+        inputUsuario = new Modelo(nomeModelo, true);
         break;
     case 'f': //muda o wireframe
         wireframe = !wireframe;

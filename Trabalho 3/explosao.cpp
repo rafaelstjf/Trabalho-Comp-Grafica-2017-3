@@ -71,7 +71,7 @@ void explosao::desenhaFace(Modelo *m)
     glColor3f(1.0, 1.0, 1.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
-    double **normal = m->getNormal();
+    double **normal = m->getNormalFlat();
     for (int i = 0; i < m->getTamFaces(); i++)
     {
         glFrontFace(GL_CCW);

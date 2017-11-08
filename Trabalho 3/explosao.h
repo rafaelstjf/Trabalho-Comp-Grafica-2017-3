@@ -18,7 +18,7 @@ class explosao
         void setMaterial_missil();
         void setMaterial_explosao();
         float dy,dx,cor=1,initx,inity;
-        Modelo *missile= new Modelo("missile.ply");
+        Modelo *missile= new Modelo("missile.ply", false);
 
 };
 

@@ -24,16 +24,20 @@ private:
     double** vertices;
     bool temCor = true;
     int** rgb;
-    double** normal;
+    double** normalFlat;
+    double** normalGouraud;
+    bool gouraud;
 public:
-    Modelo(string nomeArquivo);
+    Modelo(string nomeArquivo, bool gouraud);
     int getTamVertices();
     int** getFaces();
     double** getVertices();
     void exibirVertices();
     void exibirFaces();
     int getTamFaces();
-    double** getNormal();
+    double** getNormalFlat();
+    double** getNormalGouraud();
+    bool getGouraud();
     int** getCor();
     float minx=999999,miny=999999,minz=999999,maxx=-999999,maxy=-999999,maxz=-999999;
     virtual ~Modelo();
