@@ -38,6 +38,7 @@ int dificuldade = 1;                              //variavel para controle de di
 int indPlacar = 0;                                //variavel para controlar o indice do vetor do placar
 bool mouseDown = false;
 bool fullscreen = false;
+glcTexture *textureManager;
 bool inteira[11]; //sabe se cada cidade ta inteira e na ultima posi�ao se alguma ainda existe
 float clok = 1;   //tempo entre os misseis
 Placar *pl = new Placar();
@@ -255,6 +256,7 @@ void setMaterial_cannon(void)
 
 void display()
 {
+    textureManager->Disable();
     glDisable(GL_LIGHTING);
     int cor = fase % 2; //fase par tem uma cor impar tem outra
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -282,7 +284,8 @@ void display()
     }
     else if (comecou) //roda o jogo normal
     {
-
+        textureManager->Bind(0);
+        float aspectRatio = textureManager->GetAspectRatio(0);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         if (ortho)
@@ -303,6 +306,7 @@ void display()
         glEnable(GL_LIGHTING);
         /****Fundo****/
         glPushMatrix();
+
         setMaterial_mont();
         glTranslatef(-350, -24, -1500);
         glScalef(100, 100, 100);
@@ -534,6 +538,13 @@ void init()
     glEnable(GL_NORMALIZE);
     glShadeModel(GL_SMOOTH);
     glLoadIdentity();
+
+    textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
+   textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+   textureManager->SetWrappingMode(GL_REPEAT);
+
+    textureManager->CreateTexture("./Cannon.png", 0);
+
     glutIgnoreKeyRepeat(1);
     cam.Init();
 }
