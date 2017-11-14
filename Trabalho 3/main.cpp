@@ -12,6 +12,7 @@
 #include "menu.h"
 #include "Camera.h"
 #include "Modelo.h"
+#include "glcTexture.h"
 #ifdef __linux__
 #include <cstring>
 #endif
