@@ -38,11 +38,33 @@ y[0]=100;
 x[1]=100;
 y[1]=50;
 
+textureManager = new glcTexture();
+    textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+   textureManager->SetWrappingMode(GL_REPEAT);
+    textureManager->CreateTexture("./marble.png", 0);
 }
 
 void menu::draw(int i)
 {
     glutSetCursor(GLUT_CURSOR_NONE);//sem mouse no menu
+    glEnable(GL_LIGHTING);
+    glColor3f(1.0, 1.0, 1.0);
+    textureManager->Bind(0);
+    float aspectRatio = textureManager->GetAspectRatio(0);
+    glBegin(GL_QUADS);
+    glNormal3f(0.0, 0.0, 1.0);
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(-100,-100);
+    glTexCoord2f(1.0, 0.0);
+    glVertex2f(-100,125);
+    glTexCoord2f(1.0, 1.0);
+    glVertex2f(300,125);
+    glTexCoord2f(0.0, 1.0);
+    glVertex2f(300,-100);
+    glEnd();
+    textureManager->Update();
+    textureManager->Disable();
+    glDisable(GL_LIGHTING);
     glColor3f(0.0, 0.0, 1.0);// cor da caixa de seleçao
     //desenha a caixa de seleçao
     glBegin(GL_LINE_LOOP);
@@ -51,6 +73,7 @@ void menu::draw(int i)
     glVertex2f(x[i]+100,y[i]-5);
     glVertex2f(x[i]-10,y[i]-5);
     glEnd();
+
     //escreve as coisas na tela
     output("JOGAR",100,100);
     output("PLACAR",100,50);

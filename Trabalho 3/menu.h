@@ -2,6 +2,7 @@
 #define MENU_H_INCLUDED
 
 #include <GL/glut.h>
+#include "glcTexture.h"
 //classe para desenhar o menu
 class menu{
 
@@ -12,6 +13,7 @@ public:
 private:
     float x[2];
     float y[2];
+    glcTexture* textureManager;
     float animacao,cre;
 
 };
