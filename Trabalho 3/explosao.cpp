@@ -17,12 +17,17 @@ explosao::explosao(float x, float y, float initx, float inity,int vel,int alvo)/
     this->alvo = alvo;
     dx=sqrt(pow((linex-x),2))/vel;//steps para chegar em x
     dy=sqrt(pow((liney-y),2))/vel;//steps para chegar em y
+  textureManager = new glcTexture();
+    textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+   textureManager->SetWrappingMode(GL_REPEAT);
+    textureManager->CreateTexture("./missilebody.png", 0);
+
 }
 
 void explosao::desenhar(bool state)
 {
     glPushMatrix();
-
+    textureManager->Bind(0);
     if(cont<vel) //increace the steps
     {
         if(!state)  //pause
@@ -40,7 +45,7 @@ void explosao::desenhar(bool state)
         um*=-1;
     inv*=um;
     glPushMatrix();
-    setMaterial_missil();
+    //setMaterial_missil();
     glTranslatef(linex,liney,-735);
     glRotatef(90,1,0,0);
     glRotatef(m+(90*inv),0,1,0);
@@ -61,7 +66,7 @@ void explosao::desenhar(bool state)
 else
 {
     colide=1;//se torna colidivel
-    setMaterial_explosao();
+    //setMaterial_explosao();
     glTranslatef(this->x, this->y, -735.0);
     glutSolidSphere(raio, 30, 30);
     if(!state)
@@ -83,16 +88,27 @@ void explosao::desenhaFace(Modelo *m)
     glColor3f(1.0, 1.0, 1.0);
     double **vertices = m->getVertices();
     int **faces = m->getFaces();
-    double **normal = m->getNormalFlat();
+    bool gouraud = m->getGouraud();
+    double **normalFlat;
+    double **normalGouraud;
+    normalGouraud = m->getNormalGouraud();
+    normalFlat = m->getNormalFlat();
+    float maxX = m->getWidth();
+    float maxZ = m->getHeight();
     for (int i = 0; i < m->getTamFaces(); i++)
     {
         glFrontFace(GL_CCW);
         //setMaterial();
         glBegin(GL_POLYGON);
-        glNormal3f(normal[i][0], normal[i][1], normal[i][2]);
-        //cout << "normais: " << normal[i][0] << " " << normal[i][1] << " " << normal[i][2] << endl;
+        if (!gouraud)
+            glNormal3f(normalFlat[i][0], normalFlat[i][1], normalFlat[i][2]);
         for (int k = 1; k < 4; k++)
+        {
+            if (gouraud)
+                glNormal3f(normalGouraud[faces[i][k]][0], normalGouraud[faces[i][k]][1], normalGouraud[faces[i][k]][2]);
+            glTexCoord2f((vertices[faces[i][k]][0]/maxX), (vertices[faces[i][k]][2]/maxZ));
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
+        }
         glEnd();
     }
 }

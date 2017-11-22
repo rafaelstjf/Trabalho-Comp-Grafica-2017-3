@@ -104,6 +104,8 @@ void drawModel(Modelo *m)
     double **normalGouraud;
     normalGouraud = m->getNormalGouraud();
     normalFlat = m->getNormalFlat();
+    float maxX = m->getWidth();
+    float maxZ = m->getHeight();
     for (int i = 0; i < m->getTamFaces(); i++)
     {
         glFrontFace(GL_CCW);
@@ -115,6 +117,7 @@ void drawModel(Modelo *m)
         {
             if (gouraud)
                 glNormal3f(normalGouraud[faces[i][k]][0], normalGouraud[faces[i][k]][1], normalGouraud[faces[i][k]][2]);
+            glTexCoord2f((vertices[faces[i][k]][0]/maxX), (vertices[faces[i][k]][2]/maxZ));
             glVertex3f(vertices[faces[i][k]][0], vertices[faces[i][k]][1], vertices[faces[i][k]][2]);
         }
         glEnd();
@@ -284,7 +287,6 @@ void display()
     }
     else if (comecou) //roda o jogo normal
     {
-        textureManager->Bind(0);
         float aspectRatio = textureManager->GetAspectRatio(0);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -306,17 +308,20 @@ void display()
         glEnable(GL_LIGHTING);
         /****Fundo****/
         glPushMatrix();
-
-        setMaterial_mont();
+        textureManager->Bind(0);
+        textureManager->Update();
+       // setMaterial_mont();
         glTranslatef(-350, -24, -1500);
         glScalef(100, 100, 100);
         drawModel(fundo);
+        textureManager->Disable();
         glPopMatrix();
         /************/
 
         //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
         /*****   CIDADES   *****/
-        setMaterial_house();
+        //setMaterial_house();
+        textureManager->Bind(2);
         int i = 3;
         inteira[10] = false; //nem uma cidade esta inteira
         for (int cd = -60; cd <= 240; cd += 50)
@@ -334,11 +339,12 @@ void display()
                 i++;
             }
         }
+        textureManager->Disable();
         /***** FIM CIDADES *****/
 
         /******   CANHOES  *******/
-        setMaterial_cannon();
-
+        textureManager->Bind(1);
+        //setMaterial_cannon();
         glPushMatrix();
         glRotated(90, 1, 0, 0);
         glTranslatef(-81, -735, 92);
@@ -358,6 +364,7 @@ void display()
         glTranslatef(276, -735, 92);
         glScalef(0.1, 0.1, 0.1);
         drawModel(cannon);
+        textureManager->Disable();
         glPopMatrix();
         /***** FIM CANHOES *****/
         explosoes.desenhos(pause); //desenha nossos tiros
@@ -540,10 +547,13 @@ void init()
     glLoadIdentity();
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
-   textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+   textureManager->SetNumberOfTextures(5);       // Estabelece o número de texturas que será utilizado
    textureManager->SetWrappingMode(GL_REPEAT);
 
-    textureManager->CreateTexture("./Cannon.png", 0);
+    textureManager->CreateTexture("./grass.png", 0);
+    textureManager->CreateTexture("./Cannon.png", 1);
+    textureManager->CreateTexture("./wood.png", 2);
+    textureManager->CreateTexture("./missilebody.png", 3);
 
     glutIgnoreKeyRepeat(1);
     cam.Init();

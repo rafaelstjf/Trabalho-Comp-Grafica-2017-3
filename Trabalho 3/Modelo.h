@@ -27,6 +27,9 @@ private:
     double** normalFlat;
     double** normalGouraud;
     bool gouraud;
+    float width;
+    float height;
+    float minx=999999,miny=999999,minz=999999,maxx=-999999,maxy=-999999,maxz=-999999;
 public:
     Modelo(string nomeArquivo, bool gouraud);
     int getTamVertices();
@@ -39,8 +42,10 @@ public:
     double** getNormalGouraud();
     bool getGouraud();
     int** getCor();
-    float minx=999999,miny=999999,minz=999999,maxx=-999999,maxy=-999999,maxz=-999999;
+    float getWidth();
+    float getHeight();
     virtual ~Modelo();
+
 
 };
 

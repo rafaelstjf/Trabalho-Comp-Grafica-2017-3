@@ -2,6 +2,8 @@
 #include <math.h>
 Modelo::Modelo(string nomeArquivo, bool gouraud)
 {
+    width = 0.0;
+    height = 0.0;
     this->gouraud = gouraud;
     string linha;
     double n1[3];
@@ -85,6 +87,10 @@ Modelo::Modelo(string nomeArquivo, bool gouraud)
                     vertices[i][0] -= minx + maxx;
                     vertices[i][1] -= miny + maxy;
                     vertices[i][2] -= minz + maxz;
+                    if(vertices[i][0] > width)
+                        width = vertices[i][0];
+                    if(vertices[i][1] > height)
+                        height = vertices[i][2];
                 }
 
                 faces = new int *[tamFaces]; //cria uma matriz de faces do tamanho informado
@@ -166,7 +172,7 @@ Modelo::Modelo(string nomeArquivo, bool gouraud)
                     }
                 }
 
-               // cout << "Modelo carregado!" << endl;
+                // cout << "Modelo carregado!" << endl;
             }
             else
                 cout << "Arquivo nao esta no formato ascii 1.0!" << endl;
@@ -235,4 +241,12 @@ Modelo::~Modelo()
 
     delete[] vertices;
     delete[] faces;
+}
+float Modelo::getWidth()
+{
+    return width;
+}
+float Modelo::getHeight()
+{
+    return height;
 }

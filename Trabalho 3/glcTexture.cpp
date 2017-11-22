@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <malloc.h>
 
-#include "GL/glut.h"
-#include "png.h"
+
 #include "glcTexture.h"
 
 //-----------------------------------------------------------
