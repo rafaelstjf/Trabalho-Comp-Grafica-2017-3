@@ -17,10 +17,11 @@ explosao::explosao(float x, float y, float initx, float inity,int vel,int alvo)/
     this->alvo = alvo;
     dx=sqrt(pow((linex-x),2))/vel;//steps para chegar em x
     dy=sqrt(pow((liney-y),2))/vel;//steps para chegar em y
-  textureManager = new glcTexture();
-    textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
-   textureManager->SetWrappingMode(GL_REPEAT);
+    textureManager = new glcTexture();
+    textureManager->SetNumberOfTextures(2);       // Estabelece o número de texturas que será utilizado
+    textureManager->SetWrappingMode(GL_REPEAT);
     textureManager->CreateTexture("./missilebody.png", 0);
+    textureManager->CreateTexture("./explosion.png", 1);
 
 }
 
@@ -66,9 +67,14 @@ void explosao::desenhar(bool state)
 else
 {
     colide=1;//se torna colidivel
+    glEnable(GL_LIGHTING);
     //setMaterial_explosao();
+    textureManager->Bind(1);
+    //textureManager->Update();
     glTranslatef(this->x, this->y, -735.0);
-    glutSolidSphere(raio, 30, 30);
+    glScalef(0.01*raio,0.01*raio,0.01*raio);
+    //glutSolidSphere(raio, 30, 30);
+    desenhaFace(explosion);
     if(!state)
     {
         raio+=2.5*dt;//aumenta e diminui o raio

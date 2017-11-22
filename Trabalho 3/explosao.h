@@ -20,6 +20,7 @@ class explosao
         float dy,dx,cor=1,initx,inity;
         glcTexture* textureManager;
         Modelo *missile= new Modelo("missile.ply", false);
+        Modelo *explosion= new Modelo("explosion.ply", true);
 
 };
 

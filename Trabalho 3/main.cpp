@@ -181,7 +181,7 @@ void startWindow(int argc, char **argv)
 {
 
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(50, 50);
     glutCreateWindow("Trabalho 3");
