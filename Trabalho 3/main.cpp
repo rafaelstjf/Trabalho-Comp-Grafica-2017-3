@@ -38,6 +38,7 @@ int dificuldade = 1;                              //variavel para controle de di
 int indPlacar = 0;                                //variavel para controlar o indice do vetor do placar
 bool mouseDown = false;
 bool fullscreen = false;
+float rotatesky = 0;
 glcTexture *textureManager;
 bool inteira[11]; //sabe se cada cidade ta inteira e na ultima posi�ao se alguma ainda existe
 float clok = 1;   //tempo entre os misseis
@@ -52,6 +53,7 @@ char nome[20];
 Modelo *fundo = new Modelo("terreno.ply", true);
 Modelo *cidade = new Modelo("house3d.ply", false);
 Modelo *cannon = new Modelo("cannon.ply", false);
+Modelo *sky = new Modelo("sphere.ply", true);
 float pos = 0;
 float rotationX = 0.0, rotationY = 0.0;
 Camera cam;
@@ -108,7 +110,6 @@ void drawModel(Modelo *m)
     float maxZ = m->getHeight();
     for (int i = 0; i < m->getTamFaces(); i++)
     {
-        glFrontFace(GL_CCW);
         //setMaterial();
         glBegin(GL_POLYGON);
         if (!gouraud)
@@ -292,7 +293,7 @@ void display()
         glLoadIdentity();
         if (ortho)
         {
-            glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
+            glOrtho(-100.0, 300, -100.0, 125, -900000.0, 900000.0);
             gluLookAt(0.0, 0.0, -540, 0.0, 0.0, -541, 0.0, 1.0, 0.0);
         }
         else
@@ -305,6 +306,20 @@ void display()
         }
         glEnable(GL_DEPTH_TEST); // Habilita Z-buffer
         glEnable(GL_CULL_FACE);  // Habilita Backface-Culling
+
+        /******SKY*******/
+        glPushMatrix();
+        glFrontFace(GL_CW);
+        textureManager->Bind(4);
+        textureManager->Update();
+        int scalesky = 100;
+        glScalef(scalesky, scalesky, scalesky);
+        glRotatef(rotatesky,0,1,0);
+        drawModel(sky);
+        textureManager->Disable();
+        glFrontFace(GL_CCW);
+        glPopMatrix();
+        /****************/
         glEnable(GL_LIGHTING);
         /****Fundo****/
         glPushMatrix();
@@ -319,6 +334,7 @@ void display()
         /************/
 
         //teste->draw(jogadorx, -jogadory,1.0,0.0,0.0);
+
         /*****   CIDADES   *****/
         //setMaterial_house();
         textureManager->Bind(2);
@@ -532,15 +548,20 @@ void keyboardPress(unsigned char key, int x, int y)
 
 void init()
 {
+    glFrontFace(GL_CCW);
     float camPosition[3] = {99.0, 11.0, -540.0};
     glutSetCursor(GLUT_CURSOR_FULL_CROSSHAIR);
-    glClearColor(0.0, 1.0, 0.0, 0.0);
+    glClearColor(0.0, 0.0, 1.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+
+    glEnable(GL_ALPHA_TEST); // O alpha test descarta fragmentos dependendo de uma comparação (abaixo)
+   glAlphaFunc(GL_GREATER, 0.9); // Info: https://www.opengl.org/sdk/docs/man2/xhtml/glAlphaFunc.xml
+
     glColorMaterial(GL_FRONT, GL_DIFFUSE);
     glEnable(GL_NORMALIZE);
     glShadeModel(GL_SMOOTH);
@@ -548,12 +569,17 @@ void init()
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
    textureManager->SetNumberOfTextures(5);       // Estabelece o número de texturas que será utilizado
-   textureManager->SetWrappingMode(GL_REPEAT);
+   //textureManager->SetWrappingMode(GL_REPEAT);
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+   textureManager->SetColorMode(GL_REPLACE);
+   textureManager->SetMinFilterMode(GL_NEAREST);
 
     textureManager->CreateTexture("./grass.png", 0);
     textureManager->CreateTexture("./Cannon.png", 1);
     textureManager->CreateTexture("./wood.png", 2);
     textureManager->CreateTexture("./missilebody.png", 3);
+    textureManager->CreateTexture("./Clouds.png", 4);
 
     glutIgnoreKeyRepeat(1);
     cam.Init();
@@ -741,6 +767,8 @@ void idle()
     }
     else
     {
+        rotatesky+=0.1;
+        if(rotatesky==360)rotatesky=0;
         jogadorx = (float)(mousex / 2 - 100);
         jogadory = (float)(-1 * mousey / 2 + 125);
         /***** MISSEIS *****/
