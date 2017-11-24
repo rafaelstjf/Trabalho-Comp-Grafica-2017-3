@@ -60,7 +60,7 @@ Camera cam;
 bool flyMode = false, inview = false;
 bool tecla[256];
 menu inicio; //instancia um menu
-bool ortho = true;
+bool ortho = false;
 float g_rotation_speed = (M_PI / 180) * 0.01;
 
 //funcoes
@@ -279,11 +279,40 @@ void display()
     glOrtho(-100.0, 300, -100.0, 125, -9000.0, 9000.0);
     if (!comecou && !emPlacar)
     {
-
+    glPushMatrix();
+    textureManager->Bind(5);
+    textureManager->Update();
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(-100,-100);
+    glTexCoord2f(0.0, 1.0);
+    glVertex2f(-100,125);
+    glTexCoord2f(1.0, 1.0);
+    glVertex2f(300,125);
+    glTexCoord2f(1.0, 0.0);
+    glVertex2f(300,-100);
+    glEnd();
+    textureManager->Disable();
+    glPopMatrix();
         inicio.draw((int)opcao); //faz o menu
     }
     else if (!comecou && emPlacar)
     {
+            glPushMatrix();
+    textureManager->Bind(6);
+    textureManager->Update();
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0);
+    glVertex2f(-100,-100);
+    glTexCoord2f(0.0, 1.0);
+    glVertex2f(-100,125);
+    glTexCoord2f(1.0, 1.0);
+    glVertex2f(300,125);
+    glTexCoord2f(1.0, 0.0);
+    glVertex2f(300,-100);
+    glEnd();
+    textureManager->Disable();
+    glPopMatrix();
         drawScore(); //faz o score
     }
     else if (comecou) //roda o jogo normal
@@ -568,7 +597,7 @@ void init()
     glLoadIdentity();
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
-   textureManager->SetNumberOfTextures(5);       // Estabelece o número de texturas que será utilizado
+   textureManager->SetNumberOfTextures(7);       // Estabelece o número de texturas que será utilizado
    //textureManager->SetWrappingMode(GL_REPEAT);
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
@@ -580,6 +609,8 @@ void init()
     textureManager->CreateTexture("./wood.png", 2);
     textureManager->CreateTexture("./missilebody.png", 3);
     textureManager->CreateTexture("./Clouds.png", 4);
+    textureManager->CreateTexture("./menu.png", 5);
+    textureManager->CreateTexture("./score.png", 6);
 
     glutIgnoreKeyRepeat(1);
     cam.Init();

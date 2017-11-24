@@ -32,54 +32,39 @@ menu::menu(){//inicializa as variaveis
 animacao = 1;
 cre = 0.1;
 
-x[0]=100;
-y[0]=100;
+x[0]=120;
+y[0]=90;
 
-x[1]=100;
-y[1]=50;
+x[1]=120;
+y[1]=20;
 
 textureManager = new glcTexture();
-    textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+    textureManager->SetNumberOfTextures(2);       // Estabelece o número de texturas que será utilizado
    textureManager->SetWrappingMode(GL_REPEAT);
     textureManager->CreateTexture("./marble.png", 0);
 }
 
 void menu::draw(int i)
 {
-    glutSetCursor(GLUT_CURSOR_NONE);//sem mouse no menu
-    glEnable(GL_LIGHTING);
-    glColor3f(1.0, 1.0, 1.0);
-    textureManager->Bind(0);
-    float aspectRatio = textureManager->GetAspectRatio(0);
-    glBegin(GL_QUADS);
-    glNormal3f(0.0, 0.0, 1.0);
-    glTexCoord2f(0.0, 0.0);
-    glVertex2f(-100,-100);
-    glTexCoord2f(1.0, 0.0);
-    glVertex2f(-100,125);
-    glTexCoord2f(1.0, 1.0);
-    glVertex2f(300,125);
-    glTexCoord2f(0.0, 1.0);
-    glVertex2f(300,-100);
-    glEnd();
-    textureManager->Update();
     textureManager->Disable();
-    glDisable(GL_LIGHTING);
-    glColor3f(0.0, 0.0, 1.0);// cor da caixa de seleçao
+    glutSetCursor(GLUT_CURSOR_NONE);//sem mouse no menu
+    glColor3f(1.0, 1.0, 1.0);
+    glColor3f(0.0, 1.0, 0.0);// cor da caixa de seleçao
     //desenha a caixa de seleçao
+    glLineWidth(4);
     glBegin(GL_LINE_LOOP);
     glVertex2f(x[i]-10,y[i]+13);
-    glVertex2f(x[i]+100,y[i]+13);
-    glVertex2f(x[i]+100,y[i]-5);
-    glVertex2f(x[i]-10,y[i]-5);
+    glVertex2f(x[i]+150,y[i]+13);
+    glVertex2f(x[i]+150,y[i]-30);
+    glVertex2f(x[i]-10,y[i]-30);
     glEnd();
 
     //escreve as coisas na tela
-    output("JOGAR",100,100);
-    output("PLACAR",100,50);
-    output("PRESSIONE ESC PARA SAIR",100,-50);
-    output("MISSILE",-50,100);
-    output("COMAND",-50,80);
+    //output("JOGAR",100,100);
+    //output("PLACAR",100,50);
+    //output("PRESSIONE ESC PARA SAIR",100,-50);
+    //output("MISSILE",-50,100);
+    //output("COMAND",-50,80);
         glColor3f(animacao/30, 0,1-animacao/30);//animacao da tela de menu
         glTranslatef(-2*animacao, -2*animacao, 0.0);
         glutSolidSphere(animacao, 20, 2);
